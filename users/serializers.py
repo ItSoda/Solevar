@@ -35,7 +35,7 @@ class UserShortSerializer(UserSerializer):
 
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ("id", "photo", "username")
+        fields = ("id", "photo", "first_name", "last_name", "description", "rating")
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

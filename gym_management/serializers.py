@@ -4,6 +4,13 @@ from .models import Event, Tag
 from users.models import User
 from users.serializers import UserSerializer
 
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
+
 class EventCreateSerializer(serializers.ModelSerializer):
     created_by = serializers.IntegerField(write_only=True)
     participants = serializers.ListField(child=serializers.IntegerField(), write_only=True)
@@ -28,7 +35,10 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    created_by = UserSerializer()
+    participants = UserSerializer(many=True)
+    tags = TagSerializer(many=True)
+
     class Meta:
         model = Event
         fields = "__all__"

@@ -28,9 +28,10 @@ class User(AbstractUser):
     )
     yookassa_payment_id = models.CharField(max_length=100, null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
+    rating = models.SmallIntegerField(default=5)
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["phone_number"]
+    USERNAME_FIELD = "phone_number"
+    REQUIRED_FIELDS = ["email", "username"]
 
     objects = CustomUserManager()
 

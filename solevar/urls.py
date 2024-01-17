@@ -10,6 +10,8 @@ from .yasg import urlpatterns as doc_url
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include("users.urls")),
+    path("api/", include("gym_management.urls")),
     # Регистрация, авторизация
     path("auth/", include("djoser.urls")),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
