@@ -17,8 +17,7 @@ class User(AbstractUser):
     )
 
     phone_number = PhoneNumberField(unique=True)
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(blank=True)
     first_name = models.CharField(max_length=50, default="first name")
     last_name = models.CharField(max_length=50, default="last name")
     is_verified_email = models.BooleanField(default=False)
@@ -30,8 +29,10 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
 
+    username = None
+
     USERNAME_FIELD = "phone_number"
-    REQUIRED_FIELDS = ["email", "username"]
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
 
@@ -40,4 +41,4 @@ class User(AbstractUser):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        return f"Пользователь {self.email} | {self.first_name}"
+        return f"Пользователь {self.phone_number} | {self.first_name}"

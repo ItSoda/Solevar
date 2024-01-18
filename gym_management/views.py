@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from .models import Event
-from .serializers import EventCreateSerializer, EventSerializer
+from .models import Event, Club
+from .serializers import EventCreateSerializer, EventSerializer, ClubCreateSerializer, ClubSerializer
 from rest_framework.generics import ListAPIView
 
 class EventViewSet(ModelViewSet):
@@ -10,6 +10,15 @@ class EventViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = EventCreateSerializer
+        return super().create(request, *args, **kwargs)
+
+
+class ClubViewSet(ModelViewSet):
+    queryset = Club.objects.all()
+    serializer_class = ClubSerializer
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = ClubCreateSerializer
         return super().create(request, *args, **kwargs)
     
 

@@ -4,21 +4,20 @@ from phonenumber_field.phonenumber import to_python
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, phone_number, password=None, email=None,  **extra_fields):
-        if not email and not phone_number:
-            raise ValueError(("The email or phone number must be set"))
+    def create_user(self, phone_number, password=None, **extra_fields):
+        if not phone_number:
+            raise ValueError(("The phone number must be set"))
 
-        email = self.normalize_email(email)
-        phone_number = to_python(phone_number)
+        normalized_phone_number = to_python(phone_number)
+        user = self.model(phone_number=str(normalized_phone_number), **extra_fields)
 
-        user = self.model(username=username, phone_number=str(phone_number), email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, phone_number, password, email=None,  **extra_fields):
+    def create_superuser(self, phone_number, password, **extra_fields):
         """
-        Create and save a SuperUser with the given email and password.
+        Create and save a SuperUser with the given phone_number and password.
         """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -28,4 +27,4 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("Superuser must have is_staff=True."))
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
-        return self.create_user(username, email, password, phone_number, **extra_fields)
+        return self.create_user(password=password, phone_number=phone_number, **extra_fields)
