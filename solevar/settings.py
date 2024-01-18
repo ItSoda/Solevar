@@ -259,8 +259,8 @@ DEFAULT_FROM_EMAIL = config.get("DEFAULT_FROM_EMAIL")
 # CSRF
 CSRF_TRUSTED_ORIGINS = [
     "https://boar-still-alpaca.ngrok-free.app",
-    "http://solevar.ru",
-    "https://solevar.ru",
+    "http://onlydev.fun",
+    "https://onlydev.fun",
 ]
 
 
@@ -274,7 +274,7 @@ YOOKASSA_SECRET_KEY = config.get("YOOKASSA_SECRET_KEY")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:50000",
     "http://localhost:3000",
-    "http://solevar.ru",
+    "http://onlydev.fun",
 ]
 
 CORS_ALLOW_METHODS = [
