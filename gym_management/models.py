@@ -45,3 +45,20 @@ class Event(models.Model):
 
     def __str__(self):
         return f"Тренировка: {self.title} | {self.created_by}"
+    
+
+class IndividualEvent(models.Model):
+    coach = models.ForeignKey(User, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+    description = models.TextField()
+    duration_minutes = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration_minutes}"
+
+
+# class Subscription(models.Model):
+#     number = models.UUIDField(unique=True)
+

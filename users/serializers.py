@@ -40,7 +40,7 @@ class UserShortSerializer(UserSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation['photo'] = "http://red-store.site/media/" + str(instance.photo)
+            representation['photo'] = "http://onlydef.fun/media/" + str(instance.photo)
         return representation
 
 
@@ -66,5 +66,5 @@ class UserProfile(UserSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation['photo'] = "http://red-store.site/media/" + str(instance.photo)
+            representation['photo'] = "http://onlydef.fun/media/" + str(instance.photo)
         return representation

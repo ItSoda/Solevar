@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event, Tag, Club
+from .models import Event, Tag, Club, IndividualEvent
 
 from users.models import User
 from users.serializers import UserSerializer
@@ -71,3 +71,31 @@ class ClubSerializer(serializers.ModelSerializer):
         model = Club
         fields = "__all__"
 
+
+class IndividualEventCreateSerializer(serializers.ModelSerializer):
+    coach = serializers.IntegerField(write_only=True)
+    participant = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = IndividualEvent
+        fields = "__all__"
+
+    def create(self, validated_data):
+        coach_id = validated_data.pop("coach")
+        coach = User.objects.get(id=coach_id)
+
+        participant_id = validated_data.pop("participant")
+        participant = User.objects.get(id=participant_id)
+
+        instance = IndividualEvent.objects.create(coach=coach, participant=participant, **validated_data)
+
+        return instance
+
+
+class IndividualEventSerializer(serializers.ModelSerializer):
+    coach = UserSerializer()
+    participant = UserSerializer()
+
+    class Meta:
+        model = IndividualEvent
+        fields = "__all__"
