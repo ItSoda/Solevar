@@ -1,11 +1,14 @@
 from django.db import models
-from users.models import User
 from phonenumber_field.modelfields import PhoneNumberField
+
+from users.models import User
 
 
 class Tag(models.Model):
+    """Model for tags"""
+
     name = models.CharField(max_length=64)
-    
+
     class Meta:
         verbose_name = "тег"
         verbose_name_plural = "Теги"
@@ -15,6 +18,8 @@ class Tag(models.Model):
 
 
 class Club(models.Model):
+    """Model for clubs"""
+
     address = models.CharField(max_length=256)
     club_phone = PhoneNumberField()
     club_email = models.EmailField()
@@ -29,6 +34,8 @@ class Club(models.Model):
 
 
 class Event(models.Model):
+    """Model for events"""
+
     title = models.CharField(max_length=128)
     content = models.TextField()
     participants = models.ManyToManyField(User, related_name="participants_event")
@@ -45,3 +52,42 @@ class Event(models.Model):
 
     def __str__(self):
         return f"Тренировка: {self.title} | {self.created_by}"
+
+
+class IndividualEvent(models.Model):
+    """Model for individual events"""
+
+    coach = models.ForeignKey(
+        User, related_name="coach_events", on_delete=models.CASCADE
+    )
+    participant = models.ForeignKey(
+        User, related_name="participant_events", on_delete=models.CASCADE
+    )
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+    description = models.TextField()
+    duration_minutes = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "индивидуальную тренировку"
+        verbose_name_plural = "Индивидуальные тренировки"
+
+    def __str__(self) -> str:
+        return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration_minutes}"
+
+
+class Subscription(models.Model):
+    """Model for subscription"""
+
+    number = models.UUIDField(unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = "aбонемент"
+        verbose_name_plural = "абонементы"
+
+    def __str__(self) -> str:
+        return f"Subscription: number {self.number} | user {self.user} | end_date {self.end_date}"

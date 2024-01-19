@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
-from phonenumber_field.modelfields import PhoneNumberField
+
 
 # User Model
 class User(AbstractUser):
@@ -25,9 +26,10 @@ class User(AbstractUser):
     photo = models.ImageField(
         upload_to="user_images", default="user_images/no-profile.png"
     )
-    yookassa_payment_id = models.CharField(max_length=100, null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
+    trainer_type = models.CharField(max_length=100, default="")
+    balance = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 
     username = None
 

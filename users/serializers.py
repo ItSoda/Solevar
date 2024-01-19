@@ -2,9 +2,9 @@ from tempfile import NamedTemporaryFile
 from urllib.request import urlopen
 
 from django.core.files import File
-
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
+
 from .models import User
 
 
@@ -36,17 +36,17 @@ class UserShortSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = ("id", "photo", "first_name", "last_name", "description", "rating")
-    
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation['photo'] = "http://red-store.site/media/" + str(instance.photo)
+            representation["photo"] = "http://onlydef.fun/media/" + str(instance.photo)
         return representation
 
 
 class UserProfile(UserSerializer):
     photo = ImageFieldFromURL()
-    
+
     class Meta(UserSerializer.Meta):
         model = User
         fields = (
@@ -66,5 +66,5 @@ class UserProfile(UserSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation['photo'] = "http://red-store.site/media/" + str(instance.photo)
+            representation["photo"] = "http://onlydef.fun/media/" + str(instance.photo)
         return representation
