@@ -1,8 +1,10 @@
 from django.contrib import admin
-from .models import Event, Tag, Club, IndividualEvent
+
+from .models import Club, Event, IndividualEvent, Tag
 
 admin.site.register(Tag)
 admin.site.register(IndividualEvent)
+
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):

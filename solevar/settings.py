@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "corsheaders",
     "users",
-    "gym_management"
+    "gym_management",
 ]
 
 MIDDLEWARE = [
