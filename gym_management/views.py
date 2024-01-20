@@ -23,13 +23,13 @@ class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(limit_of_participants__gt=1)
+    
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(limit_of_participant__gt=1)
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = EventCreateSerializer
