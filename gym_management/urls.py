@@ -1,8 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (ClubViewSet, EventViewSet, MyEventListView,
-                    SubscriptionViewSet)
+from .views import ClubViewSet, EventViewSet, MyEventListView, SubscriptionViewSet
 
 app_name = "gym_management"
 

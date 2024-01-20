@@ -81,7 +81,7 @@ def proccess_phone_verification(code, phone_number):
 
 
 def send_phone_verify_task(phone_number):
-    from users.models import PhoneNumberVerifySMS, User
+    from users.models import PhoneNumberVerifySMS
 
     expiration = now() + timedelta(hours=24)
     code = str(random.randint(1000, 9999))

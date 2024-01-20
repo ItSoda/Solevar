@@ -54,7 +54,7 @@ class PhoneNumberVerifySMS(models.Model):
     expiration = models.DateTimeField()
 
     def __str__(self):
-        return f"PhoneNumberVerifySMS object for {self.user.email}"
+        return f"PhoneNumberVerifySMS object for {self.phone_number}"
 
     def send_verification_phone(self):
         send_verification_phone(self.phone_number, self.code)
