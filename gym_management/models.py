@@ -42,7 +42,7 @@ class Event(models.Model):
     limit_of_participants = models.SmallIntegerField()
     tags = models.ManyToManyField(Tag)
     start_at = models.DateTimeField(auto_now_add=True)
-    duration = models.PositiveIntegerField(default=60)
+    duration = models.DurationField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
 
