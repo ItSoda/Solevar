@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import CoachViewSet, YookassaPaymentView, YookassaWebhookView
+from .views import CoachViewSet, YookassaPaymentView, YookassaWebhookView, PhoneNumberVerificationView, PhoneNumberSendSMSView
 
 app_name = "users"
 
@@ -12,4 +12,6 @@ urlpatterns = [
     path("", include(router.urls)),
     path("payment/create/", YookassaPaymentView.as_view(), name="payment-create"),
     path("yookassa/webhook/", YookassaWebhookView.as_view(), name="yookassa-webhook"),
+    path("verify/phone/", PhoneNumberVerificationView.as_view(), name="phone-verify"),
+    path("send/phone/", PhoneNumberSendSMSView.as_view(), name="phone-send")
 ]

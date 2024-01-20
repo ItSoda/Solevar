@@ -11,7 +11,7 @@ from yookassa.domain.notification import WebhookNotificationFactory
 
 from .models import User
 from .serializers import UserShortSerializer
-from .services import create_payment, user_change_balance
+from .services import create_payment, user_change_balance, proccess_phone_verification, send_phone_verify_task
 
 
 class CoachViewSet(ModelViewSet):
@@ -66,3 +66,33 @@ class YookassaWebhookView(APIView):
         return Response(
             {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
         )
+
+
+class PhoneNumberVerificationView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Получаем данные
+            phone_number = request.data.get("phone_number")
+            code = request.data.get("code")
+
+            phone_verify_result = proccess_phone_verification(code, phone_number)
+
+            if phone_verify_result:
+                return Response({"message": "Phone number success"}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Phone number is expired or not exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception:
+            return Response({"error": "Произошла ошибка"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PhoneNumberSendSMSView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Получаем данные
+            phone_number = request.data.get("phone_number")
+            send_phone_verify_task(phone_number)
+            return Response({"message": "sms send success"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": f"Произошла ошибка {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)

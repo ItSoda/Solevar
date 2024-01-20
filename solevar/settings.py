@@ -261,6 +261,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://boar-still-alpaca.ngrok-free.app",
     "http://onlydev.fun",
     "https://onlydev.fun",
+    "https://rest.nexmo.com"
 ]
 
 
@@ -270,11 +271,16 @@ YOOKASSA_SHOP_ID = config.get("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = config.get("YOOKASSA_SECRET_KEY")
 
 
+# smsru
+API_KEY_SMSRU = config.get("API_KEY_SMSRU")
+
+
 # CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:50000",
     "http://localhost:3000",
     "http://onlydev.fun",
+    "https://rest.nexmo.com"
 ]
 
 CORS_ALLOW_METHODS = [

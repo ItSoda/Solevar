@@ -3,6 +3,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
+from .services import is_expired, send_verification_phone
 
 
 # User Model
@@ -44,3 +45,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"Пользователь {self.phone_number} | {self.first_name}"
+
+
+class PhoneNumberVerifySMS(models.Model):
+    code = models.CharField(unique=True, max_length=4)
+    phone_number = PhoneNumberField()
+    created = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField()
+
+    def __str__(self):
+        return f"PhoneNumberVerifySMS object for {self.user.email}"
+
+    def send_verification_phone(self):
+        send_verification_phone(self.phone_number, self.code)
+
+    def is_expired(self):
+        is_expired(self)
