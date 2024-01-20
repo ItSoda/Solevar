@@ -11,12 +11,8 @@ from yookassa.domain.notification import WebhookNotificationFactory
 
 from .models import User
 from .serializers import UserShortSerializer
-from .services import (
-    create_payment,
-    proccess_phone_verification,
-    send_phone_verify_task,
-    user_change_balance,
-)
+from .services import (create_payment, proccess_phone_verification,
+                       send_phone_verify_task, user_change_balance)
 
 
 class CoachViewSet(ModelViewSet):

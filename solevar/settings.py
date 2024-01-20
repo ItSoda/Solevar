@@ -271,10 +271,6 @@ YOOKASSA_SHOP_ID = config.get("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = config.get("YOOKASSA_SECRET_KEY")
 
 
-# smsru
-API_KEY_SMSRU = config.get("API_KEY_SMSRU")
-
-
 # CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:50000",
