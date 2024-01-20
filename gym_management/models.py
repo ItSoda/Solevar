@@ -42,7 +42,7 @@ class Event(models.Model):
     limit_of_participants = models.SmallIntegerField()
     tags = models.ManyToManyField(Tag)
     start_at = models.DateTimeField(auto_now_add=True)
-    duration = models.PositiveIntegerField()
+    duration = models.PositiveIntegerField(default=60)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
 
@@ -66,7 +66,7 @@ class IndividualEvent(models.Model):
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     description = models.TextField()
-    duration_minutes = models.PositiveIntegerField()
+    duration_minutes = models.PositiveIntegerField(default=60)
 
     class Meta:
         verbose_name = "индивидуальную тренировку"
