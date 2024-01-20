@@ -1,13 +1,11 @@
 import logging
-from django.shortcuts import get_object_or_404
-from django.conf import settings
-from django.utils.timezone import now
-from twilio.rest import Client
+import random
 from datetime import timedelta
 
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
-import random
-import vonage
+from twilio.rest import Client
 
 logger = logging.getLogger("main")
 
@@ -49,18 +47,13 @@ def user_change_balance(user_id, notification):
 
 # PHONE VERIFICATION
 def send_verification_phone(phone_number, code):
-    api_key = "2294fcd4"
-    api_secret = "IZ4FDUUrycolekVI"
+    account_sid = "AC7151f00e54eb786e820ff6692087a3f9"
+    auth_token = "882f65cedd1c7323995d2eae275468bf"
 
-    client = vonage.Client(key=api_key, secret=api_secret)
-    sms = vonage.Sms(client)
+    client = Client(account_sid, auth_token)
     try:
-        message = sms.send_message(
-            {
-                "from": "+79136757877",
-                "to": f"{phone_number}",
-                "text": f"{code}"
-            }
+        message = client.messages.create(
+            from_="+19146104867", to=f"{phone_number}", body=f"code - {code}"
         )
     except Exception as e:
         logger.info(f"error: {str(e)}")
@@ -78,22 +71,18 @@ def proccess_phone_verification(code, phone_number):
     from users.models import PhoneNumberVerifySMS, User
 
     user = get_object_or_404(User, phone_number=phone_number)
-    phone_numbers = PhoneNumberVerifySMS.objects.filter(
-        code=code, user=user
-    )
+    phone_numbers = PhoneNumberVerifySMS.objects.filter(code=code, user=user)
     try:
-        if (
-            phone_numbers.exists()
-            and not phone_numbers.last().is_expired()
-        ):
+        if phone_numbers.exists() and not phone_numbers.last().is_expired():
             return True
         return False
     except Exception as e:
         return False
-    
+
 
 def send_phone_verify_task(phone_number):
     from users.models import PhoneNumberVerifySMS, User
+
     expiration = now() + timedelta(hours=24)
     code = str(random.randint(1000, 9999))
     record = PhoneNumberVerifySMS.objects.create(
