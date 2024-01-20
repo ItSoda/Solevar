@@ -73,7 +73,7 @@ class IndividualEvent(models.Model):
         verbose_name_plural = "Индивидуальные тренировки"
 
     def __str__(self) -> str:
-        return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration_minutes}"
+        return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration}"
 
 
 class Subscription(models.Model):
