@@ -6,7 +6,7 @@ services:
     container_name: mysql-solevar
     restart: always
     environment:
-      - MYSQL_DATABASE=solevar_prod
+      - MYSQL_DATABASE=solevar
       - MYSQL_ROOT_PASSWORD=solevar_pass
     volumes:
       - mysql_data:/var/lib/mysql/
