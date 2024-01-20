@@ -63,7 +63,7 @@ def send_verification_phone(phone_number, code):
             }
         )
     except Exception as e:
-        print(f"error {str(e)}")
+        logger.info(f"error: {str(e)}")
 
 
 def is_expired(self):
