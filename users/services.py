@@ -47,7 +47,7 @@ def user_change_balance(user_id, notification):
 
 # PHONE VERIFICATION
 def send_verification_phone(phone_number, code):
-    account_sid = settings.ACCOUNT_SID
+    account_sid = settings.ACCOUNT_SID_TWILIO
     auth_token = settings.AUTH_TOKEN_TWILIO
 
     client = Client(account_sid, auth_token)
