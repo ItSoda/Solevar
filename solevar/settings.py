@@ -261,7 +261,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://boar-still-alpaca.ngrok-free.app",
     "http://onlydev.fun",
     "https://onlydev.fun",
-    "https://rest.nexmo.com"
+    "https://rest.nexmo.com",
 ]
 
 
@@ -280,7 +280,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:50000",
     "http://localhost:3000",
     "http://onlydev.fun",
-    "https://rest.nexmo.com"
+    "https://rest.nexmo.com",
 ]
 
 CORS_ALLOW_METHODS = [

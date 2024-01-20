@@ -7,16 +7,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Club, Event, IndividualEvent, Subscription
-from .serializers import (
-    ClubCreateSerializer,
-    ClubSerializer,
-    EventCreateSerializer,
-    EventSerializer,
-    IndividualEventCreateSerializer,
-    IndividualEventSerializer,
-    SubscriptionCreateSerializer,
-    SubscriptionSerializer,
-)
+from .serializers import (ClubCreateSerializer, ClubSerializer,
+                          EventCreateSerializer, EventSerializer,
+                          IndividualEventCreateSerializer,
+                          IndividualEventSerializer,
+                          SubscriptionCreateSerializer, SubscriptionSerializer)
 
 
 class EventViewSet(ModelViewSet):
