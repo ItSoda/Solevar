@@ -58,7 +58,7 @@ class IndividualEventViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(participant__id=self.request.user.id)
+        return queryset.filter(limit_of_participants=1)
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = IndividualEventCreateSerializer
