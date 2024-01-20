@@ -7,16 +7,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Club, Event, IndividualEvent, Subscription
-from .serializers import (
-    ClubCreateSerializer,
-    ClubSerializer,
-    EventCreateSerializer,
-    EventSerializer,
-    IndividualEventCreateSerializer,
-    IndividualEventSerializer,
-    SubscriptionCreateSerializer,
-    SubscriptionSerializer,
-)
+from .serializers import (ClubCreateSerializer, ClubSerializer,
+                          EventCreateSerializer, EventSerializer,
+                          IndividualEventCreateSerializer,
+                          IndividualEventSerializer,
+                          SubscriptionCreateSerializer, SubscriptionSerializer)
 
 
 class EventViewSet(ModelViewSet):
@@ -26,7 +21,7 @@ class EventViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(limit_of_participants__gt=1)
-    
+
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
