@@ -64,7 +64,7 @@ def user_change_balance(user_id, notification):
         user.balance += int(notification.object.payment.amount.value)
         user.save()
     except Exception as e:
-        return Response({"error": "User not found"})
+        logging.info(f"error: {str(e)}")
 
 
 # PHONE VERIFICATION
