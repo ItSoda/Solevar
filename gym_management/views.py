@@ -104,3 +104,11 @@ class SubscriptionViewSet(ModelViewSet):
             return Response(
                 {"error": "Not enough money"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+class MySubscriptionView(ListAPIView):
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
