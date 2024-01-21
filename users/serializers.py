@@ -52,6 +52,7 @@ class UserProfile(UserSerializer):
         fields = (
             "id",
             "email",
+            "is_verified_email",
             "password",
             "first_name",
             "last_name",
