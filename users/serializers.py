@@ -61,6 +61,7 @@ class UserProfile(UserSerializer):
             "photo",
             "phone_number",
             "role",
+            "balance",
         )
         read_only_fields = ("password",)
 
@@ -69,3 +70,10 @@ class UserProfile(UserSerializer):
         if instance.photo:
             representation["photo"] = "http://onlydef.fun/media/" + str(instance.photo)
         return representation
+
+
+class EmailContactSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    subject = serializers.CharField(max_length=100)
+    message = serializers.CharField()
+    

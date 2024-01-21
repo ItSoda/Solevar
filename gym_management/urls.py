@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import (ClubViewSet, EventViewSet, IndividualEventViewSet,
-                    MyEventListView, SubscriptionViewSet, MySubscriptionView)
+                    MyEventListView, SubscriptionViewSet, MySubscriptionView, BuySubscriptionView)
 
 app_name = "gym_management"
 
@@ -12,8 +12,10 @@ router.register(r"clubs", ClubViewSet, basename="clubs")
 router.register(r"subscriptions", SubscriptionViewSet, basename="subscriptions")
 router.register(r"individual_events", IndividualEventViewSet, basename="individual_events")
 
+
 urlpatterns = [
     path("", include(router.urls)),
     path("myevents/", MyEventListView.as_view(), name="myevent"),
     path("my_subscriptions/", MySubscriptionView.as_view(), name="my_subscriptions"),
+    path("buy_subscription/", BuySubscriptionView.as_view(), name="buy_subscription")
 ]

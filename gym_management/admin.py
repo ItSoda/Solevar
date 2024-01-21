@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Club, Event, IndividualEvent, Tag
+from .models import Club, Event, IndividualEvent, Tag, Subscription
 
 admin.site.register(Tag)
 admin.site.register(IndividualEvent)
-
+admin.site.register(Subscription)
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):

@@ -79,10 +79,10 @@ class IndividualEvent(models.Model):
 class Subscription(models.Model):
     """Model for subscription"""
 
-    number = models.UUIDField(unique=True)
+    number = models.BigIntegerField(unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField()
+    duration = models.IntegerField(default=30)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -90,4 +90,4 @@ class Subscription(models.Model):
         verbose_name_plural = "абонементы"
 
     def __str__(self) -> str:
-        return f"Subscription: number {self.number} | user {self.user} | end_date {self.end_date}"
+        return f"Subscription: number {self.number} | user {self.user} | end_date {self.duration}"

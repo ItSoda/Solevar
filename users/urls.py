@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from .views import (CoachViewSet, PhoneNumberSendSMSView,
                     PhoneNumberVerificationView, YookassaPaymentView,
-                    YookassaWebhookView)
+                    YookassaWebhookView, ContactEmailView)
 
 app_name = "users"
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path("yookassa/webhook/", YookassaWebhookView.as_view(), name="yookassa-webhook"),
     path("verify/phone/", PhoneNumberVerificationView.as_view(), name="phone-verify"),
     path("send/phone/", PhoneNumberSendSMSView.as_view(), name="phone-send"),
+    path("contact/", ContactEmailView.as_view(), name="send-email"),
 ]

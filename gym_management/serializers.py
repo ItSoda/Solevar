@@ -126,6 +126,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    start_date = serializers.DateTimeField(format="%d-%m-%Y")
 
     class Meta:
         model = Subscription
