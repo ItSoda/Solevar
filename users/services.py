@@ -60,8 +60,8 @@ def user_change_balance(user_id, notification):
     from users.models import User
 
     user = User.objects.get(id=user_id)
-
-    user.balance += notification.object.payment.amount.value
+    logger.info(int(notification.object.payment.amount.value))
+    user.balance += int(notification.object.payment.amount.value)
     user.save()
 
 
