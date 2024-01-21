@@ -58,11 +58,13 @@ def create_payment(email, amount, user, request):
 
 def user_change_balance(user_id, notification):
     from users.models import User
-
-    user = User.objects.get(id=user_id)
-    logger.info(int(notification.object.payment.amount.value))
-    user.balance += int(notification.object.payment.amount.value)
-    user.save()
+    try:
+        user = User.objects.get(id=user_id)
+        logger.info(int(notification.object.payment.amount.value))
+        user.balance += int(notification.object.payment.amount.value)
+        user.save()
+    except Exception as e:
+        return Response({"error": "User not found"})
 
 
 # PHONE VERIFICATION
