@@ -51,6 +51,10 @@ class IndividualEventViewSet(ModelViewSet):
     queryset = IndividualEvent.objects.all()
     serializer_class = IndividualEventSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(participant=self.request.user)
+
     def create(self, request, *args, **kwargs):
         self.serializer_class = IndividualEventCreateSerializer
         return super().create(request, *args, **kwargs)
