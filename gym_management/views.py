@@ -1,8 +1,9 @@
+from django.forms import ValidationError
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -89,21 +90,33 @@ class SubscriptionViewSet(ModelViewSet):
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
+    
     def create(self, request, *args, **kwargs):
         self.serializer_class = SubscriptionCreateSerializer
-        self.perform_create(request.data)
         return super().create(request, *args, **kwargs)
 
-    def perform_create(self, data):
-        user = self.request.user
-        if int(user.balance) >= int(data.price):
-            user.balance -= int(data.price)
-            return super().perform_create(data)
-        else:
+
+class BuySubscriptionView(CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = SubscriptionCreateSerializer(data=request.data)
+            if serializer.is_valid():
+                # Получаем данные
+                price = request.data.get("price")
+                user = self.request.user
+            print(user.id)
+            if int(user.balance) >= int(price):
+                user.balance -= int(price)
+                user.save()
+                return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Balance is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
             return Response(
-                {"error": "Not enough money"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": f"Произошла ошибка {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
+
 
 class MySubscriptionView(ListAPIView):
     queryset = Subscription.objects.all()

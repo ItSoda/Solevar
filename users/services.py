@@ -2,12 +2,32 @@ import logging
 import random
 from datetime import timedelta
 
+from django.core.mail import EmailMessage
+from django.urls import reverse
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from twilio.rest import Client
+from rest_framework.response import Response
+from rest_framework import status
 
 logger = logging.getLogger("main")
+
+
+def send_email_from_user(subject, message, phone_number, email, photo_path=None):
+    email = EmailMessage(
+        subject=subject,
+        body=f"Клиент - email: {email} | phone_number: {phone_number}. \n\n{message}",
+        from_email=settings.EMAIL_HOST_USER,
+        to=[settings.EMAIL_HOST_USER],
+    )
+
+    if photo_path:
+        with open(photo_path, 'rb') as photo_file:
+            email.attach_file(photo_path, mimetype='image/jpeg')
+
+    email.send(fail_silently=False)
+    
 
 
 # YOOKASSA PAYMENT

@@ -10,8 +10,8 @@ from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
 
 from .models import User
-from .serializers import UserShortSerializer
-from .services import (create_payment, proccess_phone_verification,
+from .serializers import UserShortSerializer, EmailContactSerializer
+from .services import (create_payment, proccess_phone_verification, send_email_from_user,
                        send_phone_verify_task, user_change_balance)
 
 
@@ -99,6 +99,32 @@ class PhoneNumberSendSMSView(APIView):
             phone_number = request.data.get("phone_number")
             send_phone_verify_task(phone_number)
             return Response({"message": "sms send success"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Произошла ошибка {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+
+class ContactEmailView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = EmailContactSerializer(data=request.data)
+            if serializer.is_valid():
+                # Получаем данные
+                subject = request.data.get("subject")
+                message = request.data.get("message")
+                phone_number = request.data.get("phone_number")
+                email = request.data.get("email")
+                photo_path = request.data.get("photo_path")
+                
+                if photo_path:
+                    send_email_from_user(subject, message, phone_number, email, photo_path)
+                else:
+                    send_email_from_user(subject, message, phone_number, email)
+                return Response({"message": "Email send success"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Data is not valid"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(
                 {"error": f"Произошла ошибка {str(e)}"},
