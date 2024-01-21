@@ -61,7 +61,7 @@ class YookassaWebhookView(APIView):
             # Проверяем статус платежа
             if notification.object.status == "succeeded":
                 # Обновляем баланс
-                logger.info("Мы успешно зашли")
+                logger.info(int(notification.object.payment.amount.value))
                 user_change_balance(user_id, notification)
                 return Response(
                 {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
