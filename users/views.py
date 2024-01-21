@@ -13,6 +13,10 @@ from .models import User
 from .serializers import UserShortSerializer, EmailContactSerializer
 from .services import (create_payment, proccess_phone_verification, send_email_from_user,
                        send_phone_verify_task, user_change_balance)
+import logging
+
+
+logger = logging.getLogger("main")
 
 
 class CoachViewSet(ModelViewSet):
@@ -57,16 +61,17 @@ class YookassaWebhookView(APIView):
             # Проверяем статус платежа
             if notification.object.status == "succeeded":
                 # Обновляем баланс
+                logger.info("Мы успешно зашли")
                 user_change_balance(user_id, notification)
+                return Response(
+                {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
+                )
         except Exception as e:
             # Обработка ошибок при разборе уведомления
             return Response(
-                {"message": "Баланс пополнен. Произошла ошибка"},
+                {"message": "Баланс не пополнен. Произошла ошибка"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response(
-            {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
-        )
 
 
 class PhoneNumberVerificationView(APIView):
