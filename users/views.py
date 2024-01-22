@@ -61,8 +61,8 @@ class YookassaWebhookView(APIView):
             # Проверяем статус платежа
             if notification.object.status == "succeeded":
                 # Обновляем баланс
-                logger.info(int(notification.object.payment.amount.value))
-                user_change_balance(user_id, notification)
+                value = event_json["object"]["amount"].get("value") # тут ошибка в этой строчке неправильный путь 
+                user_change_balance(user_id, value)
                 return Response(
                 {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
                 )
