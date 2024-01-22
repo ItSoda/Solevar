@@ -1,6 +1,7 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from users.models import User
 
 
@@ -71,9 +72,17 @@ class IndividualEvent(models.Model):
     class Meta:
         verbose_name = "индивидуальную тренировку"
         verbose_name_plural = "Индивидуальные тренировки"
+        constraints = [
+            models.UniqueConstraint(fields=['coach', 'participant'], name='unique_coach_participant')
+        ]
 
     def __str__(self) -> str:
         return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration}"
+    
+    def clean(self):
+        # Дополнительная проверка на уровне модели
+        if IndividualEvent.objects.filter(coach=self.coach, participant=self.participant).exists():
+            raise ValidationError(_('This combination of coach and participant already exists.'))
 
 
 class Subscription(models.Model):
