@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from decimal import Decimal
-
+from random import randint
 from .models import Club, Event, IndividualEvent, Subscription
 from .serializers import (ClubCreateSerializer, ClubSerializer,
                           EventCreateSerializer, EventSerializer,
@@ -59,8 +59,11 @@ class IndividualEventViewSet(ModelViewSet):
         return queryset.filter(participant=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        self.serializer_class = IndividualEventCreateSerializer
-        return super().create(request, *args, **kwargs)
+        try:
+            self.serializer_class = IndividualEventCreateSerializer
+            return super().create(request, *args, **kwargs)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ClubViewSet(ModelViewSet):
@@ -101,26 +104,35 @@ class SubscriptionViewSet(ModelViewSet):
 class BuySubscriptionView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
-            serializer = SubscriptionCreateSerializer(data=request.data)
-            if serializer.is_valid():
-                # Получаем данные
-                price = request.data.get("price")
-                user = self.request.user
+            number = self.generate_unique_subscription_number()
 
-                if int(user.balance) >= int(price):
-                    user.balance -= Decimal(price)
-                    user.save()
-                    subject = Subscription.objects.create(**serializer.data)
-                    return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
-                else:
-                    return Response({"error": "Balance is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+            price = request.data.get("price")
+            duration = request.data.get("duration")
+            user = self.request.user
+
+            if user.balance >= Decimal(price):
+                user.balance -= Decimal(price)
+                user.save()
+
+                subscription = Subscription.objects.create(
+                    price=price, user=user, duration=duration, number=number
+                )
+
+                return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "Data is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Insufficient balance"}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             return Response(
-                {"error": f"Произошла ошибка {str(e)}"},
+                {"error": f"An error occurred: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    def generate_unique_subscription_number(self):
+        while True:
+            number = randint(1000000000, 9999999999)
+            if not Subscription.objects.filter(number=number).exists():
+                return number
 
 
 class MySubscriptionView(ListAPIView):

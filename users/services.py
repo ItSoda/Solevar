@@ -92,10 +92,9 @@ def is_expired(self):
 
 
 def proccess_phone_verification(code, phone_number):
-    from users.models import PhoneNumberVerifySMS, User
+    from users.models import PhoneNumberVerifySMS
 
-    user = get_object_or_404(User, phone_number=phone_number)
-    phone_numbers = PhoneNumberVerifySMS.objects.filter(code=code, user=user)
+    phone_numbers = PhoneNumberVerifySMS.objects.filter(code=code, phone_number=phone_number)
     try:
         if phone_numbers.exists() and not phone_numbers.last().is_expired():
             return True
