@@ -57,8 +57,8 @@ def create_payment(email, amount, user, request):
 
 
 def user_change_balance(user_id, value):
-    from users.models import User
     try:
+        from users.models import User
         user = User.objects.get(id=user_id)
         user.balance += int(value)
         user.save()
