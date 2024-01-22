@@ -56,12 +56,11 @@ def create_payment(email, amount, user, request):
     return payment.confirmation.confirmation_url
 
 
-def user_change_balance(user_id, notification):
+def user_change_balance(user_id, value):
     from users.models import User
     try:
         user = User.objects.get(id=user_id)
-        logger.info(int(notification.object.payment.amount.value))
-        user.balance += int(notification.object.payment.amount.value)
+        user.balance += int(value)
         user.save()
     except Exception as e:
         logging.info(f"error: {str(e)}")
