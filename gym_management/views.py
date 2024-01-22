@@ -7,6 +7,8 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from decimal import Decimal
+
 from .models import Club, Event, IndividualEvent, Subscription
 from .serializers import (ClubCreateSerializer, ClubSerializer,
                           EventCreateSerializer, EventSerializer,
@@ -104,9 +106,9 @@ class BuySubscriptionView(CreateAPIView):
                 # Получаем данные
                 price = request.data.get("price")
                 user = self.request.user
-            print(user.id)
+
             if int(user.balance) >= int(price):
-                user.balance -= int(price)
+                user.balance -= Decimal(price)
                 user.save()
                 return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
             else:
