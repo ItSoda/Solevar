@@ -10,6 +10,8 @@ from django.utils.timezone import now
 from twilio.rest import Client
 from rest_framework.response import Response
 from rest_framework import status
+from decimal import Decimal
+
 
 logger = logging.getLogger("main")
 
@@ -57,10 +59,11 @@ def create_payment(email, amount, user, request):
 
 
 def user_change_balance(user_id, value):
+    from users.models import User
     try:
-        from users.models import User
         user = User.objects.get(id=user_id)
-        user.balance += int(value)
+        
+        user.balance += Decimal(value)
         user.save()
     except Exception as e:
         logging.info(f"error: {str(e)}")
