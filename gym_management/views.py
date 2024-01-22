@@ -107,12 +107,14 @@ class BuySubscriptionView(CreateAPIView):
                 price = request.data.get("price")
                 user = self.request.user
 
-            if int(user.balance) >= int(price):
-                user.balance -= Decimal(price)
-                user.save()
-                return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
+                if int(user.balance) >= int(price):
+                    user.balance -= Decimal(price)
+                    user.save()
+                    return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"error": "Balance is not valid"}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({"error": "Balance is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Data is not valid"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(
                 {"error": f"Произошла ошибка {str(e)}"},
