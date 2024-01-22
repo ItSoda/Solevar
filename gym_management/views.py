@@ -110,6 +110,7 @@ class BuySubscriptionView(CreateAPIView):
                 if int(user.balance) >= int(price):
                     user.balance -= Decimal(price)
                     user.save()
+                    subject = Subscription.objects.create(**serializer.data)
                     return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
                 else:
                     return Response({"error": "Balance is not valid"}, status=status.HTTP_400_BAD_REQUEST)
