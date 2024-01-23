@@ -1,7 +1,9 @@
-from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
+
 from users.models import User
 
 
@@ -42,10 +44,11 @@ class Event(models.Model):
     participants = models.ManyToManyField(User, related_name="participants_event")
     limit_of_participants = models.SmallIntegerField()
     tags = models.ManyToManyField(Tag)
-    start_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField()
     duration = models.PositiveIntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    price = models.PositiveBigIntegerField(default=0)
 
     class Meta:
         verbose_name = "тренировку"
@@ -64,25 +67,32 @@ class IndividualEvent(models.Model):
     participant = models.ForeignKey(
         User, related_name="participant_events", on_delete=models.CASCADE
     )
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-    description = models.TextField()
+    start_date = models.DateTimeField()
+    description = models.TextField(default="Personal training")
     duration = models.PositiveIntegerField(default=0)
+    quantity = models.IntegerField(default=1)
+    price = models.PositiveBigIntegerField(default=0)
 
     class Meta:
         verbose_name = "индивидуальную тренировку"
         verbose_name_plural = "Индивидуальные тренировки"
         constraints = [
-            models.UniqueConstraint(fields=['coach', 'participant'], name='unique_coach_participant')
+            models.UniqueConstraint(
+                fields=["coach", "participant"], name="unique_coach_participant"
+            )
         ]
 
     def __str__(self) -> str:
-        return f"Individual event with {self.participant.first_name} on {self.start_datetime} at {self.duration}"
-    
+        return f"Individual event with {self.participant.first_name} on {self.start_date} at {self.duration}"
+
     def clean(self):
         # Дополнительная проверка на уровне модели
-        if IndividualEvent.objects.filter(coach=self.coach, participant=self.participant).exists():
-            raise ValidationError(_('This combination of coach and participant already exists.'))
+        if IndividualEvent.objects.filter(
+            coach=self.coach, participant=self.participant
+        ).exists():
+            raise ValidationError(
+                _("This combination of coach and participant already exists.")
+            )
 
 
 class Subscription(models.Model):
@@ -91,7 +101,7 @@ class Subscription(models.Model):
     number = models.BigIntegerField(unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
-    duration = models.IntegerField(default=30)
+    duration = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -99,4 +109,7 @@ class Subscription(models.Model):
         verbose_name_plural = "абонементы"
 
     def __str__(self) -> str:
-        return f"Subscription: number {self.number} | user {self.user} | end_date {self.duration}"
+        return f"Subscription: number {self.number} | user {self.user} | duration {self.duration}"
+
+    def calculate_end_date(self):
+        return self.start_date + timezone.timedelta(days=int(self.duration))

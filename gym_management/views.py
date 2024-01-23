@@ -1,22 +1,29 @@
+from decimal import Decimal
+from random import randint
+
 from django.forms import ValidationError
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from decimal import Decimal
-from random import randint
 from .models import Club, Event, IndividualEvent, Subscription
-from .serializers import (ClubCreateSerializer, ClubSerializer,
-                          EventCreateSerializer, EventSerializer,
-                          IndividualEventCreateSerializer,
-                          IndividualEventSerializer,
-                          SubscriptionCreateSerializer, SubscriptionSerializer)
+from .serializers import (
+    ClubCreateSerializer,
+    ClubSerializer,
+    EventCreateSerializer,
+    EventSerializer,
+    IndividualEventCreateSerializer,
+    IndividualEventSerializer,
+    SubscriptionCreateSerializer,
+    SubscriptionSerializer,
+)
 
 
+# Групповые тренировки
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -33,23 +40,61 @@ class EventViewSet(ModelViewSet):
         self.serializer_class = EventCreateSerializer
         return super().create(request, *args, **kwargs)
 
-    def perform_update(self, serializer):
-        instance = serializer.instance
-        new_participants = serializer.validate_data.get(
-            "participants", instance.participants.all()
-        )
 
-        participants_limit = instance.limit_of_participants
+class AddOrRemoveParticipantView(UpdateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventCreateSerializer
 
-        if new_participants.count() > participants_limit:
+    def put(self, request, *args, **kwargs):
+        try:
+            user = self.request.user
+            event_id = kwargs.get("pk")
+            event = Event.objects.get(id=event_id)
+
+            if user.id not in event.participants.all().values_list("id", flat=True):
+                # Пользователь не записан
+                if event.participants.count() + 1 <= event.limit_of_participants:
+                    if user.balance >= event.price:
+                        event.participants.add(user)
+                        user.balance -= event.price
+                        user.save()
+                        event.save()
+                        return Response(
+                            {"message": "Participant added"}, status=status.HTTP_200_OK
+                        )
+                    else:
+                        return Response(
+                            {"error": "Not enough money"},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                else:
+                    return Response(
+                        {"error": "Too many participants"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            else:
+                # Пользователь был записан
+                event.participants.remove(user)
+                user.balance += event.price
+                user.save()
+                event.save()
+                return Response(
+                    {"message": "Participant removed and funds returned"},
+                    status=status.HTTP_200_OK,
+                )
+
+        except Event.DoesNotExist:
             return Response(
-                {"error": "Превышен лимит участников."},
+                {"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Data is not valid: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        super().perform_update(serializer)
 
-
+# Персональные тренировки
 class IndividualEventViewSet(ModelViewSet):
     queryset = IndividualEvent.objects.all()
     serializer_class = IndividualEventSerializer
@@ -60,12 +105,30 @@ class IndividualEventViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            self.serializer_class = IndividualEventCreateSerializer
-            return super().create(request, *args, **kwargs)
+            user = self.request.user
+            price = request.data["price"]
+
+            # Создание события без сохранения в базу данных
+            event_serializer = IndividualEventCreateSerializer(data=request.data)
+            event_serializer.is_valid(raise_exception=True)
+
+            if user.balance >= Decimal(price):
+                event_serializer.save()
+                # Уменьшение баланса
+                user.balance -= Decimal(price)
+                user.save()
+
+                return Response(event_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(
+                    {"error": "Not enough money or individual event already create"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Клубы
 class ClubViewSet(ModelViewSet):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
@@ -88,6 +151,7 @@ class MyEventListView(ListAPIView):
         return queryset.filter(participants__id=self.request.user.id)
 
 
+# Абонементы
 class SubscriptionViewSet(ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
@@ -95,7 +159,7 @@ class SubscriptionViewSet(ModelViewSet):
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-    
+
     def create(self, request, *args, **kwargs):
         self.serializer_class = SubscriptionCreateSerializer
         return super().create(request, *args, **kwargs)
@@ -118,9 +182,14 @@ class BuySubscriptionView(CreateAPIView):
                     price=price, user=user, duration=duration, number=number
                 )
 
-                return Response({"message": "Buy Subscription success"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Buy Subscription success"}, status=status.HTTP_200_OK
+                )
             else:
-                return Response({"error": "Insufficient balance"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Insufficient balance"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         except Exception as e:
             return Response(

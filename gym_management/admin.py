@@ -1,10 +1,20 @@
 from django.contrib import admin
 
-from .models import Club, Event, IndividualEvent, Tag, Subscription
+from .models import Club, Event, IndividualEvent, Subscription, Tag
 
 admin.site.register(Tag)
-admin.site.register(IndividualEvent)
-admin.site.register(Subscription)
+
+
+@admin.register(IndividualEvent)
+class IndividualEventAdmin(admin.ModelAdmin):
+    list_display = ("coach", "participant")
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ("number", "user")
+    readonly_fields = ("start_date",)
+
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):

@@ -3,6 +3,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from decouple import Config, RepositoryEnv
+from django.utils import timezone
 
 docker = os.environ.get("DOCKER_CONTAINER")
 test = os.environ.get("REDIS_TEST")
@@ -309,6 +310,20 @@ INTERNAL_IPS = ["127.0.0.1", "localhost"]
 # CELERY
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_BEAT_SCHEDULE = {
+    "notify-users-one-day-before-expiry-subscription": {
+        "task": "gym_management.tasks.notify_users_one_day_before_expiry_subscription",
+        "schedule": timezone.timedelta(days=1),
+    },
+    "notify_users_one_trainy_before_expiry_individual_event": {
+        "task": "gym_management.tasks.notify_users_one_trainy_before_expiry_individual_event",
+        "schedule": timezone.timedelta(days=1),
+    },
+}
 
 # TWILIO
 ACCOUNT_SID_TWILIO = config.get("ACCOUNT_SID_TWILIO")
