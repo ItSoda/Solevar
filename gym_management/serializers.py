@@ -19,6 +19,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         child=serializers.IntegerField(), write_only=True
     )
     tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
 
     class Meta:
         model = Event
@@ -47,6 +48,7 @@ class EventSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     participants = UserSerializer(many=True)
     tags = TagSerializer(many=True)
+    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
 
     class Meta:
         model = Event
@@ -80,6 +82,7 @@ class ClubSerializer(serializers.ModelSerializer):
 class IndividualEventCreateSerializer(serializers.ModelSerializer):
     coach = serializers.IntegerField(write_only=True)
     participant = serializers.IntegerField(write_only=True)
+    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
 
     class Meta:
         model = IndividualEvent
@@ -102,6 +105,7 @@ class IndividualEventCreateSerializer(serializers.ModelSerializer):
 class IndividualEventSerializer(serializers.ModelSerializer):
     coach = UserSerializer()
     participant = UserSerializer()
+    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
 
     class Meta:
         model = IndividualEvent
@@ -126,7 +130,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    start_date = serializers.DateTimeField(format="%d-%m-%Y")
+    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
 
     class Meta:
         model = Subscription

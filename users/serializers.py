@@ -76,4 +76,3 @@ class EmailContactSerializer(serializers.Serializer):
     email = serializers.EmailField()
     subject = serializers.CharField(max_length=100)
     message = serializers.CharField()
-    

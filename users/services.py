@@ -1,17 +1,16 @@
 import logging
 import random
 from datetime import timedelta
-
-from django.core.mail import EmailMessage
-from django.urls import reverse
-from django.conf import settings
-from django.shortcuts import get_object_or_404
-from django.utils.timezone import now
-from twilio.rest import Client
-from rest_framework.response import Response
-from rest_framework import status
 from decimal import Decimal
 
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils.timezone import now
+from rest_framework import status
+from rest_framework.response import Response
+from twilio.rest import Client
 
 logger = logging.getLogger("main")
 
@@ -25,11 +24,10 @@ def send_email_from_user(subject, message, phone_number, email, photo_path=None)
     )
 
     if photo_path:
-        with open(photo_path, 'rb') as photo_file:
-            email.attach_file(photo_path, mimetype='image/jpeg')
+        with open(photo_path, "rb") as photo_file:
+            email.attach_file(photo_path, mimetype="image/jpeg")
 
     email.send(fail_silently=False)
-    
 
 
 # YOOKASSA PAYMENT
@@ -60,9 +58,10 @@ def create_payment(email, amount, user, request):
 
 def user_change_balance(user_id, value):
     from users.models import User
+
     try:
         user = User.objects.get(id=user_id)
-        
+
         user.balance += Decimal(value)
         user.save()
     except Exception as e:
@@ -94,7 +93,9 @@ def is_expired(self):
 def proccess_phone_verification(code, phone_number):
     from users.models import PhoneNumberVerifySMS
 
-    phone_numbers = PhoneNumberVerifySMS.objects.filter(code=code, phone_number=phone_number)
+    phone_numbers = PhoneNumberVerifySMS.objects.filter(
+        code=code, phone_number=phone_number
+    )
     try:
         if phone_numbers.exists() and not phone_numbers.last().is_expired():
             return True

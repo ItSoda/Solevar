@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -10,11 +11,14 @@ from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
 
 from .models import User
-from .serializers import UserShortSerializer, EmailContactSerializer
-from .services import (create_payment, proccess_phone_verification, send_email_from_user,
-                       send_phone_verify_task, user_change_balance)
-import logging
-
+from .serializers import EmailContactSerializer, UserShortSerializer
+from .services import (
+    create_payment,
+    proccess_phone_verification,
+    send_email_from_user,
+    send_phone_verify_task,
+    user_change_balance,
+)
 
 logger = logging.getLogger("main")
 
@@ -64,7 +68,7 @@ class YookassaWebhookView(APIView):
                 value = event_json["object"]["amount"]["value"]
                 user_change_balance(user_id, value)
                 return Response(
-                {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
+                    {"message": "Баланс успешно пополнен!"}, status=status.HTTP_200_OK
                 )
         except Exception as e:
             # Обработка ошибок при разборе уведомления
@@ -109,7 +113,7 @@ class PhoneNumberSendSMSView(APIView):
                 {"error": f"Произошла ошибка {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
 
 class ContactEmailView(APIView):
     def post(self, request, *args, **kwargs):
@@ -122,14 +126,20 @@ class ContactEmailView(APIView):
                 phone_number = request.data.get("phone_number")
                 email = request.data.get("email")
                 photo_path = request.data.get("photo_path")
-                
+
                 if photo_path:
-                    send_email_from_user(subject, message, phone_number, email, photo_path)
+                    send_email_from_user(
+                        subject, message, phone_number, email, photo_path
+                    )
                 else:
                     send_email_from_user(subject, message, phone_number, email)
-                return Response({"message": "Email send success"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Email send success"}, status=status.HTTP_200_OK
+                )
             else:
-                return Response({"error": "Data is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Data is not valid"}, status=status.HTTP_400_BAD_REQUEST
+                )
         except Exception as e:
             return Response(
                 {"error": f"Произошла ошибка {str(e)}"},
