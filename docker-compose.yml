@@ -60,7 +60,6 @@ services:
     depends_on:
       - mysql
       - redis
-      - celery
     volumes:
       - .:/itsoda
       - static_volume:/itsoda/static
