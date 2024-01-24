@@ -10,17 +10,15 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from gym_management.tasks import (send_email_join_success_task,
+                                  send_email_leave_success_task)
+
 from .models import Club, Event, IndividualEvent, Subscription
-from .serializers import (
-    ClubCreateSerializer,
-    ClubSerializer,
-    EventCreateSerializer,
-    EventSerializer,
-    IndividualEventCreateSerializer,
-    IndividualEventSerializer,
-    SubscriptionCreateSerializer,
-    SubscriptionSerializer,
-)
+from .serializers import (ClubCreateSerializer, ClubSerializer,
+                          EventCreateSerializer, EventSerializer,
+                          IndividualEventCreateSerializer,
+                          IndividualEventSerializer,
+                          SubscriptionCreateSerializer, SubscriptionSerializer)
 
 
 # Групповые тренировки
@@ -52,13 +50,16 @@ class AddOrRemoveParticipantView(UpdateAPIView):
             event = Event.objects.get(id=event_id)
 
             if user.id not in event.participants.all().values_list("id", flat=True):
-                # Пользователь не записан
+                # Пользователь был не записан
                 if event.participants.count() + 1 <= event.limit_of_participants:
                     if user.balance >= event.price:
                         event.participants.add(user)
                         user.balance -= event.price
                         user.save()
                         event.save()
+                        send_email_join_success_task.delay(
+                            user.email, user.first_name, event.id
+                        )
                         return Response(
                             {"message": "Participant added"}, status=status.HTTP_200_OK
                         )
@@ -78,6 +79,9 @@ class AddOrRemoveParticipantView(UpdateAPIView):
                 user.balance += event.price
                 user.save()
                 event.save()
+                send_email_leave_success_task.delay(
+                    user.email, user.first_name, event.id
+                )
                 return Response(
                     {"message": "Participant removed and funds returned"},
                     status=status.HTTP_200_OK,

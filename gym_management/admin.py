@@ -13,7 +13,7 @@ class IndividualEventAdmin(admin.ModelAdmin):
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ("number", "user")
-    readonly_fields = ("start_date",)
+    readonly_fields = ("start_date", "end_date")
 
 
 @admin.register(Event)
