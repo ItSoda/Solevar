@@ -8,6 +8,8 @@ from twilio.rest import Client
 
 from gym_management.models import IndividualEvent, Subscription
 
+from .models import Event
+
 logger = logging.getLogger("main")
 
 
@@ -17,14 +19,15 @@ def notify_users_one_day_before_expiry_subscription():
     one_day_before_expiry = timezone.now() + timezone.timedelta(days=1)
 
     subscriptions_to_notify = Subscription.objects.filter(
-        end_date__date=one_day_before_expiry.date()
+        end_date__lte=one_day_before_expiry
     )
 
-    for subscription in subscriptions_to_notify:
-        account_sid = settings.ACCOUNT_SID_TWILIO
-        auth_token = settings.AUTH_TOKEN_TWILIO
+    account_sid = settings.ACCOUNT_SID_TWILIO
+    auth_token = settings.AUTH_TOKEN_TWILIO
 
-        client = Client(account_sid, auth_token)
+    client = Client(account_sid, auth_token)
+
+    for subscription in subscriptions_to_notify:
         try:
             user = subscription.user
             message = client.messages.create(
@@ -45,13 +48,14 @@ def notify_users_one_trainy_before_expiry_individual_event():
         quantity=one_trainy_before_end
     )
 
-    for individual_event in individual_event_to_notify:
-        account_sid = settings.ACCOUNT_SID_TWILIO
-        auth_token = settings.AUTH_TOKEN_TWILIO
+    account_sid = settings.ACCOUNT_SID_TWILIO
+    auth_token = settings.AUTH_TOKEN_TWILIO
 
-        client = Client(account_sid, auth_token)
+    client = Client(account_sid, auth_token)
+
+    for individual_event in individual_event_to_notify:
         try:
-            user = individual_event.user
+            user = individual_event.participant
             message = client.messages.create(
                 from_="+19146104867",
                 to=f"{user.phone_number}",
@@ -62,26 +66,32 @@ def notify_users_one_trainy_before_expiry_individual_event():
 
 
 @shared_task
-def send_email_join_success_task(added_participant, event):
+def send_email_join_success_task(email, first_name, event_id):
+    event = Event.objects.get(id=event_id)
     subjects = f"Запись на групповое занятие {event.title}"
-    message = f"Уважаемый {added_participant.first_name}! Вы записались на групповое занятие {event.title} в {event.start_date}"
+    message = (
+        f"Уважаемый {first_name}! Вы записались на групповое занятие {event.title}"
+    )
     send_mail(
         subject=subjects,
         message=message,
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[added_participant.email],
+        recipient_list=[email],
         fail_silently=False,
     )
 
 
 @shared_task
-def send_email_leave_success_task(removed_participant, event):
+def send_email_leave_success_task(email, first_name, event_id):
+    event = Event.objects.get(id=event_id)
     subjects = f"Отмена записи на групповое занятие {event.title}"
-    message = f"Уважаемый {removed_participant.first_name}! Вы отменили запись на групповое занятие {event.title} в {event.start_date}"
+    message = (
+        f"Уважаемый {first_name}! Вы отменили запись на групповое занятие {event.title}"
+    )
     send_mail(
         subject=subjects,
         message=message,
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[removed_participant.email],
+        recipient_list=[email],
         fail_silently=False,
     )

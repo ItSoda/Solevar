@@ -12,13 +12,9 @@ from yookassa.domain.notification import WebhookNotificationFactory
 
 from .models import User
 from .serializers import EmailContactSerializer, UserShortSerializer
-from .services import (
-    create_payment,
-    proccess_phone_verification,
-    send_email_from_user,
-    send_phone_verify_task,
-    user_change_balance,
-)
+from .services import (create_payment, proccess_phone_verification,
+                       send_email_from_user, send_phone_verify_task,
+                       user_change_balance)
 
 logger = logging.getLogger("main")
 
