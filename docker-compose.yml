@@ -18,26 +18,8 @@ services:
     ports:
       - "6379:6379"
 
-  celery:
-    build: .
-    image: itsoda14/solevar:latest
-    container_name: celery-solevar
-    restart: always
-    command:
-      - sh
-      - -c
-      - |
         nohup poetry run celery -A solevar worker -l info -P solo &
         nohup poetry run celery -A solevar beat -l info 
-    env_file:
-      - docker-compose.env
-    environment:
-      - DOCKER_CONTAINER=True
-    depends_on:
-      - api
-    volumes:
-      - .:/itsoda
-
   api:
     build: .
     image: itsoda14/solevar:latest
@@ -48,7 +30,10 @@ services:
         dockerize -wait tcp://mysql:3306 -timeout 300s &&
         poetry run python manage.py collectstatic --noinput &&
         poetry run python manage.py migrate &&
-        poetry run gunicorn solevar.wsgi:application -b :8000 &
+        (poetry run celery -A solevar worker -l info -P solo &)
+        (poetry run celery -A solevar beat -l info &)
+        poetry run gunicorn solevar.wsgi:application -b :8000
+
     env_file:
       - docker-compose.env
     environment:
