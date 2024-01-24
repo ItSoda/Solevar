@@ -19,12 +19,15 @@ services:
       - "6379:6379"
 
   celery:
-    image: celery:latest
+    image: itsoda14/solevar:latest
     container_name: celery-solevar
     restart: always
-    command: 
-      - celery -A solevar worker -l info -P solo &
-      - celery -A solevar beat -l info
+    command:
+      - sh
+      - -c
+      - |
+        poetry run celery -A solevar worker -l info -P solo &
+        poetry run celery -A solevar beat -l info
     depends_on:
       - mysql
       - redis
