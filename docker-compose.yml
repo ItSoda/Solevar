@@ -28,7 +28,7 @@ services:
       - -c
       - |
         poetry run celery -A solevar worker -l info -P solo &
-        poetry run celery -A solevar beat -l info
+        poetry run celery -A solevar beat -l info &
     env_file:
       - docker-compose.env
     environment:
