@@ -19,6 +19,7 @@ services:
       - "6379:6379"
 
   celery:
+    build: .
     image: itsoda14/solevar:latest
     container_name: celery-solevar
     restart: always
@@ -28,6 +29,8 @@ services:
       - |
         poetry run celery -A solevar worker -l info -P solo &
         poetry run celery -A solevar beat -l info
+    env_file:
+      - docker-compose.env
     depends_on:
       - mysql
       - redis
