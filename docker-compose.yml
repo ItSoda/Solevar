@@ -27,8 +27,8 @@ services:
       - sh
       - -c
       - |
-        poetry run celery -A solevar worker -l info -P solo &
-        poetry run celery -A solevar beat -l info 
+        nohup poetry run celery -A solevar worker -l info -P solo &
+        nohup poetry run celery -A solevar beat -l info 
     env_file:
       - docker-compose.env
     environment:
