@@ -34,8 +34,7 @@ services:
     environment:
       - DOCKER_CONTAINER=True
     depends_on:
-      - mysql
-      - redis
+      - api
     volumes:
       - .:/itsoda
 

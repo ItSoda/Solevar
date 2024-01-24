@@ -317,11 +317,11 @@ CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_BEAT_SCHEDULE = {
     "notify-users-one-day-before-expiry-subscription": {
         "task": "gym_management.tasks.notify_users_one_day_before_expiry_subscription",
-        "schedule": timezone.timedelta(minutes=1),
+        "schedule": timezone.timedelta(days=1),
     },
     "notify_users_one_trainy_before_expiry_individual_event": {
         "task": "gym_management.tasks.notify_users_one_trainy_before_expiry_individual_event",
-        "schedule": timezone.timedelta(minutes=1),
+        "schedule": timezone.timedelta(days=1),
     },
 }
 
