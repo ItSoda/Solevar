@@ -37,7 +37,6 @@ services:
       - api
     volumes:
       - .:/itsoda
-    detach: true
 
   api:
     build: .
