@@ -31,6 +31,8 @@ services:
         poetry run celery -A solevar beat -l info
     env_file:
       - docker-compose.env
+    environment:
+      - DOCKER_CONTAINER=True
     depends_on:
       - mysql
       - redis
