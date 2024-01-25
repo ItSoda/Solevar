@@ -26,10 +26,6 @@ class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(limit_of_participants__gt=1)
-
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -98,6 +94,29 @@ class AddOrRemoveParticipantView(UpdateAPIView):
             )
 
 
+class MyEventListView(ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(participants__id=self.request.user.id)
+
+
+# История посещения
+class MyPassedEventViewSet(ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(participants=self.request.user, status="Passed")
+    
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = EventCreateSerializer
+        return super().create(request, *args, **kwargs)
+
+
 # Персональные тренировки
 class IndividualEventViewSet(ModelViewSet):
     queryset = IndividualEvent.objects.all()
@@ -144,15 +163,6 @@ class ClubViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         self.serializer_class = ClubCreateSerializer
         return super().create(request, *args, **kwargs)
-
-
-class MyEventListView(ListAPIView):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(participants__id=self.request.user.id)
 
 
 # Абонементы
@@ -215,3 +225,4 @@ class MySubscriptionView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+

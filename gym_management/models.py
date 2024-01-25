@@ -41,6 +41,16 @@ class Club(models.Model):
 class Event(models.Model):
     """Model for events"""
 
+    WAITING = "waiting"
+    CANCELED = "canceled"
+    PASSED = "passed"
+
+    STATUS_CHOICES = (
+        (WAITING, "Waiting"),
+        (CANCELED, "Canceled"),
+        (PASSED, "Passed"),
+    )
+    
     title = models.CharField(max_length=128)
     content = models.TextField()
     participants = models.ManyToManyField(User, related_name="participants_event")
@@ -51,6 +61,7 @@ class Event(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     price = models.PositiveBigIntegerField(default=0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=WAITING)
 
     class Meta:
         verbose_name = "тренировку"
