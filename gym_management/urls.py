@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
                     ClubViewSet, EventViewSet, IndividualEventViewSet,
-                    MyEventListView, MySubscriptionView, SubscriptionViewSet)
+                    MyEventListView, MySubscriptionView, SubscriptionViewSet, MyPassedEventViewSet)
 
 app_name = "gym_management"
 
@@ -18,7 +18,8 @@ router.register(
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("myevents/", MyEventListView.as_view(), name="myevent"),
+    path("my_events/", MyEventListView.as_view(), name="my_event"),
+    path("my_history_event/", MyPassedEventViewSet.as_view({"get": "list"}), name="my_passed_event"),
     path("my_subscriptions/", MySubscriptionView.as_view(), name="my_subscriptions"),
     path("buy_subscription/", BuySubscriptionView.as_view(), name="buy_subscription"),
     path(
