@@ -19,7 +19,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         child=serializers.IntegerField(), write_only=True
     )
     tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Event
@@ -48,7 +48,7 @@ class EventSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     participants = UserSerializer(many=True)
     tags = TagSerializer(many=True)
-    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Event
@@ -81,19 +81,24 @@ class ClubSerializer(serializers.ModelSerializer):
 
 class IndividualEventCreateSerializer(serializers.ModelSerializer):
     coach = serializers.IntegerField(write_only=True)
-    participant = serializers.IntegerField(write_only=True)
-    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
+    training_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = IndividualEvent
-        fields = "__all__"
+        fields = (
+            "coach",
+            "training_date",
+            "description",
+            "duration",
+            "quantity",
+            "price",
+        )
 
     def create(self, validated_data):
         coach_id = validated_data.pop("coach")
         coach = User.objects.get(id=coach_id)
 
-        participant_id = validated_data.pop("participant")
-        participant = User.objects.get(id=participant_id)
+        participant = self.context["request"].user
 
         instance = IndividualEvent.objects.create(
             coach=coach, participant=participant, **validated_data
@@ -105,7 +110,7 @@ class IndividualEventCreateSerializer(serializers.ModelSerializer):
 class IndividualEventSerializer(serializers.ModelSerializer):
     coach = UserSerializer()
     participant = UserSerializer()
-    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
+    training_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = IndividualEvent
@@ -130,7 +135,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    start_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M")
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Subscription

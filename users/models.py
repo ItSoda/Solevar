@@ -20,8 +20,9 @@ class User(AbstractUser):
 
     phone_number = PhoneNumberField(unique=True)
     email = models.EmailField(blank=True)
-    first_name = models.CharField(max_length=50, default="first name")
-    last_name = models.CharField(max_length=50, default="last name")
+    first_name = models.CharField(max_length=50, default="Имя")
+    last_name = models.CharField(max_length=50, default="Фамилия")
+    patronymic = models.CharField(max_length=50, default="Отчество")
     is_verified_email = models.BooleanField(default=False)
     description = models.TextField(default="about you")
     photo = models.ImageField(
@@ -45,6 +46,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"Пользователь {self.phone_number} | {self.first_name}"
+
+    def full_name(self):
+        return f"{self.last_name} {self.first_name} {self.patronymic}"
 
 
 class PhoneNumberVerifySMS(models.Model):

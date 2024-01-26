@@ -50,7 +50,7 @@ class Event(models.Model):
         (CANCELED, "Canceled"),
         (PASSED, "Passed"),
     )
-    
+
     title = models.CharField(max_length=128)
     content = models.TextField()
     participants = models.ManyToManyField(User, related_name="participants_event")
@@ -80,7 +80,7 @@ class IndividualEvent(models.Model):
     participant = models.ForeignKey(
         User, related_name="participant_events", on_delete=models.CASCADE
     )
-    start_date = models.DateTimeField()
+    training_date = models.DateTimeField()
     description = models.TextField(default="Personal training")
     duration = models.PositiveIntegerField(default=0)
     quantity = models.IntegerField(default=1)
@@ -96,7 +96,7 @@ class IndividualEvent(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"Individual event with {self.participant.first_name} on {self.start_date} at {self.duration}"
+        return f"Individual event with {self.participant.first_name} on {self.training_date} at {self.duration}"
 
     def clean(self):
         # Дополнительная проверка на уровне модели
