@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 from random import randint
 
+from django.db.utils import IntegrityError
 from django.forms import ValidationError
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -10,9 +11,10 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from django.db.utils import IntegrityError
+
 from gym_management.tasks import (send_email_join_success_task,
-                                  send_email_leave_success_task, send_email_succes_buy_personal_trainer)
+                                  send_email_leave_success_task,
+                                  send_email_succes_buy_personal_trainer)
 
 from .models import Club, Event, IndividualEvent, Subscription
 from .serializers import (ClubCreateSerializer, ClubSerializer,
@@ -112,7 +114,7 @@ class MyPassedEventViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(participants=self.request.user, status="Passed")
-    
+
     def create(self, request, *args, **kwargs):
         self.serializer_class = EventCreateSerializer
         return super().create(request, *args, **kwargs)
@@ -134,7 +136,9 @@ class IndividualEventViewSet(ModelViewSet):
             price = request.data["price"]
 
             # Создание события без сохранения в базу данных
-            event_serializer = IndividualEventCreateSerializer(data=request.data, context={"request": request})
+            event_serializer = IndividualEventCreateSerializer(
+                data=request.data, context={"request": request}
+            )
             event_serializer.is_valid(raise_exception=True)
 
             if user.balance >= Decimal(price):
@@ -142,7 +146,12 @@ class IndividualEventViewSet(ModelViewSet):
                 # Уменьшение баланса
                 user.balance -= Decimal(price)
                 user.save()
-                send_email_succes_buy_personal_trainer.delay(user.email, user.first_name, request.data["coach"], request.data["training_date"])
+                send_email_succes_buy_personal_trainer.delay(
+                    user.email,
+                    user.first_name,
+                    request.data["coach"],
+                    request.data["training_date"],
+                )
 
                 return Response(event_serializer.data, status=status.HTTP_201_CREATED)
             else:
@@ -151,7 +160,9 @@ class IndividualEventViewSet(ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         except IntegrityError as e:
-            return Response({"error": "Duplicate entry"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Duplicate entry"}, status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -230,4 +241,3 @@ class MySubscriptionView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
-

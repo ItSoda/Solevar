@@ -1,5 +1,5 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from celery import shared_task
 from django.conf import settings
@@ -106,9 +106,7 @@ def send_email_succes_buy_personal_trainer(email, first_name, coach_id, training
     formatted_date = datetime.strptime(training_date, "%Y-%m-%d %H:%M")
 
     subjects = f"Успешная оплата персональной тренировки!"
-    message = (
-        f"Уважаемый {first_name}! Вы успешно оплатили и записались на персональную тренировку к {coach.full_name()} на {formatted_date.strptime('%H:%M')}"
-    )
+    message = f"Уважаемый {first_name}! Вы успешно оплатили и записались на персональную тренировку к {coach.full_name()} на {formatted_date.strftime('%H:%M')}"
     send_mail(
         subject=subjects,
         message=message,

@@ -50,7 +50,7 @@ class Event(models.Model):
         (CANCELED, "Canceled"),
         (PASSED, "Passed"),
     )
-    
+
     title = models.CharField(max_length=128)
     content = models.TextField()
     participants = models.ManyToManyField(User, related_name="participants_event")

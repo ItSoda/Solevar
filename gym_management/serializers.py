@@ -85,7 +85,14 @@ class IndividualEventCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IndividualEvent
-        fields = ("coach", "training_date", "description", "duration", "quantity", "price")
+        fields = (
+            "coach",
+            "training_date",
+            "description",
+            "duration",
+            "quantity",
+            "price",
+        )
 
     def create(self, validated_data):
         coach_id = validated_data.pop("coach")
