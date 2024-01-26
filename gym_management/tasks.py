@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 
 from celery import shared_task
@@ -7,6 +8,7 @@ from django.utils import timezone
 from twilio.rest import Client
 
 from gym_management.models import IndividualEvent, Subscription
+from users.models import User
 
 from .models import Event
 
@@ -87,6 +89,25 @@ def send_email_leave_success_task(email, first_name, event_id):
     subjects = f"Отмена записи на групповое занятие {event.title}"
     message = (
         f"Уважаемый {first_name}! Вы отменили запись на групповое занятие {event.title}"
+    )
+    send_mail(
+        subject=subjects,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+
+@shared_task
+def send_email_succes_buy_personal_trainer(email, first_name, coach_id, training_date):
+    # Получение данных
+    coach = User.objects.get(id=coach_id)
+    formatted_date = datetime.strptime(training_date, "%Y-%m-%d %H:%M")
+
+    subjects = f"Успешная оплата персональной тренировки!"
+    message = (
+        f"Уважаемый {first_name}! Вы успешно оплатили и записались на персональную тренировку к {coach.full_name()} на {formatted_date.strptime('%H:%M')}"
     )
     send_mail(
         subject=subjects,

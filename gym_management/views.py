@@ -1,3 +1,4 @@
+import datetime
 from decimal import Decimal
 from random import randint
 
@@ -9,9 +10,9 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
+from django.db.utils import IntegrityError
 from gym_management.tasks import (send_email_join_success_task,
-                                  send_email_leave_success_task)
+                                  send_email_leave_success_task, send_email_succes_buy_personal_trainer)
 
 from .models import Club, Event, IndividualEvent, Subscription
 from .serializers import (ClubCreateSerializer, ClubSerializer,
@@ -103,7 +104,7 @@ class MyEventListView(ListAPIView):
         return queryset.filter(participants__id=self.request.user.id)
 
 
-# История посещения
+# История посещения групповых тренировок
 class MyPassedEventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -128,11 +129,12 @@ class IndividualEventViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
+            # Получение данных
             user = self.request.user
             price = request.data["price"]
 
             # Создание события без сохранения в базу данных
-            event_serializer = IndividualEventCreateSerializer(data=request.data)
+            event_serializer = IndividualEventCreateSerializer(data=request.data, context={"request": request})
             event_serializer.is_valid(raise_exception=True)
 
             if user.balance >= Decimal(price):
@@ -140,6 +142,7 @@ class IndividualEventViewSet(ModelViewSet):
                 # Уменьшение баланса
                 user.balance -= Decimal(price)
                 user.save()
+                send_email_succes_buy_personal_trainer.delay(user.email, user.first_name, request.data["coach"], request.data["training_date"])
 
                 return Response(event_serializer.data, status=status.HTTP_201_CREATED)
             else:
@@ -147,7 +150,9 @@ class IndividualEventViewSet(ModelViewSet):
                     {"error": "Not enough money or individual event already create"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-        except ValidationError as e:
+        except IntegrityError as e:
+            return Response({"error": "Duplicate entry"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
