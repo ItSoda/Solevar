@@ -28,6 +28,6 @@ urlpatterns = [
     path("my_subscriptions/", MySubscriptionView.as_view(), name="my_subscriptions"),
     path("buy_subscription/", BuySubscriptionView.as_view(), name="buy_subscription"),
     path(
-        "join_event/<int:pk>/", AddOrRemoveParticipantView.as_view(), name="join_event"
+        "join_event/", AddOrRemoveParticipantView.as_view(), name="join_event"
     ),
 ]
