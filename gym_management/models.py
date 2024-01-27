@@ -80,7 +80,7 @@ class IndividualEvent(models.Model):
     participant = models.ForeignKey(
         User, related_name="participant_events", on_delete=models.CASCADE
     )
-    training_date = models.DateTimeField()
+    training_date = models.DateTimeField(unique=True)
     description = models.TextField(default="Personal training")
     duration = models.PositiveIntegerField(default=0)
     quantity = models.IntegerField(default=1)
