@@ -46,7 +46,7 @@ class AddOrRemoveParticipantView(UpdateAPIView):
     def put(self, request, *args, **kwargs):
         try:
             user = self.request.user
-            event_id = kwargs.get("pk")
+            event_id = request.data["pk"]
             event = Event.objects.get(id=event_id)
 
             if user.id not in event.participants.all().values_list("id", flat=True):
