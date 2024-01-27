@@ -12,6 +12,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+
 from gym_management.tasks import (send_email_join_success_task,
                                   send_email_leave_success_task,
                                   send_email_succes_buy_personal_trainer)
@@ -213,7 +214,7 @@ class BuySubscriptionView(CreateAPIView):
                 )
 
                 return Response(
-                    {"message": "Buy Subscription success"}, status=status.HTTP_200_OK
+                    {"message": "Buy Subscription success"}, status=status.HTTP_201_CREATED 
                 )
             else:
                 return Response(

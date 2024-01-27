@@ -6,6 +6,12 @@ from .managers import CustomUserManager
 from .services import is_expired, send_verification_phone
 
 
+class Schedule(models.Model):
+    time = models.DateTimeField()
+
+    def __str__(self):
+        return f"Time: {self.time}"
+
 # User Model
 class User(AbstractUser):
     """Model for Users"""
@@ -32,6 +38,7 @@ class User(AbstractUser):
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="")
     balance = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    times = models.ManyToManyField(Schedule, blank=True, null=True)
 
     username = None
 
