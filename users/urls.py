@@ -3,12 +3,13 @@ from rest_framework import routers
 
 from .views import (CoachViewSet, ContactEmailView, PhoneNumberSendSMSView,
                     PhoneNumberVerificationView, YookassaPaymentView,
-                    YookassaWebhookView)
+                    YookassaWebhookView, ScheduleViewSet)
 
 app_name = "users"
 
 router = routers.DefaultRouter()
 router.register(r"coaches", CoachViewSet, basename="coaches")
+router.register(r"schedules", ScheduleViewSet, basename="schedules")
 
 urlpatterns = [
     path("", include(router.urls)),

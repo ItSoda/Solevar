@@ -10,13 +10,28 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
 
-from .models import User
-from .serializers import EmailContactSerializer, UserShortSerializer
+from .models import User, Schedule
+from .serializers import EmailContactSerializer, ScheduleSerializer, UserShortSerializer
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
 
 logger = logging.getLogger("main")
+
+
+class ScheduleViewSet(ModelViewSet):
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer
+
+    def list(self, request, *args, **kwargs):
+        try:
+            trainer_id = request.data["trainer_id"]
+            trainer = User.objects.get(id=trainer_id)
+            self.get_queryset = trainer.times.all()
+
+            return super().list(request, *args, **kwargs)
+        except Exception:
+            return super().list(request, *args, **kwargs)
 
 
 class CoachViewSet(ModelViewSet):
@@ -25,7 +40,13 @@ class CoachViewSet(ModelViewSet):
 
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        try:
+            time = request.data["time"]
+            self.get_queryset = User.objects.filter(times=time)
+
+            return super().list(request, *args, **kwargs)
+        except Exception:
+            return super().list(request, *args, **kwargs)
 
 
 class YookassaPaymentView(APIView):

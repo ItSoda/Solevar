@@ -5,7 +5,7 @@ from django.core.files import File
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from .models import User
+from .models import Schedule, User
 
 
 class ImageFieldFromURL(serializers.ImageField):
@@ -76,3 +76,10 @@ class EmailContactSerializer(serializers.Serializer):
     email = serializers.EmailField()
     subject = serializers.CharField(max_length=100)
     message = serializers.CharField()
+
+
+class ScheduleSerializer(serializers.ModelSerializer):
+    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+    class Meta:
+        model = Schedule
+        fields = "__all__"
