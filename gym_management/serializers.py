@@ -49,7 +49,7 @@ class EventSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     participants = UserSerializer(many=True)
     tags = TagSerializer(many=True)
-    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+    start_date = serializers.DateTimeField(format="%H:%M")
 
     class Meta:
         model = Event
