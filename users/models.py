@@ -37,7 +37,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="")
-    balance = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    balance = models.BigIntegerField(default=0)
     times = models.ManyToManyField(Schedule, blank=True, null=True)
 
     username = None
