@@ -122,7 +122,7 @@ class PhoneNumberSendSMSView(APIView):
     def post(self, request, *args, **kwargs):
         try:
             # Получаем данные
-            phone_number = request.data.get("phone_number")
+            phone_number = request.data["phone_number"]
             send_phone_verify_task(phone_number)
             return Response({"message": "sms send success"}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -142,7 +142,7 @@ class ContactEmailView(APIView):
                 message = request.data.get("message")
                 phone_number = request.data.get("phone_number")
                 email = request.data.get("email")
-                photo_path = request.data.get("photo_path")
+                photo_path = request.data.get("photo_path", None)
 
                 if photo_path:
                     send_email_from_user(
