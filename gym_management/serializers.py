@@ -45,6 +45,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    seats_left = serializers.SerializerMethodField()
     created_by = UserSerializer()
     participants = UserSerializer(many=True)
     tags = TagSerializer(many=True)
@@ -53,6 +54,9 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
+
+    def get_seats_left(self, obj):
+        return obj.seats_left()
 
 
 class ClubCreateSerializer(serializers.ModelSerializer):
