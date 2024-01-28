@@ -11,6 +11,7 @@ from .yasg import urlpatterns as doc_url
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("users.urls")),
+    path("api/", include("admin_panel.urls")),
     path("api/", include("gym_management.urls")),
     # Регистрация, авторизация
     path("auth/", include("djoser.urls")),

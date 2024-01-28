@@ -1,9 +1,7 @@
-import datetime
 from decimal import Decimal
 from random import randint
 
 from django.db.utils import IntegrityError
-from django.forms import ValidationError
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -11,11 +9,10 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from gym_management.services import add_user_to_event, down_user_balance, remove_user_from_event
 
 
-from gym_management.tasks import (send_email_join_success_task,
-                                  send_email_leave_success_task,
-                                  send_email_succes_buy_personal_trainer)
+from gym_management.tasks import send_email_succes_buy_personal_trainer
 
 from .models import Club, Event, IndividualEvent, Subscription
 from .serializers import (ClubCreateSerializer, ClubSerializer,
@@ -53,13 +50,8 @@ class AddOrRemoveParticipantView(UpdateAPIView):
                 # Пользователь был не записан
                 if event.participants.count() + 1 <= event.limit_of_participants:
                     if user.balance >= event.price:
-                        event.participants.add(user)
-                        user.balance -= event.price
-                        user.save()
-                        event.save()
-                        send_email_join_success_task.delay(
-                            user.email, user.first_name, event.id
-                        )
+                        # Добавление пользователя
+                        add_user_to_event(event, user)
                         return Response(
                             {"message": "Participant added"}, status=status.HTTP_200_OK
                         )
@@ -74,14 +66,8 @@ class AddOrRemoveParticipantView(UpdateAPIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
             else:
-                # Пользователь был записан
-                event.participants.remove(user)
-                user.balance += event.price
-                user.save()
-                event.save()
-                send_email_leave_success_task.delay(
-                    user.email, user.first_name, event.id
-                )
+                # Пользователь был записан на этот ивент, поэтому удаляем его
+                remove_user_from_event(event, user)
                 return Response(
                     {"message": "Participant removed and funds returned"},
                     status=status.HTTP_200_OK,
@@ -145,8 +131,7 @@ class IndividualEventViewSet(ModelViewSet):
             if user.balance >= Decimal(price):
                 event_serializer.save()
                 # Уменьшение баланса
-                user.balance -= Decimal(price)
-                user.save()
+                down_user_balance(user, price)
                 send_email_succes_buy_personal_trainer.delay(
                     user.email,
                     user.first_name,
@@ -206,8 +191,7 @@ class BuySubscriptionView(CreateAPIView):
             user = self.request.user
 
             if user.balance >= Decimal(price):
-                user.balance -= Decimal(price)
-                user.save()
+                down_user_balance(user, price)
 
                 subscription = Subscription.objects.create(
                     price=price, user=user, duration=duration, number=number
