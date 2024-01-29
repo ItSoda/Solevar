@@ -14,7 +14,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 class EventCreateSerializer(serializers.ModelSerializer):
     created_by = serializers.IntegerField(write_only=True)
-    club = serializers.IntegerField(write_only=True)
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
@@ -29,14 +28,11 @@ class EventCreateSerializer(serializers.ModelSerializer):
         created_by_id = validated_data.pop("created_by")
         created_by_instance = User.objects.get(id=created_by_id)
 
-        club_id = validated_data.pop("club")
-        club_instance = Club.objects.get(id=club_id)
-
         participants_ids = validated_data.pop("participants")
         tags_ids = validated_data.pop("tags")
 
         instance = Event.objects.create(
-            club=club_instance, created_by=created_by_instance, **validated_data
+            created_by=created_by_instance, **validated_data
         )
         instance.participants.set(participants_ids)
         instance.tags.set(tags_ids)

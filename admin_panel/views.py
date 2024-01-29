@@ -1,36 +1,65 @@
 from rest_framework.viewsets import ModelViewSet
-from admin_panel.serializers import UserAdminSerializer
+from admin_panel.serializers import UserAdminSerializer, TrainerAdminCreateOrUpdateSerializer, TrainerAdminSerializer, EventAdminCreateOrUpdateSerializer, IndividualEventAdminCreateOrUpdateSerializer, SubscriptionAdminCreateOrUpdateSerializer
 from users.models import User
-from gym_management.serializers import EventSerializer, IndividualEventSerializer, TagSerializer, ClubSerializer, SubscriptionSerializer
-from gym_management.models import Event, IndividualEvent, Tag, Club, Subscription
-from rest_framework.views import APIView
+from gym_management.models import Event, IndividualEvent, Subscription
+from gym_management.serializers import EventSerializer, IndividualEventSerializer, SubscriptionSerializer 
 
 
+# Пользователи и тренера
 class UserAdminViewSet(ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(role="Client")
     serializer_class = UserAdminSerializer
 
+
+class TrainerAdminViewSet(ModelViewSet):
+    queryset = User.objects.filter(role="Coach")
+    serializer_class = TrainerAdminCreateOrUpdateSerializer
+
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = TrainerAdminSerializer
+        return super().list(request, *args, **kwargs)
     
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = TrainerAdminSerializer
+        return super().retrieve(request, *args, **kwargs)
+
+
+# Групповые тренировки
 class EventAdminViewSet(ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+    serializer_class = EventAdminCreateOrUpdateSerializer
+
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = EventSerializer
+        return super().list(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = EventSerializer
+        return super().retrieve(request, *args, **kwargs)
 
 
+# Персональные тренировки
 class IndividualEventAdminViewSet(ModelViewSet):
     queryset = IndividualEvent.objects.all()
-    serializer_class = IndividualEventSerializer
+    serializer_class = IndividualEventAdminCreateOrUpdateSerializer
 
-
-class TagAdminViewSet(ModelViewSet):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-
-
-class ClubAdminViewSet(ModelViewSet):
-    queryset = Club.objects.all()
-    serializer_class = ClubSerializer
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = IndividualEventSerializer
+        return super().list(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = IndividualEventSerializer
+        return super().retrieve(request, *args, **kwargs)
 
 
 class SubscriptionAdminViewSet(ModelViewSet):
     queryset = Subscription.objects.all()
-    serializer_class = SubscriptionSerializer
+    serializer_class = SubscriptionAdminCreateOrUpdateSerializer
+
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = SubscriptionSerializer
+        return super().list(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = SubscriptionSerializer
+        return super().retrieve(request, *args, **kwargs)
