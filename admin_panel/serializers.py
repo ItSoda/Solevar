@@ -98,7 +98,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
             "password",
             "first_name",
             "last_name",
-            "patronymic"
+            "patronymic",
             "is_verified_email",
             "description",
             "photo",
