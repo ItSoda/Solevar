@@ -56,6 +56,7 @@ class UserProfile(UserSerializer):
             "password",
             "first_name",
             "last_name",
+            "patronymic",
             "is_verified_email",
             "description",
             "photo",
