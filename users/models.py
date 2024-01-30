@@ -12,16 +12,19 @@ class Schedule(models.Model):
     def __str__(self):
         return f"Time: {self.time}"
 
+
 # User Model
 class User(AbstractUser):
     """Model for Users"""
 
     COACH = "coach"
     CLIENT = "client"
+    ADMIN = "admin"
 
     ROLES_CHOICES = (
         (COACH, "Coach"),
         (CLIENT, "Client"),
+        (ADMIN, "Admin"),
     )
 
     phone_number = PhoneNumberField(unique=True)

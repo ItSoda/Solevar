@@ -10,8 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
 
-from .models import User, Schedule
-from .serializers import EmailContactSerializer, ScheduleSerializer, UserShortSerializer
+from .models import Schedule, User
+from .serializers import (EmailContactSerializer, ScheduleSerializer,
+                          UserShortSerializer)
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
