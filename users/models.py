@@ -19,10 +19,12 @@ class User(AbstractUser):
 
     COACH = "coach"
     CLIENT = "client"
+    ADMIN = "admin"
 
     ROLES_CHOICES = (
         (COACH, "Coach"),
         (CLIENT, "Client"),
+        (ADMIN, "Admin"),
     )
 
     phone_number = PhoneNumberField(unique=True)

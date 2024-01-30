@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
 from admin_panel.serializers import (
@@ -17,11 +18,13 @@ from users.models import User
 class UserAdminViewSet(ModelViewSet):
     queryset = User.objects.filter(role="Client")
     serializer_class = UserAdminSerializer
+    permission_classes = (IsAdminUser,)
 
 
 class TrainerAdminViewSet(ModelViewSet):
     queryset = User.objects.filter(role="Coach")
     serializer_class = TrainerAdminCreateOrUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
     def list(self, request, *args, **kwargs):
         self.serializer_class = TrainerAdminSerializer
@@ -36,6 +39,7 @@ class TrainerAdminViewSet(ModelViewSet):
 class EventAdminViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventAdminCreateOrUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
     def list(self, request, *args, **kwargs):
         self.serializer_class = EventSerializer
@@ -50,6 +54,7 @@ class EventAdminViewSet(ModelViewSet):
 class IndividualEventAdminViewSet(ModelViewSet):
     queryset = IndividualEvent.objects.all()
     serializer_class = IndividualEventAdminCreateOrUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
     def list(self, request, *args, **kwargs):
         self.serializer_class = IndividualEventSerializer
@@ -63,6 +68,7 @@ class IndividualEventAdminViewSet(ModelViewSet):
 class SubscriptionAdminViewSet(ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionAdminCreateOrUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
     def list(self, request, *args, **kwargs):
         self.serializer_class = SubscriptionSerializer
