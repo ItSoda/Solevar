@@ -9,9 +9,9 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from gym_management.services import add_user_to_event, down_user_balance, remove_user_from_event
 
-
+from gym_management.services import (add_user_to_event, down_user_balance,
+                                     remove_user_from_event)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
 
 from .models import Club, Event, IndividualEvent, Subscription
@@ -23,7 +23,7 @@ from .serializers import (ClubCreateSerializer, ClubSerializer,
 
 
 # Групповые тренировки
-class EventViewSet(ModelViewSet):
+class EventViewSet(ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -32,12 +32,8 @@ class EventViewSet(ModelViewSet):
         return queryset.filter(status="WAITING")
 
     @method_decorator(cache_page(10))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        self.serializer_class = EventCreateSerializer
-        return super().create(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class AddOrRemoveParticipantView(UpdateAPIView):
@@ -98,7 +94,7 @@ class MyEventListView(ListAPIView):
 
 
 # История посещения групповых тренировок
-class MyPassedEventViewSet(ModelViewSet):
+class MyPassedEventViewSet(ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -106,13 +102,9 @@ class MyPassedEventViewSet(ModelViewSet):
         queryset = super().get_queryset()
         return queryset.filter(participants=self.request.user, status="Passed")
 
-    def create(self, request, *args, **kwargs):
-        self.serializer_class = EventCreateSerializer
-        return super().create(request, *args, **kwargs)
-
 
 # Персональные тренировки
-class IndividualEventViewSet(ModelViewSet):
+class IndividualEventViewSet(CreateAPIView):
     queryset = IndividualEvent.objects.all()
     serializer_class = IndividualEventSerializer
 
@@ -172,17 +164,13 @@ class ClubViewSet(ModelViewSet):
 
 
 # Абонементы
-class SubscriptionViewSet(ModelViewSet):
+class SubscriptionViewSet(ListAPIView):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
 
     @method_decorator(cache_page(10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        self.serializer_class = SubscriptionCreateSerializer
-        return super().create(request, *args, **kwargs)
 
 
 class BuySubscriptionView(CreateAPIView):
@@ -202,7 +190,8 @@ class BuySubscriptionView(CreateAPIView):
                 )
 
                 return Response(
-                    {"message": "Buy Subscription success"}, status=status.HTTP_201_CREATED 
+                    {"message": "Buy Subscription success"},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(

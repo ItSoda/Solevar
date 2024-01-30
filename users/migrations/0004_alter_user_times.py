@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0003_schedule_user_times'),
+        ("users", "0003_schedule_user_times"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='times',
-            field=models.ManyToManyField(blank=True, null=True, to='users.schedule'),
+            model_name="user",
+            name="times",
+            field=models.ManyToManyField(blank=True, null=True, to="users.schedule"),
         ),
     ]

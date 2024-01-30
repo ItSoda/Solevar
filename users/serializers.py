@@ -81,6 +81,7 @@ class EmailContactSerializer(serializers.Serializer):
 
 class ScheduleSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+
     class Meta:
         model = Schedule
         fields = "__all__"

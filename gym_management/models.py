@@ -69,7 +69,7 @@ class Event(models.Model):
 
     def __str__(self):
         return f"Тренировка: {self.title} | {self.created_by}"
-    
+
     def seats_left(self):
         return self.limit_of_participants - self.participants.count()
 

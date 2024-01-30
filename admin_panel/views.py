@@ -1,8 +1,16 @@
 from rest_framework.viewsets import ModelViewSet
-from admin_panel.serializers import UserAdminSerializer, TrainerAdminCreateOrUpdateSerializer, TrainerAdminSerializer, EventAdminCreateOrUpdateSerializer, IndividualEventAdminCreateOrUpdateSerializer, SubscriptionAdminCreateOrUpdateSerializer
-from users.models import User
+
+from admin_panel.serializers import (
+    EventAdminCreateOrUpdateSerializer,
+    IndividualEventAdminCreateOrUpdateSerializer,
+    SubscriptionAdminCreateOrUpdateSerializer,
+    TrainerAdminCreateOrUpdateSerializer, TrainerAdminSerializer,
+    UserAdminSerializer)
 from gym_management.models import Event, IndividualEvent, Subscription
-from gym_management.serializers import EventSerializer, IndividualEventSerializer, SubscriptionSerializer 
+from gym_management.serializers import (EventSerializer,
+                                        IndividualEventSerializer,
+                                        SubscriptionSerializer)
+from users.models import User
 
 
 # Пользователи и тренера
@@ -18,7 +26,7 @@ class TrainerAdminViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         self.serializer_class = TrainerAdminSerializer
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = TrainerAdminSerializer
         return super().retrieve(request, *args, **kwargs)
@@ -32,7 +40,7 @@ class EventAdminViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         self.serializer_class = EventSerializer
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = EventSerializer
         return super().retrieve(request, *args, **kwargs)
@@ -46,7 +54,7 @@ class IndividualEventAdminViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         self.serializer_class = IndividualEventSerializer
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = IndividualEventSerializer
         return super().retrieve(request, *args, **kwargs)
@@ -59,7 +67,7 @@ class SubscriptionAdminViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         self.serializer_class = SubscriptionSerializer
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = SubscriptionSerializer
         return super().retrieve(request, *args, **kwargs)

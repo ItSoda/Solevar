@@ -12,6 +12,7 @@ class Schedule(models.Model):
     def __str__(self):
         return f"Time: {self.time}"
 
+
 # User Model
 class User(AbstractUser):
     """Model for Users"""
