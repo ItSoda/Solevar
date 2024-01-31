@@ -26,7 +26,7 @@ class ScheduleViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         try:
-            trainer_id = request.data["trainer_id"]
+            trainer_id = request.data["trainer_id"] 
             trainer = User.objects.get(id=trainer_id)
             self.get_queryset = trainer.times.all()
 

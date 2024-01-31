@@ -63,6 +63,7 @@ class UserProfile(UserSerializer):
             "phone_number",
             "role",
             "balance",
+            "is_staff",
         )
         read_only_fields = ("password",)
 
