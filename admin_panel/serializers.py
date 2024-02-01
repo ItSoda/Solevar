@@ -3,7 +3,7 @@ from rest_framework import serializers
 from gym_management.models import Event, IndividualEvent, Subscription, Tag
 from gym_management.serializers import TagSerializer
 from users.models import Schedule, User
-from users.serializers import ImageFieldFromURL, UserSerializer
+from users.serializers import ImageFieldFromURL
 
 
 class ScheduleAdminSerializer(serializers.ModelSerializer):
@@ -91,7 +91,7 @@ class TrainerAdminSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation["photo"] = "http://onlydev.fun/media/" + str(instance.photo)
+            representation["photo"] = "http://fohowomsk.ru/media/" + str(instance.photo)
         return representation
 
 
