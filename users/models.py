@@ -9,6 +9,10 @@ from .services import is_expired, send_verification_phone
 class Schedule(models.Model):
     time = models.DateTimeField()
 
+    class Meta:
+        verbose_name = "время занятия"
+        verbose_name_plural = "Расписание занятий"
+
     def __str__(self):
         return f"Time: {self.time}"
 
@@ -52,10 +56,10 @@ class User(AbstractUser):
 
     class Meta:
         verbose_name = "пользователя"
-        verbose_name_plural = "Пользователи"
+        verbose_name_plural = "Клиенты | Тренеры"
 
     def __str__(self):
-        return f"Пользователь {self.phone_number} | {self.first_name}"
+        return f"{self.first_name} {self.last_name} {self.patronymic}"
 
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.patronymic}"
@@ -66,6 +70,10 @@ class PhoneNumberVerifySMS(models.Model):
     phone_number = PhoneNumberField()
     created = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField()
+
+    class Meta:
+        verbose_name = "код подтверждения"
+        verbose_name_plural = "Коды подтверждения"
 
     def __str__(self):
         return f"PhoneNumberVerifySMS object for {self.phone_number}"
