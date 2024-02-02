@@ -4,7 +4,7 @@ from rest_framework import routers
 from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
                     ClubViewSet, EventViewSet, IndividualEventViewSet,
                     MyEventListView, MyPassedEventViewSet, MySubscriptionView,
-                    SubscriptionViewSet)
+                    SubscriptionViewSet, TrainerEventListView, TrainerEventUpdateAPIView, TrainerEventCreateAPIView, TrainerIndividualEventAPIView)
 
 app_name = "gym_management"
 
@@ -23,4 +23,9 @@ urlpatterns = [
     path("my_subscriptions/", MySubscriptionView.as_view(), name="my_subscriptions"),
     path("buy_subscription/", BuySubscriptionView.as_view(), name="buy_subscription"),
     path("join_event/", AddOrRemoveParticipantView.as_view(), name="join_event"),
+
+    path("trainer_list_event/", TrainerEventListView.as_view(), name="trainer-list-event"),
+    path("trainer_create_event/", TrainerEventCreateAPIView.as_view(), name="trainer-create-event"),
+    path("trainer_update_event/", TrainerEventUpdateAPIView.as_view(), name="trainer-update-event"),
+    path("trainer_list_individual_event/", TrainerIndividualEventAPIView.as_view(), name="trainer-list-individual-event")
 ]
