@@ -9,7 +9,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
+from .permissions import IsTrainerUser
+from admin_panel.serializers import EventAdminCreateOrUpdateSerializer
 from gym_management.services import (add_user_to_event, down_user_balance,
                                      remove_user_from_event)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
@@ -219,3 +220,40 @@ class MySubscriptionView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+
+
+# Trainer Panel - Method
+class TrainerEventListView(ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = (IsTrainerUser,)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(created_by=self.request.user)
+    
+
+class TrainerEventCreateAPIView(CreateAPIView):
+    serializer_class = EventAdminCreateOrUpdateSerializer
+    permission_classes = (IsTrainerUser,)
+
+
+class TrainerEventUpdateAPIView(UpdateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventAdminCreateOrUpdateSerializer
+    permission_classes = (IsTrainerUser,)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(created_by=self.request.user)
+    
+
+class TrainerIndividualEventAPIView(ListAPIView):
+    queryset = IndividualEvent.objects.all()
+    serializer_class = IndividualEventSerializer
+    permission_classes = (IsTrainerUser,)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(coach=self.request.user)
+    
