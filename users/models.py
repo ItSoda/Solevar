@@ -8,6 +8,7 @@ from .services import is_expired, send_verification_phone
 
 class Schedule(models.Model):
     time = models.DateTimeField()
+    is_selected = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "время занятия"

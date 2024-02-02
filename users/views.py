@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
+from rest_framework.generics import ListAPIView
 
 from .models import Schedule, User
 from .serializers import (EmailContactSerializer, ScheduleSerializer,
@@ -163,3 +164,4 @@ class ContactEmailView(APIView):
                 {"error": f"Произошла ошибка {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
