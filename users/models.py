@@ -38,10 +38,12 @@ class User(AbstractUser):
     passport_series = models.CharField(
         max_length=4,
         validators=[validate_passport_series],
+        default=""
     )
     passport_number = models.CharField(
         max_length=6,
         validators=[validate_passport_number],
+        default=""
     )
     date_of_birth = models.DateField(default="2024-02-02")
 
