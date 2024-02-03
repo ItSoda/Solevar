@@ -19,6 +19,7 @@ class UserCustomAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "patronymic",
+        "date_of_birth",
         "phone_number",
         "email",
         "description",
@@ -31,6 +32,8 @@ class UserCustomAdmin(admin.ModelAdmin):
         "last_login",
         "is_verified_email",
         "is_superuser",
+        "passport_series",
+        "passport_number",
     )
     list_display = (
         "first_name",

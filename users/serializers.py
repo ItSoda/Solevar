@@ -53,6 +53,7 @@ class UserProfile(UserSerializer):
             "id",
             "email",
             "is_verified_email",
+            "date_of_birth",
             "password",
             "first_name",
             "last_name",

@@ -81,7 +81,6 @@ class TrainerAdminSerializer(serializers.ModelSerializer):
             "balance",
             "rating",
             "trainer_type",
-            "times",
             "date_joined",
             "last_login",
             "is_staff",
@@ -117,6 +116,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
             "date_joined",
             "last_login",
             "is_staff",
+            "date_of_birth",
         )
         read_only_fields = ("password", "date_joined", "last_login")
 
