@@ -38,10 +38,12 @@ class User(AbstractUser):
     passport_series = models.CharField(
         max_length=4,
         validators=[validate_passport_series],
+        default=""
     )
     passport_number = models.CharField(
         max_length=6,
         validators=[validate_passport_number],
+        default=""
     )
     date_of_birth = models.DateField(default="2024-02-02")
 
@@ -55,12 +57,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "пользователя"
         verbose_name_plural = "Клиенты | Тренеры"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["passport_series", "passport_number"],
-                name="unique_series_number",
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=["passport_series", "passport_number"],
+        #         name="unique_series_number",
+        #     )
+        # ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
