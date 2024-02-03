@@ -3,7 +3,8 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
-from .services import is_expired, send_verification_phone
+from .services import (is_expired, send_verification_phone,
+                       validate_passport_number, validate_passport_series)
 
 
 # User Model
@@ -34,6 +35,15 @@ class User(AbstractUser):
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="")
     balance = models.BigIntegerField(default=0)
+    passport_series = models.CharField(
+        max_length=4,
+        validators=[validate_passport_series],
+    )
+    passport_number = models.CharField(
+        max_length=6,
+        validators=[validate_passport_number],
+    )
+    date_of_birth = models.DateField(default="2024-02-02")
 
     username = None
 
@@ -45,6 +55,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "пользователя"
         verbose_name_plural = "Клиенты | Тренеры"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["passport_series", "passport_number"],
+                name="unique_series_number",
+            )
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
