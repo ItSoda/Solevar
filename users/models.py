@@ -55,12 +55,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "пользователя"
         verbose_name_plural = "Клиенты | Тренеры"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["passport_series", "passport_number"],
-                name="unique_series_number",
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=["passport_series", "passport_number"],
+        #         name="unique_series_number",
+        #     )
+        # ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
