@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from gym_management.tasks import (send_email_join_success_task,
                                   send_email_leave_success_task)
+from users.models import Schedule
 
 
 # AddOrRemoveParticipantService
@@ -25,3 +26,9 @@ def add_user_to_event(event, user):
 def down_user_balance(user, price):
     user.balance -= Decimal(price)
     user.save()
+
+
+def change_time_selected(time, coach):
+    schedule = Schedule.objects.get(time=time, coach=coach)
+    schedule.is_selected = True
+    schedule.save()

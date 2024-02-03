@@ -6,9 +6,9 @@ from rest_framework_simplejwt.views import (TokenBlacklistView,
                                             TokenObtainPairView,
                                             TokenRefreshView, TokenVerifyView)
 
-from .yasg import urlpatterns as doc_url
 from solevar.admin import custom_admin_site
 
+from .yasg import urlpatterns as doc_url
 
 urlpatterns = [
     path("custom_admin/", custom_admin_site.urls),

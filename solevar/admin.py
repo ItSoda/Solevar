@@ -1,27 +1,53 @@
 from django.contrib import admin
-from gym_management.models import Subscription, Event, IndividualEvent, Tag
 
-from users.models import User, PhoneNumberVerifySMS, Schedule
+from gym_management.models import Event, IndividualEvent, Subscription, Tag
+from users.models import PhoneNumberVerifySMS, Schedule, User
+
 
 class CustomAdminSite(admin.AdminSite):
     site_header = "Администрирование ПАПА ФИТНЕС"
     side_title = "Панель управления ПАПА ФИТНЕС"
-    index_title = "Добро пожаловать в админ-панель ПАПА ФИТНЕС"
+    index_title = "Добро пожаловать в панель администратора ПАПА ФИТНЕС"
     site_url = "https://red-store.site/admin"
+
 
 custom_admin_site = CustomAdminSite(name="custom_admin")
 
 
 class UserCustomAdmin(admin.ModelAdmin):
-    fields = ("first_name", "last_name", "patronymic", "phone_number", "email", "description", "photo", "role", "rating", "trainer_type", "balance", "times", "date_joined", "last_login", "is_verified_email", "is_superuser")
-    list_display = ("first_name", "last_name", "patronymic", "phone_number", "email", "role", "balance")
-    filter_horizontal = ["times",]
+    fields = (
+        "first_name",
+        "last_name",
+        "patronymic",
+        "phone_number",
+        "email",
+        "description",
+        "photo",
+        "role",
+        "rating",
+        "trainer_type",
+        "balance",
+        "date_joined",
+        "last_login",
+        "is_verified_email",
+        "is_superuser",
+    )
+    list_display = (
+        "first_name",
+        "last_name",
+        "patronymic",
+        "phone_number",
+        "email",
+        "role",
+        "balance",
+    )
     ordering = ("role",)
 
 
 class ScheduleCustomAdmin(admin.ModelAdmin):
-    list_display = ("time",)
-    ordering = ("time",)
+    list_display = ("time", "is_selected")
+    ordering = ("time", "coach")
+    filter_horizontal = ("coach",)
 
 
 class PhoneNumberVerifySMSCustomAdmin(admin.ModelAdmin):
@@ -41,7 +67,13 @@ class EventCustomAdmin(admin.ModelAdmin):
 
 
 class IndividualEventCustomAdmin(admin.ModelAdmin):
-    list_display = ("coach", "participant", "quantity", "duration", "price",)
+    list_display = (
+        "coach",
+        "participant",
+        "quantity",
+        "duration",
+        "price",
+    )
     ordering = ("training_date",)
 
 
