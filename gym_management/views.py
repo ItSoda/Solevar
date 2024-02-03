@@ -9,13 +9,14 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .permissions import IsTrainerUser
+
 from admin_panel.serializers import EventAdminCreateOrUpdateSerializer
-from gym_management.services import (add_user_to_event, down_user_balance,
-                                     remove_user_from_event)
+from gym_management.services import (add_user_to_event, change_time_selected,
+                                     down_user_balance, remove_user_from_event)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
 
 from .models import Club, Event, IndividualEvent, Subscription
+from .permissions import IsTrainerUser
 from .serializers import (ClubCreateSerializer, ClubSerializer,
                           EventCreateSerializer, EventSerializer,
                           IndividualEventCreateSerializer,
@@ -118,7 +119,8 @@ class IndividualEventViewSet(CreateAPIView):
             # Получение данных
             user = self.request.user
             price = request.data["price"]
-
+            time = request.data["time"]
+            coach = request.data["coach"]
             # Создание события без сохранения в базу данных
             event_serializer = IndividualEventCreateSerializer(
                 data=request.data, context={"request": request}
@@ -128,6 +130,7 @@ class IndividualEventViewSet(CreateAPIView):
             if user.balance >= Decimal(price):
                 event_serializer.save()
                 # Уменьшение баланса
+                change_time_selected(time, coach)
                 down_user_balance(user, price)
                 send_email_succes_buy_personal_trainer.delay(
                     user.email,
@@ -231,7 +234,7 @@ class TrainerEventListView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(created_by=self.request.user)
-    
+
 
 class TrainerEventCreateAPIView(CreateAPIView):
     serializer_class = EventAdminCreateOrUpdateSerializer
@@ -246,7 +249,7 @@ class TrainerEventUpdateAPIView(UpdateAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(created_by=self.request.user)
-    
+
 
 class TrainerIndividualEventAPIView(ListAPIView):
     queryset = IndividualEvent.objects.all()
@@ -256,4 +259,3 @@ class TrainerIndividualEventAPIView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(coach=self.request.user)
-    

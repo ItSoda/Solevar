@@ -5,11 +5,11 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
-from rest_framework.generics import ListAPIView
 
 from .models import Schedule, User
 from .serializers import (EmailContactSerializer, ScheduleSerializer,
@@ -27,9 +27,9 @@ class ScheduleViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         try:
-            trainer_id = request.data["trainer_id"] 
+            trainer_id = request.data["trainer_id"]
             trainer = User.objects.get(id=trainer_id)
-            self.get_queryset = trainer.times.all()
+            self.get_queryset = Schedule.objects.filter(coach=trainer)
 
             return super().list(request, *args, **kwargs)
         except Exception:
@@ -44,7 +44,8 @@ class CoachViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         try:
             time = request.data["time"]
-            self.get_queryset = User.objects.filter(times=time)
+            schedules = Schedule.objects.get(time=time)
+            self.get_queryset = schedules.coach.all()
 
             return super().list(request, *args, **kwargs)
         except Exception:
@@ -164,4 +165,3 @@ class ContactEmailView(APIView):
                 {"error": f"Произошла ошибка {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-

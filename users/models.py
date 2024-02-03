@@ -6,18 +6,6 @@ from .managers import CustomUserManager
 from .services import is_expired, send_verification_phone
 
 
-class Schedule(models.Model):
-    time = models.DateTimeField()
-    is_selected = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name = "время занятия"
-        verbose_name_plural = "Расписание занятий"
-
-    def __str__(self):
-        return f"Time: {self.time}"
-
-
 # User Model
 class User(AbstractUser):
     """Model for Users"""
@@ -46,7 +34,6 @@ class User(AbstractUser):
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="")
     balance = models.BigIntegerField(default=0)
-    times = models.ManyToManyField(Schedule, blank=True, null=True)
 
     username = None
 
@@ -84,3 +71,16 @@ class PhoneNumberVerifySMS(models.Model):
 
     def is_expired(self):
         is_expired(self)
+
+
+class Schedule(models.Model):
+    time = models.DateTimeField()
+    is_selected = models.BooleanField(default=False)
+    coach = models.ManyToManyField(User)
+
+    class Meta:
+        verbose_name = "время занятия"
+        verbose_name_plural = "Расписание занятий"
+
+    def __str__(self):
+        return f"Time: {self.time}"
