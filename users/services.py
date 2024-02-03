@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.timezone import now
@@ -113,3 +114,13 @@ def send_phone_verify_task(phone_number):
         code=code, phone_number=phone_number, expiration=expiration
     )
     record.send_verification_phone()
+
+
+def validate_passport_series(value):
+    if not value.isdigit() or len(value) != 4:
+        raise ValidationError("Invalid passport series. It must be 4 digits")
+
+
+def validate_passport_number(value):
+    if not value.isdigit() or len(value) != 6:
+        raise ValidationError("Invalid passport number. It must be 6 digits")
