@@ -35,7 +35,7 @@ class UserShortSerializer(UserSerializer):
 
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ("id", "photo", "first_name", "last_name", "description", "rating")
+        fields = ("id", "photo", "first_name", "last_name", "patronymic", "description", "rating")
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -81,8 +81,39 @@ class EmailContactSerializer(serializers.Serializer):
     message = serializers.CharField()
 
 
+class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
+    coach = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+
+    class Meta:
+        model = Schedule
+        fields = "__all__"
+
+    def create(self, validated_data):
+        coach_id = validated_data.pop("coach")
+
+        instance = Schedule.objects.create(**validated_data)
+        instance.coach.set(coach_id)
+
+        return instance
+
+    def update(self, instance, validated_data):
+        coach = validated_data.pop("coach", None)
+
+        instance.time = validated_data.get("time", instance.time)
+        instance.is_selected = validated_data.get("is_selected", instance.is_selected)
+
+        instance.save()
+
+        if coach is not None:
+            instance.coach.set(coach)
+
+        return instance
+    
+
 class ScheduleSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+    coach = UserShortSerializer(many=True)
 
     class Meta:
         model = Schedule
