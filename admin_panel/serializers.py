@@ -6,62 +6,47 @@ from users.models import Schedule, User
 from users.serializers import ImageFieldFromURL
 
 
-class ScheduleAdminSerializer(serializers.ModelSerializer):
-    times = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+class ScheduleTrainerSerializer(serializers.ModelSerializer):
+    coaches_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Schedule
-        fields = ("times",)
+        fields = "__all__"
+
+    def create(self, validated_data):
+        coaches = validated_data.pop("coaches_ids")
+
+        instance = Schedule.objects.create(**validated_data)
+        instance.coach.set(coaches)
+
+        return instance
+
+    def update(self, instance, validated_data):
+        coaches_ids = validated_data.pop("coaches_ids", None)
+
+        instance.time = validated_data.get("time", instance.time)
+        instance.is_selected = validated_data.get("is_selected", instance.is_selected)
+
+        instance.save()
+
+        if coaches_ids is not None:
+            instance.times.set(coaches_ids)
+
+        return instance
+
 
 
 class TrainerAdminCreateOrUpdateSerializer(serializers.ModelSerializer):
-    times = serializers.ListField(child=serializers.IntegerField(), write_only=True)
 
     class Meta:
         model = User
         fields = "all"
 
-    def create(self, validated_data):
-        times_ids = validated_data.pop("times")
-
-        instance = User.objects.create_user(**validated_data)
-        instance.times.set(times_ids)
-
-        return instance
-
-    def update(self, instance, validated_data):
-        times_ids = validated_data.pop("times", None)
-
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
-        instance.patronymic = validated_data.get("patronymic", instance.patronymic)
-        instance.email = validated_data.get("email", instance.email)
-        instance.description = validated_data.get("description", instance.description)
-        instance.phone_number = validated_data.get(
-            "phone_number", instance.phone_number
-        )
-        instance.role = validated_data.get("role", instance.role)
-        instance.balance = validated_data.get("balance", instance.balance)
-        instance.rating = validated_data.get("rating", instance.rating)
-        instance.trainer_type = validated_data.get(
-            "trainer_type", instance.trainer_type
-        )
-        instance.is_verified_email = validated_data.get(
-            "is_verified_email", instance.is_verified_email
-        )
-
-        instance.save()
-
-        if times_ids is not None:
-            instance.times.set(times_ids)
-
-        return instance
-
 
 class TrainerAdminSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
     last_login = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-    times = ScheduleAdminSerializer(many=True)
     photo = ImageFieldFromURL()
 
     class Meta:
@@ -123,7 +108,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation["photo"] = "http://onlydev.fun/media/" + str(instance.photo)
+            representation["photo"] = "http://fohowomsk.ru/media/" + str(instance.photo)
         return representation
 
 

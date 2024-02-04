@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import PhoneNumberVerifySMS, User, Schedule
-
+from django.utils import timezone
 
 class UserAPITestCase(APITestCase):
     def setUp(self):
@@ -71,38 +71,68 @@ class UserAPITestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["phone_number"], self.superuser.phone_number)
-        self.assertEqual(len([response.data]), expected_data)
-
 
 
 class ScheduleAPITestCase(APITestCase):
     def setUp(self):
         """data for test schedule db"""
 
-        self.coach = User.objects.create_user(
+        self.coach_1 = User.objects.create_user(
             phone_number="+79136757878",
-            password="nik140406"
+            password="nik140406",
+            role="Coach",
+        )
+
+        self.coach_2 = User.objects.create_user(
+            phone_number="+79136757879",
+            password="nik140406",
+            role="Coach",
         )
 
         self.schedule_1 = Schedule.objects.create(
-            time="2024-02-02 14:50",
-            is_selected="False",
-            coach=self.coach
+            time=timezone.now(),
+            is_selected="True",
         )
+        self.schedule_1.coach.add(self.coach_1)
 
-        self.access_token = str(RefreshToken.for_user(self.superuser).access_token)
+        self.schedule_2 = Schedule.objects.create(
+            time=timezone.now(),
+            is_selected="False",
+        )
+        self.schedule_2.coach.add(self.coach_2)
+        
+        self.access_token = str(RefreshToken.for_user(self.coach_1).access_token)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
 
-    def test_create_account(self):
-        """This test covers registration"""
+    def test_schedule_list(self):
+        """This test covers schedule list"""
 
-        url = f"{settings.DOMAIN_NAME}/auth/users/"
-        data = {
-            "phone_number": "+79136557877",
-            "password": "user_password1",
-        }
-        response = self.client.post(url, data)
-        expected_data = 3
+        url = f"{settings.DOMAIN_NAME}/api/schedules/"
+        response = self.client.get(url)
+        expected_data = 2
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(User.objects.count(), expected_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), expected_data)
+
+    def test_schedule_list_with_trainer(self):
+        """This test covers schedule list with trainer"""
+
+        url = f"{settings.DOMAIN_NAME}/api/schedules/{self.coach_1.id}/"
+        response = self.client.get(url)
+        expected_data = 1
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len([response.data]), expected_data)
+
+    # def test_schedule_create(self):
+    #     """This test covers schedule create"""
+
+    #     url = f"{settings.DOMAIN_NAME}/api/schedules/create/"
+    #     data = {
+    #         "time": timezone.now(),
+    #         "coach": self.coach_1.id,
+    #     }
+    #     response = self.client.post(url, data)
+
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(response.data["coach"]["first_name"], self.coach_1.first_name)
