@@ -6,37 +6,6 @@ from users.models import Schedule, User
 from users.serializers import ImageFieldFromURL
 
 
-class ScheduleTrainerSerializer(serializers.ModelSerializer):
-    coaches_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-
-    class Meta:
-        model = Schedule
-        fields = "__all__"
-
-    def create(self, validated_data):
-        coaches = validated_data.pop("coaches_ids")
-
-        instance = Schedule.objects.create(**validated_data)
-        instance.coach.set(coaches)
-
-        return instance
-
-    def update(self, instance, validated_data):
-        coaches_ids = validated_data.pop("coaches_ids", None)
-
-        instance.time = validated_data.get("time", instance.time)
-        instance.is_selected = validated_data.get("is_selected", instance.is_selected)
-
-        instance.save()
-
-        if coaches_ids is not None:
-            instance.times.set(coaches_ids)
-
-        return instance
-
-
-
 class TrainerAdminCreateOrUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:

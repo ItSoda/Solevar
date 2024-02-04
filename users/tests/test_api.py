@@ -73,7 +73,7 @@ class UserAPITestCase(APITestCase):
         self.assertEqual(response.data["phone_number"], self.superuser.phone_number)
 
 
-class ScheduleAPITestCase(APITestCase):
+class ScheduleAndCoachAPITestCase(APITestCase):
     def setUp(self):
         """data for test schedule db"""
 
@@ -122,17 +122,58 @@ class ScheduleAPITestCase(APITestCase):
         expected_data = 1
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len([response.data]), expected_data)
+        self.assertEqual(len(response.data), expected_data)
 
-    # def test_schedule_create(self):
-    #     """This test covers schedule create"""
+    def test_schedule_create(self):
+        """This test covers schedule create"""
 
-    #     url = f"{settings.DOMAIN_NAME}/api/schedules/create/"
-    #     data = {
-    #         "time": timezone.now(),
-    #         "coach": self.coach_1.id,
-    #     }
-    #     response = self.client.post(url, data)
+        url = f"{settings.DOMAIN_NAME}/api/schedule/"
+        data = {
+            "time": "2024-02-02 18:00",
+            "coach": [self.coach_1.id],
+        }
+        response = self.client.post(url, data)
 
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(response.data["coach"]["first_name"], self.coach_1.first_name)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["time"], "2024-02-02 18:00")
+
+    def test_schedule_update(self):
+        """This test covers schedule update"""
+
+        url = f"{settings.DOMAIN_NAME}/api/schedule/{self.schedule_1.id}/"
+        data = {
+            "time": "2024-02-04 19:00",
+        }
+        response = self.client.patch(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["time"], "2024-02-04 19:00")
+    
+    def test_schedule_destroy(self):
+        """This test covers schedule destroy"""
+
+        url = f"{settings.DOMAIN_NAME}/api/schedule/{self.schedule_1.id}/"
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Schedule.objects.count(), 2)
+
+    def test_coaches_list(self):
+        """This test covers schedules list"""
+
+        url = f"{settings.DOMAIN_NAME}/api/coaches/"
+        response = self.client.get(url)
+        expected_data = 2
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), expected_data)
+
+    def test_coaches_list_with_time(self):
+        """This test covers coaches list with time"""
+
+        url = f"{settings.DOMAIN_NAME}/api/coaches/{self.schedule_1.time}/"
+        response = self.client.get(url)
+        expected_data = 1
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), expected_data)

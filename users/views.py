@@ -16,7 +16,7 @@ from .serializers import (EmailContactSerializer, ScheduleSerializer,
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
-from admin_panel.serializers import ScheduleTrainerSerializer
+from .serializers import ScheduleCreateOrUpdateSerializer
 from gym_management.permissions import IsTrainerUser
 
 logger = logging.getLogger("main")
@@ -25,33 +25,20 @@ logger = logging.getLogger("main")
 class ScheduleModelViewSet(ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
-
-    def get_queryset(self):
-        try:
-            trainer_id = self.request.query_params.get("trainer_id", None)
-            print(trainer_id)
-            if not trainer_id:
-                return super().get_queryset()
-            print("aaaa")
-            trainer = User.objects.get(User, id=trainer_id)
-            return Schedule.objects.filter(coach=trainer)
-
-        except Exception:
-            return Response({"error": "Неправильный формат id тренера."}, status=status.HTTP_400_BAD_REQUEST)
     
     def create(self, request, *args, **kwargs):
-        self.serializer_class = ScheduleTrainerSerializer
+        self.serializer_class = ScheduleCreateOrUpdateSerializer
         return super().create(request, *args, **kwargs)
     
     def partial_update(self, request, *args, **kwargs):
-        self.serializer_class = ScheduleTrainerSerializer
+        self.serializer_class = ScheduleCreateOrUpdateSerializer
         return super().partial_update(request, *args, **kwargs)
         
     def destroy(self, request, *args, **kwargs):
         try:
-            instance_id = self.request.data["schedule_id"]
-            instance = Schedule.objects.filter(id=instance_id)
-
+            instance_id = self.kwargs.get("pk")
+            instance = Schedule.objects.get(id=instance_id)
+            
             instance.delete()
             instance.save()
             return Response({"message": "Delete successfully"}, status=status.HTTP_204_NO_CONTENT)
@@ -59,14 +46,31 @@ class ScheduleModelViewSet(ModelViewSet):
             return Response({"error": "Delete unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CoachViewSet(ModelViewSet):
+class ScheduleListAPIView(ListAPIView):
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        try:
+            trainer_id = self.kwargs.get("trainer_id", None)
+
+            if not trainer_id:
+                return super().get_queryset()
+
+            trainer = User.objects.get(id=trainer_id)
+            return Schedule.objects.filter(coach=trainer)
+
+        except Exception:
+            return Response({"error": "Неправильный формат id тренера."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CoachListAPIView(ListAPIView):
     queryset = User.objects.filter(role="Coach")
     serializer_class = UserShortSerializer
 
-    @method_decorator(cache_page(10))
     def get_queryset(self):
         try:
-            time = self.request.data.get("time", None)
+            time = self.kwargs.get("time", None)
 
             if not time:
                 return super().get_queryset()
