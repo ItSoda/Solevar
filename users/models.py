@@ -36,14 +36,10 @@ class User(AbstractUser):
     trainer_type = models.CharField(max_length=100, default="")
     balance = models.BigIntegerField(default=0)
     passport_series = models.CharField(
-        max_length=4,
-        validators=[validate_passport_series],
-        default=""
+        max_length=4, validators=[validate_passport_series], default=""
     )
     passport_number = models.CharField(
-        max_length=6,
-        validators=[validate_passport_number],
-        default=""
+        max_length=6, validators=[validate_passport_number], default=""
     )
     date_of_birth = models.DateField(default="2024-02-02")
 
@@ -102,5 +98,3 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f"Time: {self.time}"
-
-

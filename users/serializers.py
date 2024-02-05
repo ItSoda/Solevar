@@ -35,7 +35,15 @@ class UserShortSerializer(UserSerializer):
 
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ("id", "photo", "first_name", "last_name", "patronymic", "description", "rating")
+        fields = (
+            "id",
+            "photo",
+            "first_name",
+            "last_name",
+            "patronymic",
+            "description",
+            "rating",
+        )
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -109,7 +117,7 @@ class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
             instance.coach.set(coach)
 
         return instance
-    
+
 
 class ScheduleSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")

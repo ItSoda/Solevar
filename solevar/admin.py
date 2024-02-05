@@ -11,7 +11,7 @@ class CustomAdminSite(admin.AdminSite):
     site_url = "https://red-store.site/admin"
 
 
-custom_admin_site = CustomAdminSite(name="custom_admin")
+custom_admin_site = CustomAdminSite(name="admin_panel")
 
 
 class UserCustomAdmin(admin.ModelAdmin):

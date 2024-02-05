@@ -2,44 +2,35 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
-                    ClubViewSet, EventViewSet, IndividualEventViewSet,
-                    MyEventListView, MyPassedEventViewSet, MySubscriptionView,
-                    SubscriptionViewSet, TrainerEventCreateAPIView,
-                    TrainerEventListView, TrainerEventUpdateAPIView,
-                    TrainerIndividualEventAPIView)
+                    EventViewSet, IndividualEventViewSet, MyEventListView,
+                    MyIndividualEventListAPIView, MyPassedEventViewSet,
+                    MySubscriptionView, SubscriptionViewSet,
+                    TrainerEventModelViewSet, TrainerIndividualEventAPIView)
 
 app_name = "gym_management"
 
 router = routers.DefaultRouter()
-router.register(r"clubs", ClubViewSet, basename="clubs")
+router.register(r"trainer_events", TrainerEventModelViewSet, basename="trainer_events")
 
 urlpatterns = [
     path("", include(router.urls)),
     path("events/", EventViewSet.as_view(), name="events"),
     path("subscriptions/", SubscriptionViewSet.as_view(), name="subscriptions"),
     path(
-        "individual_events/", IndividualEventViewSet.as_view(), name="individual_events"
+        "create/individual_events/",
+        IndividualEventViewSet.as_view(),
+        name="individual_events",
     ),
-
+    path(
+        "my_individual_events/",
+        MyIndividualEventListAPIView.as_view(),
+        name="my_individual_events",
+    ),
     path("my_events/", MyEventListView.as_view(), name="my_event"),
     path("my_history_event/", MyPassedEventViewSet.as_view(), name="my_passed_event"),
     path("my_subscriptions/", MySubscriptionView.as_view(), name="my_subscriptions"),
-    
     path("buy_subscription/", BuySubscriptionView.as_view(), name="buy_subscription"),
     path("join_event/", AddOrRemoveParticipantView.as_view(), name="join_event"),
-    path(
-        "trainer_list_event/", TrainerEventListView.as_view(), name="trainer-list-event"
-    ),
-    path(
-        "trainer_create_event/",
-        TrainerEventCreateAPIView.as_view(),
-        name="trainer-create-event",
-    ),
-    path(
-        "trainer_update_event/",
-        TrainerEventUpdateAPIView.as_view(),
-        name="trainer-update-event",
-    ),
     path(
         "trainer_list_individual_event/",
         TrainerIndividualEventAPIView.as_view(),

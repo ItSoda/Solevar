@@ -5,19 +5,22 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (CreateAPIView, ListAPIView,
+                                     RetrieveUpdateDestroyAPIView)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
+
+from gym_management.permissions import IsTrainerUser
+
 from .models import Schedule, User
-from .serializers import (EmailContactSerializer, ScheduleSerializer,
+from .serializers import (EmailContactSerializer,
+                          ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
                           UserShortSerializer)
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
-from .serializers import ScheduleCreateOrUpdateSerializer
-from gym_management.permissions import IsTrainerUser
 
 logger = logging.getLogger("main")
 
@@ -25,25 +28,29 @@ logger = logging.getLogger("main")
 class ScheduleModelViewSet(ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
-    
+
     def create(self, request, *args, **kwargs):
         self.serializer_class = ScheduleCreateOrUpdateSerializer
         return super().create(request, *args, **kwargs)
-    
+
     def partial_update(self, request, *args, **kwargs):
         self.serializer_class = ScheduleCreateOrUpdateSerializer
         return super().partial_update(request, *args, **kwargs)
-        
+
     def destroy(self, request, *args, **kwargs):
         try:
             instance_id = self.kwargs.get("pk")
             instance = Schedule.objects.get(id=instance_id)
-            
+
             instance.delete()
             instance.save()
-            return Response({"message": "Delete successfully"}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"message": "Delete successfully"}, status=status.HTTP_204_NO_CONTENT
+            )
         except Exception:
-            return Response({"error": "Delete unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Delete unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ScheduleListAPIView(ListAPIView):
@@ -61,7 +68,10 @@ class ScheduleListAPIView(ListAPIView):
             return Schedule.objects.filter(coach=trainer)
 
         except Exception:
-            return Response({"error": "Неправильный формат id тренера."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Неправильный формат id тренера."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class CoachListAPIView(ListAPIView):
@@ -74,11 +84,14 @@ class CoachListAPIView(ListAPIView):
 
             if not time:
                 return super().get_queryset()
-            
+
             schedules = Schedule.objects.get(time=time)
             return schedules.coach.all()
         except Exception:
-            return Response({"error": "Неправильный формат времени."}, status=status.HTTP_400_BAD_REQUES)
+            return Response(
+                {"error": "Неправильный формат времени."},
+                status=status.HTTP_400_BAD_REQUES,
+            )
 
 
 class YookassaPaymentView(APIView):

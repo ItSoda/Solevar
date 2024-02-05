@@ -3,7 +3,7 @@ from rest_framework import serializers
 from users.models import User
 from users.serializers import UserSerializer
 
-from .models import Club, Event, IndividualEvent, Subscription, Tag
+from .models import Event, IndividualEvent, Subscription, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -55,28 +55,63 @@ class EventSerializer(serializers.ModelSerializer):
         return obj.seats_left()
 
 
-class ClubCreateSerializer(serializers.ModelSerializer):
-    coaches = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+class TrainerEventCreateOrUpdateSerializer(serializers.ModelSerializer):
+    created_by = serializers.IntegerField(write_only=True)
+    participants = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True
+    )
+    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
-        model = Club
+        model = Event
         fields = "__all__"
 
     def create(self, validated_data):
-        coaches_ids = validated_data.pop("coaches")
+        created_by_id = validated_data.pop("created_by")
+        created_by_instance = User.objects.get(id=created_by_id)
 
-        instance = Club.objects.create(**validated_data)
-        instance.coaches.set(coaches_ids)
+        participants_ids = validated_data.pop("participants")
+        tags_ids = validated_data.pop("tags")
+
+        instance = Event.objects.create(
+            created_by=created_by_instance, **validated_data
+        )
+        instance.participants.set(participants_ids)
+        instance.tags.set(tags_ids)
 
         return instance
 
+    def update(self, instance, validated_data):
+        created_by_id = validated_data.pop("created_by", None)
+        participants_ids = validated_data.pop("participants", None)
+        tags_ids = validated_data.pop("tags", None)
 
-class ClubSerializer(serializers.ModelSerializer):
-    coaches = UserSerializer(many=True)
+        # Обновление полей Event
+        instance.title = validated_data.get("title", instance.title)
+        instance.content = validated_data.get("content", instance.content)
+        instance.limit_of_participants = validated_data.get(
+            "limit_of_participants", instance.limit_of_participants
+        )
+        instance.start_date = validated_data.get("start_date", instance.start_date)
+        instance.duration = validated_data.get("duration", instance.duration)
+        instance.club = validated_data.get("club", instance.club)
+        instance.price = validated_data.get("price", instance.price)
+        instance.status = validated_data.get("status", instance.status)
 
-    class Meta:
-        model = Club
-        fields = "__all__"
+        instance.save()
+
+        if created_by_id is not None:
+            created_by_instance = User.objects.get(id=created_by_id)
+            instance.created_by = created_by_instance
+
+        if participants_ids is not None:
+            instance.participants.set(participants_ids)
+
+        if tags_ids is not None:
+            instance.tags.set(tags_ids)
+
+        return instance
 
 
 class IndividualEventCreateSerializer(serializers.ModelSerializer):

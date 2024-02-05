@@ -22,22 +22,6 @@ class Tag(models.Model):
         return f"Тег: {self.name}"
 
 
-class Club(models.Model):
-    """Model for clubs"""
-
-    address = models.CharField(max_length=256)
-    club_phone = PhoneNumberField()
-    club_email = models.EmailField()
-    coaches = models.ManyToManyField(User)
-
-    class Meta:
-        verbose_name = "клуб"
-        verbose_name_plural = "Клубы"
-
-    def __str__(self):
-        return f"Клуб: {self.address}"
-
-
 class Event(models.Model):
     """Model for events"""
 
@@ -85,7 +69,7 @@ class IndividualEvent(models.Model):
     )
     training_date = models.DateTimeField(unique=True)
     description = models.TextField(default="Personal training")
-    duration = models.PositiveIntegerField(default=0)
+    duration = models.PositiveIntegerField(default=60)
     quantity = models.IntegerField(default=1)
     price = models.PositiveBigIntegerField(default=0)
 
@@ -118,7 +102,7 @@ class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     duration = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.BigIntegerField(default=1000)
     end_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:

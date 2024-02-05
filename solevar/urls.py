@@ -11,9 +11,8 @@ from solevar.admin import custom_admin_site
 from .yasg import urlpatterns as doc_url
 
 urlpatterns = [
-    path("custom_admin/", custom_admin_site.urls),
+    path("admin_panel/", custom_admin_site.urls),
     path("api/", include("users.urls")),
-    path("api/", include("admin_panel.urls")),
     path("api/", include("gym_management.urls")),
     # Регистрация, авторизация
     path("auth/", include("djoser.urls")),
