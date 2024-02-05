@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import PhoneNumberVerifySMS, User, Schedule
-from django.utils import timezone
+from users.models import PhoneNumberVerifySMS, Schedule, User
+
 
 class UserAPITestCase(APITestCase):
     def setUp(self):
@@ -100,7 +101,7 @@ class ScheduleAndCoachAPITestCase(APITestCase):
             is_selected="False",
         )
         self.schedule_2.coach.add(self.coach_2)
-        
+
         self.access_token = str(RefreshToken.for_user(self.coach_1).access_token)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
 
@@ -148,7 +149,7 @@ class ScheduleAndCoachAPITestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["time"], "2024-02-04 19:00")
-    
+
     def test_schedule_destroy(self):
         """This test covers schedule destroy"""
 
