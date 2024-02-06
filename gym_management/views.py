@@ -18,7 +18,7 @@ from .permissions import IsTrainerUser
 from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventCreateSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
-                          TrainerEventCreateOrUpdateSerializer)
+                          TrainerEventUpdateSerializer, TrainerEventCreateSerializer)
 
 
 # Групповые тренировки
@@ -233,15 +233,18 @@ class TrainerEventModelViewSet(ModelViewSet):
         return queryset.filter(created_by=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        self.serializer_class = TrainerEventCreateOrUpdateSerializer
-        return super().create(request, *args, **kwargs)
+        trainer_event_serializer = TrainerEventCreateSerializer(
+                data=request.data, context={"request": request}
+            )
+        trainer_event_serializer.is_valid(raise_exception=True)
+        trainer_event_serializer.save()
 
     def partial_update(self, request, *args, **kwargs):
-        self.serializer_class = TrainerEventCreateOrUpdateSerializer
+        self.serializer_class = TrainerEventUpdateSerializer
         return super().partial_update(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        self.serializer_class = TrainerEventCreateOrUpdateSerializer
+        self.serializer_class = TrainerEventUpdateSerializer
         return super().update(request, *args, **kwargs)
 
 

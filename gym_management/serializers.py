@@ -55,8 +55,29 @@ class EventSerializer(serializers.ModelSerializer):
         return obj.seats_left()
 
 
-class TrainerEventCreateOrUpdateSerializer(serializers.ModelSerializer):
-    created_by = serializers.IntegerField(write_only=True)
+class TrainerEventCreateSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+
+    class Meta:
+        model = Event
+        fields = "__all__"
+
+    def create(self, validated_data):
+        created_by_instance = self.context["request"].user
+
+        participant_id = self.context["request"].user.id
+        tags_ids = validated_data.pop("tags")
+
+        instance = Event.objects.create(
+            created_by=created_by_instance, **validated_data
+        )
+        instance.participants.set(participant_id)
+        instance.tags.set(tags_ids)
+
+        return instance
+
+class TrainerEventUpdateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
@@ -66,21 +87,6 @@ class TrainerEventCreateOrUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
-
-    def create(self, validated_data):
-        created_by_id = validated_data.pop("created_by")
-        created_by_instance = User.objects.get(id=created_by_id)
-
-        participants_ids = validated_data.pop("participants")
-        tags_ids = validated_data.pop("tags")
-
-        instance = Event.objects.create(
-            created_by=created_by_instance, **validated_data
-        )
-        instance.participants.set(participants_ids)
-        instance.tags.set(tags_ids)
-
-        return instance
 
     def update(self, instance, validated_data):
         created_by_id = validated_data.pop("created_by", None)
