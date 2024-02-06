@@ -43,7 +43,7 @@ class Event(models.Model):
     start_date = models.DateTimeField()
     duration = models.PositiveIntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    club = models.CharField(max_length=150)
+    club = models.CharField(max_length=150, default="Рекорд фитнес ЭКО")
     price = models.PositiveBigIntegerField(default=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=WAITING)
 
