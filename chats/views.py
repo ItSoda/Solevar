@@ -11,7 +11,7 @@ import uuid
 class CreateRoom(APIView):
     serializer_class = RoomCreateSerializer
 
-    def post(self, request, uuid):
+    def get(self, request, uuid):
         try:
             room_uuid = uuid.uuid4()
             user = self.request.user
