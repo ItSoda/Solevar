@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,12 +46,14 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "djoser",
+    "channels",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
     "users",
     "gym_management",
+    "chats"
 ]
 
 MIDDLEWARE = [
@@ -328,3 +331,16 @@ CELERY_BEAT_SCHEDULE = {
 # TWILIO
 ACCOUNT_SID_TWILIO = config.get("ACCOUNT_SID_TWILIO")
 AUTH_TOKEN_TWILIO = config.get("AUTH_TOKEN_TWILIO")
+
+# Websockets
+
+ASGI_APPLICATION = "solevar.asgi.application"
+# channel
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", "6379")],
+        },
+    },
+}
