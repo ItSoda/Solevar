@@ -10,7 +10,7 @@ from users.models import User
 from .models import Message, Room
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
+class ChatSupportConsumer(AsyncWebsocketConsumer):
     # connect вызывается при подключении
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
