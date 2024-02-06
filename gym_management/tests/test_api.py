@@ -368,11 +368,8 @@ class TrainerPanelAPITestCase(APITestCase):
             "limit_of_participants": 12,
             "start_date": timezone.now(),
             "duration": 100,
-            "created_by": self.coach.id,
-            "club": "RECORD",
             "price": 2000,
             "tags": [self.tag.id],
-            "participants": [self.user.id, self.coach.id],
         }
         response = self.client.post(url, data)
         expected_data = 2
