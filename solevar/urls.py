@@ -14,6 +14,7 @@ urlpatterns = [
     path("admin_panel/", custom_admin_site.urls),
     path("api/", include("users.urls")),
     path("api/", include("gym_management.urls")),
+    path("api/", include("chats.urls")),
     # Регистрация, авторизация
     path("auth/", include("djoser.urls")),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

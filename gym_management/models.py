@@ -74,8 +74,8 @@ class IndividualEvent(models.Model):
     price = models.PositiveBigIntegerField(default=0)
 
     class Meta:
-        verbose_name = "индивидуальную тренировку"
-        verbose_name_plural = "Индивидуальные тренировки"
+        verbose_name = "персональную тренировку"
+        verbose_name_plural = "Персональные тренировки"
         constraints = [
             models.UniqueConstraint(
                 fields=["coach", "participant"], name="unique_coach_participant"
