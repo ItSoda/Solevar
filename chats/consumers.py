@@ -25,12 +25,14 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         await self.get_room()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
+        logger.info("МЫ в консьюмереееееее")
 
         # Inform user
         if self.user.is_staff:
             await self.channel_layer.group_send(
                 self.room_group_name, {"type": "users_update"}
             )
+        logger.info("МЫ в консьюмереееееее")
 
     async def disconnect(self, close_code):
         # Leave room group
