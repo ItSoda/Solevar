@@ -6,7 +6,8 @@ app_name = "chats"
 
 
 urlpatterns = [
-    path("create-room/", views.CreateRoom.as_view(), name="create-room"),
-    path("chat-admin/", views.ChatAdmin.as_view(), name="chat-admin"),
-    path("chat-admin/<str:uuid>/", views.Room.as_view(), name="room"),
+    path("create-room/", views.CreateRoomCreateAPIView.as_view(), name="create-room"),
+    path("chat-admin/room/", views.ChatAdminListAPIView.as_view(), name="chat-admin-room"),
+    path("chat-admin/admin/", views.FullAdminListAPIView.as_view(), name="chat-admin-admin"),
+    path("get-room/<str:uuid>/", views.GetRoomRetrieveAPIView.as_view(), name="get-room"),
 ]

@@ -238,6 +238,7 @@ class TrainerEventModelViewSet(ModelViewSet):
             )
         trainer_event_serializer.is_valid(raise_exception=True)
         trainer_event_serializer.save()
+        return Response({"message": "Event create success"}, status=status.HTTP_201_CREATED)
 
     def partial_update(self, request, *args, **kwargs):
         self.serializer_class = TrainerEventUpdateSerializer
@@ -251,7 +252,6 @@ class TrainerEventModelViewSet(ModelViewSet):
 class TrainerIndividualEventAPIView(ListAPIView):
     queryset = IndividualEvent.objects.all()
     serializer_class = IndividualEventSerializer
-    permission_classes = (IsTrainerUser,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
