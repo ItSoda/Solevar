@@ -16,32 +16,35 @@ logger = logging.getLogger("main")
 class ChatSupportConsumer(AsyncWebsocketConsumer):
     # connect вызывается при подключении
     async def connect(self):
-        logger.info("МЫ в консьюмереееееее")
+        logger.info("Start connect")
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
         self.user = self.scope["user"]
-        logger.info("МЫ в консьюмереееееее")
+
         # Join room group
         await self.get_room()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-        logger.info("МЫ в консьюмереееееее")
+        logger.info("Middle connect")
 
         # Inform user
         if self.user.is_staff:
             await self.channel_layer.group_send(
                 self.room_group_name, {"type": "users_update"}
             )
-        logger.info("МЫ в консьюмереееееее")
+        logger.info("End connect")
 
     async def disconnect(self, close_code):
         # Leave room group
+        logger.info("End connect1")
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
         if not self.user.is_staff:
             await self.set_room_closed()
+        logger.info("End connect2")
 
     async def receive(self, text_data):
+        logger.info("End connect1")
         text_data_json = json.loads(text_data)
         type = text_data_json["type"]
         message = text_data_json["message"]
@@ -72,8 +75,10 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "created_at": timesince(new_message.created_at),
                 },
             )
+        logger.info("End connect2")
 
     async def chat_message(self, event):
+        logger.info("End connect3")
         await self.send(
             text_data=json.dumps(
                 {
@@ -85,8 +90,10 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+        logger.info("End connect4")
 
     async def users_update(self, event):
+        logger.info("End connect5")
         await self.send(text_data=json.dumps({"type": "users-update"}))
 
     async def writing_active(self, event):
@@ -102,6 +109,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+        logger.info("End connect6")
 
     @sync_to_async
     def get_room(self):
