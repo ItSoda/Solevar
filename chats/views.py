@@ -18,7 +18,7 @@ class CreateRoomCreateAPIView(CreateAPIView):
             room_uuid = uuid.uuid4()
 
             Room.objects.create(uuid=room_uuid, client=username)
-            return Response({"data": room_uuid})
+            return Response({"data": room_uuid}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": f"Error: {str(e)}"})
 
