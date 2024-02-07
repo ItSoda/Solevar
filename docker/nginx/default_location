@@ -7,7 +7,7 @@ location /media/ {
 }
 
 location /ws/ {
-    proxy_pass http://fohowomsk.ru/;
+    proxy_pass https://fohowomsk.ru;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
