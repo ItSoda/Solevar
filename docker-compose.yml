@@ -30,7 +30,7 @@ services:
         poetry run python manage.py migrate &&
         (poetry run celery -A solevar worker -l info -P solo &)
         (poetry run celery -A solevar beat -l info &)
-        poetry run gunicorn solevar.wsgi:application -b :8000
+        poetry run daphne -b 0.0.0.0 -p 8000 solevar.asgi:application
     env_file:
       - docker-compose.env
     environment:
