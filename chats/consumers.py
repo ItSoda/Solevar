@@ -6,17 +6,21 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils.timesince import timesince
 
 from users.models import User
+import logging
 
 from .models import Message, Room
+
+logger = logging.getLogger("main")
 
 
 class ChatSupportConsumer(AsyncWebsocketConsumer):
     # connect вызывается при подключении
     async def connect(self):
+        logger.info("МЫ в консьюмереееееее")
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
         self.user = self.scope["user"]
-
+        logger.info("МЫ в консьюмереееееее")
         # Join room group
         await self.get_room()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
