@@ -56,25 +56,19 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class TrainerEventCreateSerializer(serializers.ModelSerializer):
-    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = ("title", "content", "start_date", "duration", "price", "limit_of_participants")
 
     def create(self, validated_data):
         created_by_instance = self.context["request"].user
 
-        participant_id = self.context["request"].user.id
-        tags_ids = validated_data.pop("tags")
-
         instance = Event.objects.create(
             created_by=created_by_instance, **validated_data
         )
-        instance.participants.set(participant_id)
-        instance.tags.set(tags_ids)
-
+        
         return instance
 
 class TrainerEventUpdateSerializer(serializers.ModelSerializer):

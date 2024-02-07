@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "users",
     "gym_management",
-    "chats"
+    "chats",
 ]
 
 MIDDLEWARE = [

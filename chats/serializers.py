@@ -19,29 +19,6 @@ class MessageSerializer(serializers.ModelSerializer):
         return obj.created_at.strftime("%d-%m-%Y %H:%M:%S")
 
 
-class RoomCreateSerializer(serializers.ModelSerializer):
-    agent = serializers.IntegerField(write_only=True)
-    messages = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-
-    class Meta:
-        model = Room
-        fields = "__all__"
-        depth = 1
-        read_only_fields = [
-            "messages",
-        ]
-
-    def create(self, validated_data):
-        messages_ids = validated_data.pop("messages")
-        agent_id = validated_data.pop("agent")
-        agent = User.objects.get(pk=agent_id)
-
-        instance = Room.objects.create(agent=agent, **validated_data)
-        instance.messages.set(messages_ids)
-
-        return instance
-
-
 class RoomSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
     agent = UserSerializer()
@@ -49,7 +26,6 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = "__all__"
-        depth = 1
         read_only_fields = [
             "messages",
         ]
