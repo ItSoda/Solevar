@@ -5,6 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
                        validate_passport_number, validate_passport_series)
+from django.apps import apps
 
 
 # User Model
@@ -42,7 +43,6 @@ class User(AbstractUser):
         max_length=6, validators=[validate_passport_number], default=""
     )
     date_of_birth = models.DateField(default="2024-02-02")
-
     username = None
 
     USERNAME_FIELD = "phone_number"
@@ -65,6 +65,11 @@ class User(AbstractUser):
 
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.patronymic}"
+    
+    def event_history(self):
+        from gym_management.serializers import EventSerializer
+        Event = apps.get_model("gym_management", "Event")
+        return EventSerializer(Event.objects.filter(participants=self, status="Passed"), many=True).data
 
 
 class PhoneNumberVerifySMS(models.Model):

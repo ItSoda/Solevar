@@ -53,6 +53,7 @@ class UserShortSerializer(UserSerializer):
 
 
 class UserProfile(UserSerializer):
+    event_history = serializers.SerializerMethodField()
     photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
@@ -73,6 +74,7 @@ class UserProfile(UserSerializer):
             "role",
             "balance",
             "is_staff",
+            "event_history"
         )
         read_only_fields = ("password",)
 
@@ -81,6 +83,9 @@ class UserProfile(UserSerializer):
         if instance.photo:
             representation["photo"] = "http://fohowomsk.ru/media/" + str(instance.photo)
         return representation
+    
+    def get_event_history(self, obj):
+        return obj.event_history()
 
 
 class EmailContactSerializer(serializers.Serializer):

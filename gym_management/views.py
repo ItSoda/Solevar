@@ -92,16 +92,6 @@ class MyEventListView(ListAPIView):
         return queryset.filter(participants__id=self.request.user.id, status="WAITING")
 
 
-# История посещения групповых тренировок
-class MyPassedEventViewSet(ListAPIView):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(participants=self.request.user, status="Passed")
-
-
 # Персональные тренировки
 class IndividualEventViewSet(CreateAPIView):
     queryset = IndividualEvent.objects.all()
