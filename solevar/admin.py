@@ -85,6 +85,8 @@ class TagCustomAdmin(admin.ModelAdmin):
     fields = ("name",)
     list_display = ("name",)
 
+
+custom_admin_site.register(Room)
 custom_admin_site.register(Admin)
 custom_admin_site.register(News)
 custom_admin_site.register(User, UserCustomAdmin)
