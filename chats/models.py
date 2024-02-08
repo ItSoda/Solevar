@@ -36,7 +36,7 @@ class Room(models.Model):
     uuid = models.CharField(max_length=255)
     client = models.CharField(max_length=255)
     agent = models.ForeignKey(
-        User, related_name="rooms", on_delete=models.CASCADE, default="always_agent"
+        User, related_name="rooms", blank=True, null=True, on_delete=models.SET_NULL
     )
     messages = models.ManyToManyField(Message, blank=True)
     status = models.CharField(max_length=20, choices=CHOICES_STATUS, default=WAITING)
