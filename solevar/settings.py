@@ -51,8 +51,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
-    "users",
     "gym_management",
+    "users",
     "chats",
 ]
 

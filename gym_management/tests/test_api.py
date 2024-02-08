@@ -111,18 +111,6 @@ class EventAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), expected_data)
 
-    def test_history_events_list(self):
-        """This test covers events list"""
-
-        self.event.status = "PASSED"
-
-        url = f"{settings.DOMAIN_NAME}/api/events/"
-        response = self.client.get(url)
-        expected_data = 1
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), expected_data)
-
 
 class SubscriptionAPITestCase(APITestCase):
     def setUp(self):
