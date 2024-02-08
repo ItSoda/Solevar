@@ -25,7 +25,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         await self.get_room()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-        logger.info("Middle connect")
+        logger.info("Middle  connect")
 
         # Inform user
         if self.user.is_staff:

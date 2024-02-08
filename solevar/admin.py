@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from gym_management.models import Event, IndividualEvent, Subscription, Tag
 from users.models import PhoneNumberVerifySMS, Schedule, User
-
+from chats.models import Message
 
 class CustomAdminSite(admin.AdminSite):
     site_header = "Администрирование ПАПА ФИТНЕС"
@@ -84,7 +84,7 @@ class TagCustomAdmin(admin.ModelAdmin):
     fields = ("name",)
     list_display = ("name",)
 
-
+custom_admin_site.register(Message)
 custom_admin_site.register(User, UserCustomAdmin)
 custom_admin_site.register(Subscription, SubscriptionCustomAdmin)
 custom_admin_site.register(Event, EventCustomAdmin)
