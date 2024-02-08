@@ -47,6 +47,21 @@ services:
       - static_volume:/itsoda/static
       - media_volume:/itsoda/media
     container_name: django-api
+
+  startbot:
+    image: itsoda14/solevar:latest
+    command: sh -c "poetry run python manage.py startbot"
+    restart: always
+    depends_on:    
+      - api
+    volumes:
+      - .:/itsoda
+    env_file:
+      - docker-compose.env
+    environment:
+      - DOCKER_CONTAINER=True
+    container_name: solevar_startbot
+
   nginx:
     build: 
       dockerfile: ./Dockerfile

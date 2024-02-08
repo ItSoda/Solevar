@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "gym_management",
     "users",
     "chats",
+    "tgbot",
 ]
 
 MIDDLEWARE = [
@@ -274,6 +275,8 @@ YOOKASSA_REDIRECT_URL = "/admin/"
 YOOKASSA_SHOP_ID = config.get("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = config.get("YOOKASSA_SECRET_KEY")
 
+# TELEGRAM BOT
+TELEGRAM_BOT_TOKEN = config.get("TELEGRAM_BOT_TOKEN")
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
