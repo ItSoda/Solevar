@@ -13,7 +13,7 @@ import uuid
 class CreateOrGetRoomAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
-            room = Room.objects.filter(client=self.request.user).first()
+            room = Room.objects.filter(client=f"{self.request.user.first_name} {self.request.user.last_name}").first()
             if not room:
                 user = self.request.user
                 username = f"{user.first_name} {user.last_name}"
