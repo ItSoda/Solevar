@@ -12,6 +12,9 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.response import Response
 from twilio.rest import Client
+import boto3
+import datetime
+
 
 logger = logging.getLogger("main")
 
@@ -124,3 +127,24 @@ def validate_passport_series(value):
 def validate_passport_number(value):
     if not value.isdigit() or len(value) != 6:
         raise ValidationError("Invalid passport number. It must be 6 digits")
+
+def upload_to_yandex_cloud(self):
+    if self.photo and not self.photo.name.startswith("media/user_images/no-profile"):
+        # Получаем ключи доступа к Yandex.Cloud из переменных окружения
+        access_key = settings.YANDEX_CLOUD_ACCESS_KEY
+        secret_key = settings.YANDEX_CLOUD_SECRET_KEY
+        region_name = "ru-central1-c"
+        # Инициализируем клиент boto3 для работы с Yandex Object Storage
+        client = boto3.client('s3',
+                            endpoint_url='https://storage.yandexcloud.net/',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region_name)
+
+            # Загружаем изображение в Yandex.Cloud
+        bucket_name = 'solevar-bucket'
+        file_path = f"user_images/{self.photo.name}"  # Путь к изображению в Yandex.Cloud
+        with open(self.photo.path, 'rb') as file:
+            client.upload_fileobj(file, bucket_name, file_path)
+
+        self.photo = file_path

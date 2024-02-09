@@ -74,18 +74,15 @@ class UserProfile(UserSerializer):
             "role",
             "balance",
             "is_staff",
-            "event_history"
         )
         read_only_fields = ("password",)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.photo:
-            representation["photo"] = "http://fohowomsk.ru/media/" + str(instance.photo)
+            representation["photo"] = "https://storage.yandexcloud.net/solevar-bucket/" + str(instance.photo)
         return representation
-    
-    def get_event_history(self, obj):
-        return obj.event_history()
+
 
 
 class EmailContactSerializer(serializers.Serializer):

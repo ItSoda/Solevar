@@ -1,12 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 from phonenumber_field.modelfields import PhoneNumberField
-
 from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
                        validate_passport_number, validate_passport_series)
 from django.apps import apps
-
+from .services import upload_to_yandex_cloud
 
 # User Model
 class User(AbstractUser):
@@ -30,7 +30,7 @@ class User(AbstractUser):
     is_verified_email = models.BooleanField(default=False)
     description = models.TextField(default="about you")
     photo = models.ImageField(
-        upload_to="user_images", default="user_images/no-profile.png"
+        upload_to="user_images", default="media/user_images/no-profile.png"
     )
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
@@ -62,14 +62,18 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
+    
+    def save(self, *args, **kwargs):
+        upload_to_yandex_cloud(self)
+        super().save(args, **kwargs)
 
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.patronymic}"
     
-    def event_history(self):
-        from gym_management.serializers import EventSerializer
-        Event = apps.get_model("gym_management", "Event")
-        return EventSerializer(Event.objects.filter(participants=self, status="Passed"), many=True).data
+    # def event_history(self):
+    #     from gym_management.serializers import EventSerializer
+    #     Event = apps.get_model("gym_management", "Event")
+    #     return EventSerializer(Event.objects.filter(participants=self, status="Passed"), many=True).data
 
 
 class PhoneNumberVerifySMS(models.Model):

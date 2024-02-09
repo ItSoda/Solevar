@@ -10,21 +10,25 @@ from .serializers import RoomSerializer
 import uuid
 
 
-class CreateRoomCreateAPIView(CreateAPIView):
+class CreateOrGetRoomAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
-            user = self.request.user
-            username = f"{user.first_name} {user.last_name}"
-            room_uuid = uuid.uuid4()
+            room = Room.objects.filter(status="WAITING", client=self.request.user)
+            if not room:
+                user = self.request.user
+                username = f"{user.first_name} {user.last_name}"
+                room_uuid = uuid.uuid4()
 
-            Room.objects.create(uuid=room_uuid, client=username)
-            return Response({"data": room_uuid}, status=status.HTTP_201_CREATED)
+                Room.objects.create(uuid=room_uuid, client=username)
+                return Response({"data": room_uuid}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"data": room.uuid}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": f"Error: {str(e)}"})
 
 
 class ChatAdminListAPIView(ListAPIView):
-    queryset = Room.objects.all()
+    queryset = Room.objects.filter(status="WAITING")
     serializer_class = RoomSerializer
 
 

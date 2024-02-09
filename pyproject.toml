@@ -33,6 +33,8 @@ phonenumbers = "^8.13.28"
 django-phonenumber-field = "^7.3.0"
 twilio = "^8.11.1"
 telebot = "^0.0.5"
+boto3 = "^1.34.38"
+
 
 
 
