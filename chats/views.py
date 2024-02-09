@@ -13,7 +13,7 @@ import uuid
 class CreateOrGetRoomAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
-            room = Room.objects.filter(status="WAITING", client=self.request.user)
+            room = Room.objects.filter(status="waiting", client=self.request.user).first()
             if not room:
                 user = self.request.user
                 username = f"{user.first_name} {user.last_name}"
@@ -28,7 +28,7 @@ class CreateOrGetRoomAPIView(CreateAPIView):
 
 
 class ChatAdminListAPIView(ListAPIView):
-    queryset = Room.objects.filter(status="WAITING")
+    queryset = Room.objects.filter(status="waiting")
     serializer_class = RoomSerializer
 
 
