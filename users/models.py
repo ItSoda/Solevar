@@ -70,10 +70,10 @@ class User(AbstractUser):
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.patronymic}"
     
-    def event_history(self):
-        from gym_management.serializers import EventSerializer
-        Event = apps.get_model("gym_management", "Event")
-        return EventSerializer(Event.objects.filter(participants=self, status="Passed"), many=True).data
+    # def event_history(self):
+    #     from gym_management.serializers import EventSerializer
+    #     Event = apps.get_model("gym_management", "Event")
+    #     return EventSerializer(Event.objects.filter(participants=self, status="Passed"), many=True).data
 
 
 class PhoneNumberVerifySMS(models.Model):

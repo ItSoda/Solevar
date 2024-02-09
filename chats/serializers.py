@@ -21,7 +21,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
-    agent = UserSerializer()
 
     class Meta:
         model = Room
