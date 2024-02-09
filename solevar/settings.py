@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
+import os
 from decouple import Config, RepositoryEnv
 from django.utils import timezone
 
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
+
     "gym_management",
     "users",
     "chats",
@@ -164,9 +165,7 @@ else:
     STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Base url to serve media files
-MEDIA_URL = "/media/"
-# Path where media is stored
-MEDIA_ROOT = "media"
+MEDIA_URL = "https://storage.yandexcloud.net/"
 
 
 # Default primary key field type
@@ -347,3 +346,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+YANDEX_CLOUD_ACCESS_KEY = config.get("YANDEX_CLOUD_ACCESS_KEY")
+YANDEX_CLOUD_SECRET_KEY = config.get("YANDEX_CLOUD_SECRET_KEY")
