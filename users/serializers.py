@@ -53,7 +53,6 @@ class UserShortSerializer(UserSerializer):
 
 
 class UserProfile(UserSerializer):
-    event_history = serializers.SerializerMethodField()
     photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
