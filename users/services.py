@@ -129,7 +129,7 @@ def validate_passport_number(value):
         raise ValidationError("Invalid passport number. It must be 6 digits")
 
 def upload_to_yandex_cloud(self):
-    if self.photo and not self.photo.name.startswith("media/user_images/no-profile"):
+    if self.photo:
         # Получаем ключи доступа к Yandex.Cloud из переменных окружения
         access_key = settings.YANDEX_CLOUD_ACCESS_KEY
         secret_key = settings.YANDEX_CLOUD_SECRET_KEY
@@ -144,7 +144,9 @@ def upload_to_yandex_cloud(self):
             # Загружаем изображение в Yandex.Cloud
         bucket_name = 'solevar-bucket'
         file_path = f"user_images/{self.photo.name}"  # Путь к изображению в Yandex.Cloud
-        with open(self.photo.path, 'rb') as file:
-            client.upload_fileobj(file, bucket_name, file_path)
+        file_data = self.photo.read()
+        client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
-        self.photo = file_path
+        self.photo = f"{settings.MEDIA_URL}{file_path}"
+    else:
+        self.photo = f"solevar-bucket/user_images/no-profile.png"
