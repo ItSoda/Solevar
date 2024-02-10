@@ -29,9 +29,7 @@ class User(AbstractUser):
     patronymic = models.CharField(max_length=50, default="Отчество")
     is_verified_email = models.BooleanField(default=False)
     description = models.TextField(default="about you")
-    photo = models.ImageField(
-        upload_to="user_images", default="media/user_images/no-profile.png"
-    )
+    photo = models.ImageField()
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="")

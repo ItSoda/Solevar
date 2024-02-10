@@ -45,12 +45,6 @@ class UserShortSerializer(UserSerializer):
             "rating",
         )
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.photo:
-            representation["photo"] = "http://fohowomsk.ru/media/" + str(instance.photo)
-        return representation
-
 
 class UserProfile(UserSerializer):
     photo = ImageFieldFromURL()
@@ -75,13 +69,6 @@ class UserProfile(UserSerializer):
             "is_staff",
         )
         read_only_fields = ("password",)
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.photo:
-            representation["photo"] = "https://storage.yandexcloud.net/solevar-bucket/" + str(instance.photo)
-        return representation
-
 
 
 class EmailContactSerializer(serializers.Serializer):

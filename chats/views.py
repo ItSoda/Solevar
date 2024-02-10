@@ -22,7 +22,7 @@ class CreateOrGetRoomAPIView(CreateAPIView):
                 Room.objects.create(uuid=room_uuid, client=username)
                 return Response({"data": room_uuid}, status=status.HTTP_201_CREATED)
             else:
-                return Response({"data": room.uuid}, status=status.HTTP_201_CREATED)
+                return Response({"data": room.uuid}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": f"Error: {str(e)}"})
 

@@ -7,16 +7,12 @@ from .models import Message, Room
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    created_at_formatted = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
     created_by = UserSerializer()
 
     class Meta:
         model = Message
-        exclude = []
-        depth = 1
-
-    def get_created_at_formatted(self, obj: Message):
-        return obj.created_at.strftime("%d-%m-%Y %H:%M:%S")
+        fields = "__all__"
 
 
 class RoomSerializer(serializers.ModelSerializer):
