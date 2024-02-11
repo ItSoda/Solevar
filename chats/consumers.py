@@ -122,9 +122,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         if agent:
             message.created_by = User.objects.get(pk=agent)
             message.save()
-        else:
-            message.created_by = self.user
-            message.save()
 
         self.room.messages.add(message)
 
