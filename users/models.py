@@ -9,8 +9,16 @@ from django.apps import apps
 from .services import upload_media_to_yandex_cloud, upload_audio_to_yandex_cloud
 
 class AudioRecord(models.Model):
-    record_file = models.FileField()
+    name = models.CharField(max_length=120)
+    record_file = models.FileField(max_length=500)
 
+    class Meta:
+        verbose_name = "запись звонка"
+        verbose_name_plural = "Записи звонков"
+
+    def __str__(self):
+        return f"{self.name}"
+    
     def save(self, *args, **kwargs):
         upload_audio_to_yandex_cloud(self)
         super().save(args, **kwargs)
@@ -36,11 +44,11 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, default="Фамилия")
     patronymic = models.CharField(max_length=50, default="Отчество")
     is_verified_email = models.BooleanField(default=False)
-    description = models.TextField(default="about you")
+    description = models.TextField(blank=True)
     photo = models.ImageField()
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
-    trainer_type = models.CharField(max_length=100, default="")
+    trainer_type = models.CharField(max_length=100, blank=True)
     balance = models.BigIntegerField(default=0)
     passport_series = models.CharField(
         max_length=4, validators=[validate_passport_series], default=""
@@ -48,8 +56,8 @@ class User(AbstractUser):
     passport_number = models.CharField(
         max_length=6, validators=[validate_passport_number], default=""
     )
-    date_of_birth = models.DateField(default="2024-02-02")
-    records_files = models.ManyToManyField(AudioRecord, null=True, blank=True)
+    date_of_birth = models.DateField(blank=True)
+    records_files = models.ManyToManyField(AudioRecord, blank=True)
     
     username = None
 

@@ -47,6 +47,7 @@ class UserCustomAdmin(admin.ModelAdmin):
         "balance",
     )
     ordering = ("role",)
+    filter_horizontal = ("records_files",)
 
 
 class ScheduleCustomAdmin(admin.ModelAdmin):
