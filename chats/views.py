@@ -24,7 +24,7 @@ class CreateOrGetRoomAPIView(CreateAPIView):
                 username = f"{user.first_name} {user.last_name} {user.id}"
                 room_uuid = uuid.uuid4()
                 first_name = user.first_name
-
+                print(first_name)
                 Room.objects.create(uuid=room_uuid, client=username)
                 return Response({"uuid": room_uuid, "name": first_name}, status=status.HTTP_201_CREATED)
             else:
