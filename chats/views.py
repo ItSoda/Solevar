@@ -23,9 +23,10 @@ class CreateOrGetRoomAPIView(CreateAPIView):
                 user = self.request.user
                 username = f"{user.first_name} {user.last_name} {user.id}"
                 room_uuid = uuid.uuid4()
+                first_name = user.first_name
 
                 Room.objects.create(uuid=room_uuid, client=username)
-                return Response({"data": room_uuid}, status=status.HTTP_201_CREATED)
+                return Response({"uuid": room_uuid, "name": first_name}, status=status.HTTP_201_CREATED)
             else:
                 return Response({"data": room.uuid}, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -54,12 +55,13 @@ class GetRoomAPIView(RetrieveAPIView):
         try:
             uuid = self.kwargs.get("uuid")
             room = Room.objects.get(uuid=uuid)
+            admin_name = self.request.user.first_name
 
             if room.status == Room.WAITING:
                 room.status = Room.ACTIVE
                 room.save()
 
-            return Response({"message": "Вы успешно вошли!"}, status=status.HTTP_200_OK)
+            return Response({"name": admin_name}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
                 {"error": f"Room not found"}, status=status.HTTP_404_NOT_FOUND
