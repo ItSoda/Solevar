@@ -6,7 +6,7 @@ from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
                     MyIndividualEventListAPIView,
                     MySubscriptionView, SubscriptionViewSet,
                     TrainerEventModelViewSet, TrainerIndividualEventAPIView,
-                    MyHistoryEventListView)
+                    MyHistoryEventListView, MainEventListAPIView)
 
 app_name = "gym_management"
 
@@ -15,6 +15,8 @@ router.register(r"trainer_events", TrainerEventModelViewSet, basename="trainer_e
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("main_events/", MainEventListAPIView.as_view(), name="main_events"),
+    path("my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events"),
     path("events/", EventViewSet.as_view(), name="events"),
     path("subscriptions/", SubscriptionViewSet.as_view(), name="subscriptions"),
     path(

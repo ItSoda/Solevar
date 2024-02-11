@@ -20,6 +20,14 @@ from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
                           TrainerEventUpdateSerializer, TrainerEventCreateSerializer)
 
+class MainEventListAPIView(ListAPIView):
+    queryset = Event.objects.exclude(status="PASSED")
+    serializer_class = EventSerializer
+
+    @method_decorator(cache_page(10))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 # Групповые тренировки
 class EventViewSet(ListAPIView):
