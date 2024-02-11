@@ -46,10 +46,9 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         type = text_data_json["type"]
         message = text_data_json["message"]
         username = text_data_json["username"]
-        agent = text_data_json.get("agent", "")
 
         if type == "message":
-            new_message = await self.create_message(username, message, agent)
+            new_message = await self.create_message(username, message)
 
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -57,7 +56,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "type": "chat_message",
                     "message": message,
                     "username": username,
-                    "agent": agent,
                     "created_at": timesince(new_message.created_at),
                 },
             )
@@ -68,7 +66,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "type": "writing_active",
                     "message": message,
                     "username": username,
-                    "agent": agent,
                     "created_at": timesince(new_message.created_at),
                 },
             )
@@ -80,7 +77,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "type": event["type"],
                     "message": event["message"],
                     "username": event["username"],
-                    "agent": event["agent"],
                     "created_at": event["created_at"],
                 }
             )
@@ -98,7 +94,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "type": event["type"],
                     "message": event["message"],
                     "username": event["username"],
-                    "agent": event["agent"],
                     "created_at": event["created_at"],
                 }
             )
@@ -116,7 +111,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         self.room.save()
 
     @sync_to_async
-    def create_message(self, sent_by, message, agent):
+    def create_message(self, sent_by, message):
         message = Message.objects.create(text=message, sent_by=sent_by)
 
         self.room.messages.add(message)

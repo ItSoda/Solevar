@@ -17,7 +17,6 @@ class MessageSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-    agent = UserSerializer()
 
     class Meta:
         model = Room
