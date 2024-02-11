@@ -48,7 +48,6 @@ class GetRoomRetrieveAPIView(RetrieveAPIView):
 
             if room.status == Room.WAITING:
                 room.status = Room.ACTIVE
-                room.agent = self.request.user
                 room.save()
 
             return Response({"message": "Вы успешно вошли!"}, status=status.HTTP_200_OK)
