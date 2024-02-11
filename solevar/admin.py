@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from gym_management.models import Event, IndividualEvent, Subscription, Tag
-from users.models import PhoneNumberVerifySMS, Schedule, User
+from users.models import PhoneNumberVerifySMS, Schedule, User, AudioRecord
 from tgbot.models import Admin, News
 from chats.models import Room
 
@@ -35,6 +35,7 @@ class UserCustomAdmin(admin.ModelAdmin):
         "is_superuser",
         "passport_series",
         "passport_number",
+        "records_files"
     )
     list_display = (
         "first_name",
@@ -86,6 +87,7 @@ class TagCustomAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
+custom_admin_site.register(AudioRecord)
 custom_admin_site.register(Room)
 custom_admin_site.register(Admin)
 custom_admin_site.register(News)

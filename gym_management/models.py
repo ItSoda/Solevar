@@ -39,7 +39,7 @@ class Event(models.Model):
     content = models.TextField()
     participants = models.ManyToManyField(User, related_name="participants_event", blank=True)
     limit_of_participants = models.SmallIntegerField()
-    tags = models.ManyToManyField(Tag, blank=True)
+    tags = models.ManyToManyField(Tag, default="", blank=True)
     start_date = models.DateTimeField()
     duration = models.PositiveIntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
