@@ -36,15 +36,12 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
-        logger.info("End connect1")
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
         if not self.user.is_staff:
             await self.set_room_closed()
-        logger.info("End connect2")
 
     async def receive(self, text_data):
-        logger.info("End connect1")
         text_data_json = json.loads(text_data)
         type = text_data_json["type"]
         message = text_data_json["message"]
@@ -75,10 +72,8 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                     "created_at": timesince(new_message.created_at),
                 },
             )
-        logger.info("End connect2")
 
     async def chat_message(self, event):
-        logger.info("End connect3")
         await self.send(
             text_data=json.dumps(
                 {
@@ -90,7 +85,6 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
-        logger.info("End connect4")
 
     async def users_update(self, event):
         logger.info("End connect5")
@@ -127,6 +121,9 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
 
         if agent:
             message.created_by = User.objects.get(pk=agent)
+            message.save()
+        else:
+            message.created_by = self.user
             message.save()
 
         self.room.messages.add(message)
