@@ -50,7 +50,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def get_message_history(self):
         room = Room.objects.filter(uuid=self.room_name).first()
-        return room.messages.all()
+        return list(room.messages.all())
     
     async def send_message_to_client(self, message):
         # Отправляем сообщение клиенту
