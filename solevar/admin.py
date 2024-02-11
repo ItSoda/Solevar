@@ -1,9 +1,10 @@
 from django.contrib import admin
 
+from chats.models import Message, Room
 from gym_management.models import Event, IndividualEvent, Subscription, Tag
-from users.models import PhoneNumberVerifySMS, Schedule, User, AudioRecord
 from tgbot.models import Admin, News
-from chats.models import Room, Message
+from users.models import AudioRecord, PhoneNumberVerifySMS, Schedule, User
+
 
 class CustomAdminSite(admin.AdminSite):
     site_header = "Администрирование ПАПА ФИТНЕС"
@@ -35,7 +36,7 @@ class UserCustomAdmin(admin.ModelAdmin):
         "is_superuser",
         "passport_series",
         "passport_number",
-        "records_files"
+        "records_files",
     )
     list_display = (
         "first_name",
@@ -59,6 +60,15 @@ class ScheduleCustomAdmin(admin.ModelAdmin):
 class RoomCustomAdmin(admin.ModelAdmin):
     list_display = ("client", "status")
     filter_horizontal = ("messages",)
+
+
+class AdminCustomAdmin(admin.ModelAdmin):
+    list_display = ("UUID",)
+
+
+class NewsCustomAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+
 
 class PhoneNumberVerifySMSCustomAdmin(admin.ModelAdmin):
     list_display = ("code", "phone_number", "created", "expiration")
@@ -95,8 +105,8 @@ class TagCustomAdmin(admin.ModelAdmin):
 custom_admin_site.register(AudioRecord)
 custom_admin_site.register(Message)
 custom_admin_site.register(Room, RoomCustomAdmin)
-custom_admin_site.register(Admin)
-custom_admin_site.register(News)
+custom_admin_site.register(Admin, AdminCustomAdmin)
+custom_admin_site.register(News, NewsCustomAdmin)
 custom_admin_site.register(User, UserCustomAdmin)
 custom_admin_site.register(Subscription, SubscriptionCustomAdmin)
 custom_admin_site.register(Event, EventCustomAdmin)

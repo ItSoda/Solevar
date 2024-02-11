@@ -1,19 +1,24 @@
+import uuid
+
+from django.db.models import Max
 from rest_framework import status
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+
 from users.models import User
 from users.serializers import UserSerializer
-from django.db.models import Max
+
 from .models import Room
 from .serializers import RoomSerializer
-import uuid
 
 
 class CreateOrGetRoomAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
-            room = Room.objects.filter(client=f"{self.request.user.first_name} {self.request.user.last_name}").first()
+            room = Room.objects.filter(
+                client=f"{self.request.user.first_name} {self.request.user.last_name}"
+            ).first()
             if not room:
                 user = self.request.user
                 username = f"{user.first_name} {user.last_name}"
@@ -32,8 +37,8 @@ class ChatAdminListAPIView(ListAPIView):
 
     def get_queryset(self):
         return Room.objects.annotate(
-            last_message_time=Max('messages__created_at')
-        ).order_by('-last_message_time')
+            last_message_time=Max("messages__created_at")
+        ).order_by("-last_message_time")
 
 
 class FullAdminListAPIView(ListAPIView):

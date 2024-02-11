@@ -1,9 +1,10 @@
 import logging
+
 import telebot
 from django.conf import settings
 from telebot import types
 
-from .models import Admin, UserBot, News
+from .models import Admin, News, UserBot
 
 logger = logging.getLogger("main")
 
@@ -94,15 +95,26 @@ def send_message(message):
         markup = types.ForceReply(selective=False)
         bot.send_message(
             message.chat.id,
-            "Введите текст сообщения, которое хотите отправить:",
+            "Введите заголовок сообщения, которое хотите отправить:",
             reply_markup=markup,
         )
-        bot.register_next_step_handler(message, process_text)
+        bot.register_next_step_handler(message, process_title)
     else:
         bot.send_message(message.chat.id, "Вы не администратор")
 
 
-def process_text(message):
+def process_title(message):
+    title = message.text.strip()
+    markup = types.ForceReply(selective=False)
+    bot.send_message(
+        message.chat.id,
+        "Теперь отправьте заголовок для этого сообщения",
+        reply_markup=markup,
+    )
+    bot.register_next_step_handler(message, process_text, title)
+
+
+def process_text(message, title):
     text = message.text.strip()
     markup = types.ForceReply(selective=False)
     bot.send_message(
@@ -110,10 +122,10 @@ def process_text(message):
         "Теперь отправьте фотографию для этого сообщения: \nЕсли не хотите то '-'",
         reply_markup=markup,
     )
-    bot.register_next_step_handler(message, process_photo, text)
+    bot.register_next_step_handler(message, process_photo, text, title)
 
 
-def process_photo(message, text):
+def process_photo(message, text, title):
     if message.photo:
         photo = message.photo[-1].file_id  # Получаем file_id фотографии
         users = UserBot.objects.all()
@@ -121,7 +133,7 @@ def process_photo(message, text):
         for user in users:
             try:
                 bot.send_photo(user.user_id, photo, caption=text)
-                News.objects.create(text=text, photo=photo)
+                News.objects.create(text=text, photo=photo, title=title)
             except Exception as e:
                 print(f"Произошла ошибка {e}")
         else:
@@ -134,9 +146,11 @@ def process_photo(message, text):
                 bot.send_message(user.user_id, text)
                 News.objects.create(
                     text=text,
+                    title=title,
                 )
             except Exception as e:
                 print(f"Произошла ошибка {e}")
+
 
 # Добавление администратора
 @bot.message_handler(commands=["admin_add"])

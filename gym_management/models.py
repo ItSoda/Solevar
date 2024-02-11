@@ -37,7 +37,9 @@ class Event(models.Model):
 
     title = models.CharField(max_length=128)
     content = models.TextField()
-    participants = models.ManyToManyField(User, related_name="participants_event", blank=True)
+    participants = models.ManyToManyField(
+        User, related_name="participants_event", blank=True
+    )
     limit_of_participants = models.SmallIntegerField()
     tags = models.ManyToManyField(Tag, blank=True)
     start_date = models.DateTimeField()

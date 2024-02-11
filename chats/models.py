@@ -1,7 +1,8 @@
 from django.db import models
+from django.db.models import Max
 
 from users.models import User
-from django.db.models import Max
+
 
 class Message(models.Model):
     """Model for message"""
@@ -40,7 +41,8 @@ class Room(models.Model):
 
     def __str__(self):
         return f"{self.client} - {self.uuid}"
-    
+
     def get_last_message(self):
-        return self.messages.aggregate(last_message_time=Max('created_at'))['last_message_time']
-    
+        return self.messages.aggregate(last_message_time=Max("created_at"))[
+            "last_message_time"
+        ]

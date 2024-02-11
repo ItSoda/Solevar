@@ -22,7 +22,6 @@ django.setup()
 
 from chats import routing
 
-
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
