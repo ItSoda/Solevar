@@ -108,7 +108,7 @@ def process_title(message):
     markup = types.ForceReply(selective=False)
     bot.send_message(
         message.chat.id,
-        "Теперь отправьте заголовок для этого сообщения",
+        "Теперь отправьте текст для этого сообщения",
         reply_markup=markup,
     )
     bot.register_next_step_handler(message, process_text, title)
@@ -133,11 +133,11 @@ def process_photo(message, text, title):
         for user in users:
             try:
                 bot.send_photo(user.user_id, photo, caption=text)
-                News.objects.create(text=text, photo=photo, title=title)
             except Exception as e:
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
+            News.objects.create(text=text, photo=photo, title=title)
     else:
         users = UserBot.objects.all()
 
@@ -150,6 +150,8 @@ def process_photo(message, text, title):
                 )
             except Exception as e:
                 print(f"Произошла ошибка {e}")
+        else:
+            News.objects.create(text=text, title=title,)
 
 
 # Добавление администратора
@@ -195,7 +197,7 @@ def info(message):
         if admin_id:
             bot.reply_to(
                 message,
-                f"Вы администратор! Вам доступны особенные команды. \n\n/admin_add - Добавление админа\n\n/product_add - Добавление товара \n\n/price_up_with_price - Повышение цены по определенной цене \n\n/price_up - Повышение цены по определенной категории и бренду \n\n/price_up_all - Повышение цены для всех товаров \n\n/price_down - Понижение цены по определенной категории или вендору  \n\n/price_down_with_price - Понижение цены по определенной цене \n\n/send_message - Рассылка сообщения всем юзерам \n\n/updateList - изменения всего прайса одним файлом",
+                f"Вы администратор! Вам доступны особенные команды. \n\nsend_message - Добавление новости",
             )
     bot.reply_to(message, f"Лучше закажите у нас!")
 
