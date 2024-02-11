@@ -46,7 +46,7 @@ class FullAdminListAPIView(ListAPIView):
     serializer_class = UserSerializer
 
 
-class UpdateRoomRetrieveAPIView(UpdateAPIView):
+class UpdateRoomAPIView(UpdateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
