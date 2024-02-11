@@ -8,9 +8,6 @@ class Message(models.Model):
 
     text = models.TextField()
     sent_by = models.CharField(max_length=255)
-    created_by = models.ForeignKey(
-        User, blank=True, null=True, on_delete=models.SET_NULL
-    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
