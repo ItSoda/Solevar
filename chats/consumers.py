@@ -23,9 +23,9 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
 
         # Join room group
         await self.get_room()
-        await self.send_message_history()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
+        await self.send_message_history()
         logger.info("Middle  connect")
 
         # Inform user
