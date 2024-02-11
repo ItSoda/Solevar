@@ -2,7 +2,7 @@ import uuid
 
 from django.db.models import Max
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,7 +17,7 @@ class CreateOrGetRoomAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
             room = Room.objects.filter(
-                client=f"{self.request.user.first_name} {self.request.user.last_name}"
+                client=self.request.user.first_name
             ).first()
             if not room:
                 user = self.request.user
@@ -46,11 +46,11 @@ class FullAdminListAPIView(ListAPIView):
     serializer_class = UserSerializer
 
 
-class GetRoomRetrieveAPIView(RetrieveAPIView):
+class UpdateRoomAPIView(UpdateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    def get(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         try:
             uuid = self.kwargs.get("uuid")
             room = Room.objects.get(uuid=uuid)

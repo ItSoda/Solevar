@@ -16,6 +16,6 @@ urlpatterns = [
         name="chat-admin-admin",
     ),
     path(
-        "get-room/<str:uuid>/", views.GetRoomRetrieveAPIView.as_view(), name="get-room"
+        "update-room/<str:uuid>/", views.UpdateRoomAPIView.as_view(), name="update-room"
     ),
 ]
