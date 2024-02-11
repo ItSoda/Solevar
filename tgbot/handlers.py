@@ -153,14 +153,11 @@ def process_photo(message, text, title):
         for user in users:
             try:
                 bot.send_message(user.user_id, text)
-                News.objects.create(
-                    text=text,
-                    title=title,
-                )
             except Exception as e:
                 print(f"Произошла ошибка {e}")
         else:
-            News.objects.create(text=text, title=title,)
+            bot.send_message(message.chat.id, "Рассылка завершена")
+            News.objects.create(text=text, title=title)
 
 
 # Добавление администратора
