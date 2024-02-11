@@ -128,7 +128,7 @@ def validate_passport_number(value):
     if not value.isdigit() or len(value) != 6:
         raise ValidationError("Invalid passport number. It must be 6 digits")
 
-def upload_to_yandex_cloud(self):
+def upload_media_to_yandex_cloud(self):
     if self.photo:
         # Получаем ключи доступа к Yandex.Cloud из переменных окружения
         access_key = settings.YANDEX_CLOUD_ACCESS_KEY
@@ -150,3 +150,28 @@ def upload_to_yandex_cloud(self):
         self.photo = f"{settings.MEDIA_URL}{file_path}"
     else:
         self.photo = f"solevar-bucket/user_images/no-profile.png"
+
+
+
+def upload_audio_to_yandex_cloud(self):
+    if self.record_file:
+        # Получаем ключи доступа к Yandex.Cloud из переменных окружения
+        access_key = settings.YANDEX_CLOUD_ACCESS_KEY
+        secret_key = settings.YANDEX_CLOUD_SECRET_KEY
+        region_name = "ru-central1-c"
+        # Инициализируем клиент boto3 для работы с Yandex Object Storage
+        client = boto3.client('s3',
+                            endpoint_url='https://storage.yandexcloud.net/',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region_name)
+
+            # Загружаем изображение в Yandex.Cloud
+        bucket_name = 'solevar-bucket'
+        file_path = f"user_audio/{self.record_file.name}"  # Путь к изображению в Yandex.Cloud
+        file_data = self.record_file.read()
+        client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
+
+        self.record_file = f"{settings.MEDIA_URL}{file_path}"
+    else:
+        self.record_file = None

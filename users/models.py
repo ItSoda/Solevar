@@ -6,7 +6,15 @@ from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
                        validate_passport_number, validate_passport_series)
 from django.apps import apps
-from .services import upload_to_yandex_cloud
+from .services import upload_media_to_yandex_cloud, upload_audio_to_yandex_cloud
+
+class AudioRecord(models.Model):
+    record_file = models.FileField()
+
+    def save(self, *args, **kwargs):
+        upload_audio_to_yandex_cloud(self)
+        super().save(args, **kwargs)
+
 
 # User Model
 class User(AbstractUser):
@@ -41,6 +49,8 @@ class User(AbstractUser):
         max_length=6, validators=[validate_passport_number], default=""
     )
     date_of_birth = models.DateField(default="2024-02-02")
+    records_files = models.ManyToManyField(AudioRecord, null=True, blank=True)
+    
     username = None
 
     USERNAME_FIELD = "phone_number"
@@ -62,7 +72,7 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
     
     def save(self, *args, **kwargs):
-        upload_to_yandex_cloud(self)
+        upload_media_to_yandex_cloud(self)
         super().save(args, **kwargs)
 
     def full_name(self):

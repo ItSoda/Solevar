@@ -26,10 +26,6 @@ class EventViewSet(ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(status="WAITING")
-
     @method_decorator(cache_page(10))
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
