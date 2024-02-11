@@ -19,12 +19,17 @@ def handle_start(message):
     username = message.from_user.username
     first_name = message.from_user.first_name
     last_name = message.from_user.last_name
-    markup = types.ForceReply(selective=False)
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text='Новости', callback_data='/news'))
+    markup.add(types.InlineKeyboardButton(text='Скачать приложение', callback_data='/apps'))
+    markup.add(types.InlineKeyboardButton(text='FAQ', callback_data='/faq'))
+    markup.add(types.InlineKeyboardButton(text='Перезапустить бота', callback_data='/start'))
+
     try:
         if UserBot.objects.get(user_id=user_id):
             bot.send_message(
                 message.chat.id,
-                f"Привет, {first_name}! \nЭто фитнес-клуб Solevar. \n\nВоспользуйся: \n/help для того, чтобы узнать все возможности бота \n/news чтобы узнать о самых главных новостях нашего клуба.",
+                f"Привет, {first_name}! \nЭто фитнес-клуб Solevar! Что вас интересует?",
                 reply_markup=markup,
             )
 
@@ -37,26 +42,30 @@ def handle_start(message):
         )
         bot.send_message(
             message.chat.id,
-            f"Привет, {first_name}! Это компания МАСТЕР GSM ИСТРА. \n\nВоспользуйся /help для подробной информации или /catalog чтобы посмотреть наши товары.",
+            f"Привет, {first_name}! \nЭто фитнес-клуб Solevar! Что вас интересует?",
             reply_markup=markup,
         )
 
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    if call.data == '/faq':
+        faq(call.message)
+    if call.data == '/apps':
+        apps(call.message)
+    if call.data == '/news':
+        news(call.message)
+    if call.data == '/start':
+        handle_start(call.message)
+    
 
-@bot.message_handler(commands=["help"])
-def help(message):
+@bot.message_handler(commands=["faq"])
+def faq(message):
     text = "Команды:\n/start - перезапуск бота \n/help - Помощь \n/app - ссылка на наше приложение \n/news - новости нашего проекта"
     bot.send_message(
         message.chat.id,
         f"Приветствую {message.from_user.first_name}\n \n{text}",
         parse_mode="html",
     )
-
-
-@bot.message_handler(commands=["about_us"])
-def help(message):
-    markup = types.ForceReply(selective=False)
-    text = "Компания - МАСТЕР GSM ИСТРА. \n\nНОВЫЕ ТОПОВЫЕ ТЕЛЕФОНЫ ПО РАЗУМНЫМ ЦЕНАМ! ДЛЯ ЗАКАЗА ПИШИТЕ СООБЩЕНИЯ В ЛИЧКУ.  \n\nВнимание!!! Гарантия на продукцию Apple 5 ДНЕЙ (проверка заводского брака). Срок гарантии указан с даты покупки телефона. При наличии косметических дефектов гарантия распространяется только на неактивированные устройства. При наличии брака принимаем устройства ТОЛЬКО в первоначальном виде. \n Наш телефон: 89774532753 \nМы ВКонтакте: https://vk.com/id224104632"
-    bot.send_message(message.chat.id, text=text, parse_mode="html", reply_markup=markup)
 
 
 @bot.message_handler(commands=["news"])
@@ -79,8 +88,8 @@ def send_photo_with_caption(bot, chat_id, photo_path, caption):
         bot.send_photo(chat_id, photo, caption=caption)
 
 
-@bot.message_handler(commands=["app"])
-def app(message):
+@bot.message_handler(commands=["apps"])
+def apps(message):
     bot.send_message(
         message.chat.id, "Скачайте наше бесплатное приложение по ссылке: https.."
     )
