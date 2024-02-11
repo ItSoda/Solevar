@@ -60,7 +60,14 @@ class TrainerEventCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("title", "content", "start_date", "duration", "price", "limit_of_participants")
+        fields = (
+            "title",
+            "content",
+            "start_date",
+            "duration",
+            "price",
+            "limit_of_participants",
+        )
 
     def create(self, validated_data):
         created_by_instance = self.context["request"].user
@@ -68,8 +75,9 @@ class TrainerEventCreateSerializer(serializers.ModelSerializer):
         instance = Event.objects.create(
             created_by=created_by_instance, **validated_data
         )
-        
+
         return instance
+
 
 class TrainerEventUpdateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(

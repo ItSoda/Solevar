@@ -18,7 +18,9 @@ from .permissions import IsTrainerUser
 from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventCreateSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
-                          TrainerEventUpdateSerializer, TrainerEventCreateSerializer)
+                          TrainerEventCreateSerializer,
+                          TrainerEventUpdateSerializer)
+
 
 class MainEventListAPIView(ListAPIView):
     queryset = Event.objects.exclude(status="PASSED")
@@ -94,7 +96,7 @@ class MyEventListView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(participants__id=self.request.user.id, status="WAITING")
-    
+
 
 class MyHistoryEventListView(ListAPIView):
     queryset = Event.objects.all()
@@ -237,11 +239,13 @@ class TrainerEventModelViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         trainer_event_serializer = TrainerEventCreateSerializer(
-                data=request.data, context={"request": request}
-            )
+            data=request.data, context={"request": request}
+        )
         trainer_event_serializer.is_valid(raise_exception=True)
         trainer_event_serializer.save()
-        return Response({"message": "Event create success"}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Event create success"}, status=status.HTTP_201_CREATED
+        )
 
     def partial_update(self, request, *args, **kwargs):
         self.serializer_class = TrainerEventUpdateSerializer

@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-import os
+
 from decouple import Config, RepositoryEnv
 from django.utils import timezone
 
@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     "corsheaders",
-
     "gym_management",
     "users",
     "chats",

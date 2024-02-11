@@ -1,12 +1,15 @@
+from django.apps import apps
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.conf import settings
 from phonenumber_field.modelfields import PhoneNumberField
+
 from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
-                       validate_passport_number, validate_passport_series)
-from django.apps import apps
-from .services import upload_media_to_yandex_cloud, upload_audio_to_yandex_cloud
+                       upload_audio_to_yandex_cloud,
+                       upload_media_to_yandex_cloud, validate_passport_number,
+                       validate_passport_series)
+
 
 class AudioRecord(models.Model):
     name = models.CharField(max_length=120)
@@ -18,7 +21,7 @@ class AudioRecord(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-    
+
     def save(self, *args, **kwargs):
         upload_audio_to_yandex_cloud(self)
         super().save(args, **kwargs)
@@ -58,7 +61,7 @@ class User(AbstractUser):
     )
     date_of_birth = models.DateField(blank=True)
     records_files = models.ManyToManyField(AudioRecord, blank=True)
-    
+
     username = None
 
     USERNAME_FIELD = "phone_number"
@@ -78,14 +81,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
-    
+
     def save(self, *args, **kwargs):
         upload_media_to_yandex_cloud(self)
         super().save(args, **kwargs)
 
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.patronymic}"
-    
+
     # def event_history(self):
     #     from gym_management.serializers import EventSerializer
     #     Event = apps.get_model("gym_management", "Event")

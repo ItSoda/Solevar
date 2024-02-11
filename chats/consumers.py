@@ -1,11 +1,11 @@
 import json
+import logging
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils.timesince import timesince
 
 from users.models import User
-import logging
 
 from .models import Message, Room
 
@@ -50,15 +50,19 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
     def get_message_history(self):
         room = Room.objects.filter(uuid=self.room_name).first()
         return list(room.messages.all())
-    
+
     async def send_message_to_client(self, message):
         # Отправляем сообщение клиенту
-        await self.send(text_data=json.dumps({
-            "type": "message",
-            "message": message.text,
-            "username": message.sent_by,
-            "created_at": timesince(message.created_at),
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "type": "message",
+                    "message": message.text,
+                    "username": message.sent_by,
+                    "created_at": timesince(message.created_at),
+                }
+            )
+        )
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)

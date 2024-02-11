@@ -2,11 +2,11 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
-                    EventViewSet, IndividualEventViewSet, MyEventListView,
-                    MyIndividualEventListAPIView,
-                    MySubscriptionView, SubscriptionViewSet,
-                    TrainerEventModelViewSet, TrainerIndividualEventAPIView,
-                    MyHistoryEventListView, MainEventListAPIView)
+                    EventViewSet, IndividualEventViewSet, MainEventListAPIView,
+                    MyEventListView, MyHistoryEventListView,
+                    MyIndividualEventListAPIView, MySubscriptionView,
+                    SubscriptionViewSet, TrainerEventModelViewSet,
+                    TrainerIndividualEventAPIView)
 
 app_name = "gym_management"
 
@@ -16,7 +16,9 @@ router.register(r"trainer_events", TrainerEventModelViewSet, basename="trainer_e
 urlpatterns = [
     path("", include(router.urls)),
     path("main_events/", MainEventListAPIView.as_view(), name="main_events"),
-    path("my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events"),
+    path(
+        "my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events"
+    ),
     path("events/", EventViewSet.as_view(), name="events"),
     path("subscriptions/", SubscriptionViewSet.as_view(), name="subscriptions"),
     path(
@@ -38,5 +40,7 @@ urlpatterns = [
         TrainerIndividualEventAPIView.as_view(),
         name="trainer-list-individual-event",
     ),
-    path("my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events")
+    path(
+        "my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events"
+    ),
 ]
