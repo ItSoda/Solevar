@@ -25,6 +25,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         await self.get_room()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
+        await self.send_message_history()
         logger.info("Middle  connect")
 
         # Inform user
@@ -40,6 +41,24 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
 
         if not self.user.is_staff:
             await self.set_room_closed()
+
+    async def send_message_history(self):
+        message_history = await self.get_message_history()
+        for message in message_history:
+            await self.send_message_to_client(message)
+
+    async def get_message_history(self):
+        room = Room.objects.filter(uuid=self.room_name).first()
+        return room.messages.all()
+    
+    async def send_message_to_client(self, message):
+        # Отправляем сообщение клиенту
+        await self.send(text_data=json.dumps({
+            "type": "message",
+            "message": message.text,
+            "username": message.sent_by.username,
+            "created_at": timesince(message.created_at),
+        }))
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
