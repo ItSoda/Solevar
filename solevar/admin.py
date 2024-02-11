@@ -3,7 +3,7 @@ from django.contrib import admin
 from gym_management.models import Event, IndividualEvent, Subscription, Tag
 from users.models import PhoneNumberVerifySMS, Schedule, User, AudioRecord
 from tgbot.models import Admin, News
-from chats.models import Room
+from chats.models import Room, Message
 
 class CustomAdminSite(admin.AdminSite):
     site_header = "Администрирование ПАПА ФИТНЕС"
@@ -56,6 +56,10 @@ class ScheduleCustomAdmin(admin.ModelAdmin):
     filter_horizontal = ("coach",)
 
 
+class RoomCustomAdmin(admin.ModelAdmin):
+    list_display = ("client", "status")
+    filter_horizontal = ("messages",)
+
 class PhoneNumberVerifySMSCustomAdmin(admin.ModelAdmin):
     list_display = ("code", "phone_number", "created", "expiration")
     ordering = ("created",)
@@ -89,7 +93,8 @@ class TagCustomAdmin(admin.ModelAdmin):
 
 
 custom_admin_site.register(AudioRecord)
-custom_admin_site.register(Room)
+custom_admin_site.register(Message)
+custom_admin_site.register(Room, RoomCustomAdmin)
 custom_admin_site.register(Admin)
 custom_admin_site.register(News)
 custom_admin_site.register(User, UserCustomAdmin)

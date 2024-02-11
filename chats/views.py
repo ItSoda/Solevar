@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from users.models import User
 from users.serializers import UserSerializer
-
+from django.db.models import Max
 from .models import Room
 from .serializers import RoomSerializer
 import uuid
@@ -28,8 +28,12 @@ class CreateOrGetRoomAPIView(CreateAPIView):
 
 
 class ChatAdminListAPIView(ListAPIView):
-    queryset = Room.objects.all()
     serializer_class = RoomSerializer
+
+    def get_queryset(self):
+        return Room.objects.annotate(
+            last_message_time=Max('messages__created_at')
+        ).order_by('-last_message_time')
 
 
 class FullAdminListAPIView(ListAPIView):
