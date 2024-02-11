@@ -1,7 +1,6 @@
 import json
 
-from asgiref.sync import async_to_sync, sync_to_async
-from channels.db import database_sync_to_async
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils.timesince import timesince
 
@@ -40,7 +39,7 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
         if not self.user.is_staff:
-            await self.set_room_closed()
+            await self.set_room_waiting()
 
     async def send_message_history(self):
         message_history = await self.get_message_history()
@@ -125,9 +124,9 @@ class ChatSupportConsumer(AsyncWebsocketConsumer):
         self.room = Room.objects.get(uuid=self.room_name)
 
     @sync_to_async
-    def set_room_closed(self):
+    def set_room_waiting(self):
         self.room = Room.objects.get(uuid=self.room_name)
-        self.room.status = Room.CLOSED
+        self.room.status = Room.WAITING
         self.room.save()
 
     @sync_to_async

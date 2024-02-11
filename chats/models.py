@@ -1,7 +1,7 @@
 from django.db import models
 
 from users.models import User
-
+from django.db.models import Max
 
 class Message(models.Model):
     """Model for message"""
@@ -22,12 +22,10 @@ class Room(models.Model):
 
     WAITING = "waiting"
     ACTIVE = "active"
-    CLOSED = "closed"
 
     CHOICES_STATUS = (
         (WAITING, "Waiting"),
         (ACTIVE, "Active"),
-        (CLOSED, "Closed"),
     )
 
     uuid = models.CharField(max_length=255)
@@ -39,7 +37,10 @@ class Room(models.Model):
     class Meta:
         verbose_name = "чат"
         verbose_name_plural = "Чаты"
-        ordering = ("-created_at",)
 
     def __str__(self):
         return f"{self.client} - {self.uuid}"
+    
+    def get_last_message(self):
+        return self.messages.aggregate(last_message_time=Max('created_at'))['last_message_time']
+    
