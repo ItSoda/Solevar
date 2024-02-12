@@ -153,7 +153,7 @@ def upload_media_to_yandex_cloud(self):
 
         self.photo = f"{settings.MEDIA_URL}{file_path}"
     else:
-        self.photo = f"{settings.MEDIA_URL}solevar-bucket/user_images/no-profile.png"
+        self.photo = f"{settings.MEDIA_URL}user_images/no-profile.png"
 
 
 def upload_audio_to_yandex_cloud(self):
