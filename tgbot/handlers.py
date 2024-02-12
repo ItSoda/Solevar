@@ -189,7 +189,7 @@ def process_photo(message, text, title):
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
-            News.objects.create(text=text, photo=photo, title=title)
+        News.objects.create(text=text, photo=photo, title=title)
     else:
         users = UserBot.objects.all()
 
@@ -200,7 +200,7 @@ def process_photo(message, text, title):
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
-            News.objects.create(text=text, title=title)
+        News.objects.create(text=text, title=title)
 
 
 # Добавление администратора
