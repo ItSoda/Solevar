@@ -250,7 +250,7 @@ def info(message):
         admin_id = Admin.objects.filter(UUID=message.from_user.id).first()
         if admin_id:
             bot.send_message(
-                message,
+                message.chat.id,
                 f"Вы администратор! Вам доступны особенные команды. \n\nsend_message - Добавление новости",
                 reply_markup=markup
             )
