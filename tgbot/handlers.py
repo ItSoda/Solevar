@@ -112,7 +112,7 @@ def news(message):
     if news.count() > 0:
         for new in news:
             if new.photo is not None:
-                photo_path = new.photo.path
+                photo_path = new.photo.path.replace("/itsoda/https:/", "https://")
                 caption = new.text
                 send_photo_with_caption(bot, message.chat.id, photo_path, caption)
             else:
