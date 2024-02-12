@@ -179,18 +179,18 @@ def process_text(message, title):
 
 def process_photo(message, text, title):
     if message.photo:
-        photo = message.photo[-1].file_id  # Получаем file_id фотографии
+        photo = message.photo[-1]  # Получаем file_id фотографии
         users = UserBot.objects.all()
 
         for user in users:
             try:
-                bot.send_photo(user.user_id, photo, caption=text)
+                bot.send_photo(user.user_id, photo.file_id, caption=text)
             except Exception as e:
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
         print(photo.file_id)
-        News.objects.create(text=text, photo=photo.file_id, title=title)
+        News.objects.create(text=text, photo=photo, title=title)
     else:
         users = UserBot.objects.all()
 
