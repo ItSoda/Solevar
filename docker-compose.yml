@@ -76,7 +76,8 @@ services:
     depends_on:
       - api
     environment:
-      - NGINX_PROXY_MAX_UPLOAD=209715200
+      - NGINX_MAX_BODY_SIZE=200M
+      - NGINX_CLIENT_MAX_BODY_SIZE=200M
     ports:
       - "80:80"
       - "443:443"
