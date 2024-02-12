@@ -151,9 +151,9 @@ def upload_media_to_yandex_cloud(self):
         file_data = self.photo.read()
         client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
-        self.photo = f"{settings.MEDIA_URL}{file_path}"
+        self.photo = f"https://storage.yandexcloud.net/solevar-bucket/{file_path}"
     else:
-        self.photo = f"{settings.MEDIA_URL}user_images/no-profile.png"
+        self.photo = f"https://storage.yandexcloud.net/solevar-bucket/user_images/no-profile.png"
 
 
 def upload_audio_to_yandex_cloud(self):
@@ -179,6 +179,6 @@ def upload_audio_to_yandex_cloud(self):
         file_data = self.record_file.read()
         client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
-        self.record_file = f"{settings.MEDIA_URL}{file_path}"
+        self.record_file = f"https://storage.yandexcloud.net/solevar-bucket/{file_path}"
     else:
         self.record_file = None
