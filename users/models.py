@@ -59,7 +59,7 @@ class User(AbstractUser):
     passport_number = models.CharField(
         max_length=6, validators=[validate_passport_number], default=""
     )
-    date_of_birth = models.DateField(blank=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     records_files = models.ManyToManyField(AudioRecord, blank=True, null=True)
 
     username = None
