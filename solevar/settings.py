@@ -166,7 +166,7 @@ else:
 # Base url to serve media files
 MEDIA_URL = "https://storage.yandexcloud.net/solevar-bucket/"
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 1024 * 1024 * 10
+DATA_UPLOAD_MAX_MEMORY_SIZE = 209715200
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

@@ -5,3 +5,7 @@ location /static/ {
 location /media/ {
     alias /itsoda/media/;
 }
+
+http {
+    client_max_body_size 200M;
+}
