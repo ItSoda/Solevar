@@ -25,4 +25,4 @@ def upload_media_tgbot_to_yandex_cloud(self):
         file_data = self.photo.read()
         client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
-        self.photo = f"{settings.MEDIA_URL}{file_path}"
+        self.photo = f"https://storage.yandexcloud.net/solevar-bucket/{file_path}"

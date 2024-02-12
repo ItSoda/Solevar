@@ -56,6 +56,8 @@ def callback_query(call):
         news(call.message)
     if call.data == '/start':
         handle_start(call.message)
+    if call.data == '/send_message':
+        send_message(call.message)
     
 
 @bot.message_handler(commands=["about_us"])
@@ -187,7 +189,7 @@ def process_photo(message, text, title):
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
-            News.objects.create(text=text, photo=photo, title=title)
+        News.objects.create(text=text, photo=photo, title=title)
     else:
         users = UserBot.objects.all()
 
@@ -198,7 +200,7 @@ def process_photo(message, text, title):
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
-            News.objects.create(text=text, title=title)
+        News.objects.create(text=text, title=title)
 
 
 # Добавление администратора
@@ -238,13 +240,19 @@ def process_text_admin(message):
 # Ловит любое сообщение
 @bot.message_handler()
 def info(message):
+    markup = types.InlineKeyboardMarkup()
+    button1 = types.InlineKeyboardButton(text="Создать новость", callback_query="/send_message")
+    button2 = types.InlineKeyboardButton(text="Просмотреть новости", callback_query="/news")
+    markup.add(button1)
+    markup.add(button2)
     if message.text.lower() == "id":
         bot.reply_to(message, f"ID: {message.from_user.id}")
         admin_id = Admin.objects.filter(UUID=message.from_user.id)
         if admin_id:
-            bot.reply_to(
+            bot.send_message(
                 message,
                 f"Вы администратор! Вам доступны особенные команды. \n\nsend_message - Добавление новости",
+                reply_markup=markup
             )
     bot.reply_to(message, f"Лучше закажите у нас!")
 
