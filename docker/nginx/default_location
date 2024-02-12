@@ -2,10 +2,5 @@ location /static/ {
     alias /itsoda/static/;
 }
 
-location /media/ {
-    alias /itsoda/media/;
-}
+client_max_body_size 200M;
 
-http {
-    client_max_body_size 200M;
-}

@@ -16,7 +16,7 @@ RUN adduser -D itsoda && chmod 777 /opt /run
 
 WORKDIR /itsoda
 
-RUN mkdir /itsoda/static && mkdir /itsoda/media && chown -R itsoda:itsoda /itsoda && chmod 777 /itsoda
+RUN mkdir /itsoda/static && chown -R itsoda:itsoda /itsoda && chmod 777 /itsoda
 
 COPY --chown=itsoda:itsoda . .
 
