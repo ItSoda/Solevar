@@ -8,6 +8,7 @@ def upload_media_tgbot_to_yandex_cloud(self):
         # Получаем ключи доступа к Yandex.Cloud из переменных окружения
         access_key = settings.YANDEX_CLOUD_ACCESS_KEY
         secret_key = settings.YANDEX_CLOUD_SECRET_KEY
+        tgbot_token = settings.TELEGRAM_BOT_TOKEN
         region_name = "ru-central1-c"
         # Инициализируем клиент boto3 для работы с Yandex Object Storage
         client = boto3.client(
@@ -21,9 +22,9 @@ def upload_media_tgbot_to_yandex_cloud(self):
         # Загружаем изображение в Yandex.Cloud
         bucket_name = "solevar-bucket"
 
-        response = requests.get(f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/getFile?file_id={self.photo}")
+        response = requests.get(f"https://api.telegram.org/bot{tgbot_token}/getFile?file_id={self.photo}")
         file_path = response.json()["result"]["file_path"]
-        file_url = f"https://api.telegram.org/file/bot{settings.TELEGRAM_BOT_TOKEN}/{file_path}"
+        file_url = f"https://api.telegram.org/file/bot{tgbot_token}/{file_path}"
         # Загружаем изображение из URL
         file_data = requests.get(file_url).content
 
