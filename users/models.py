@@ -47,7 +47,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, default="Фамилия")
     patronymic = models.CharField(max_length=50, default="Отчество")
     is_verified_email = models.BooleanField(default=False)
-    description = models.TextField("Мое описание")
+    description = models.TextField(default="Мое описание")
     photo = models.ImageField()
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
@@ -60,7 +60,7 @@ class User(AbstractUser):
         max_length=6, validators=[validate_passport_number], default=""
     )
     date_of_birth = models.DateField(blank=True)
-    records_files = models.ManyToManyField(AudioRecord, default="")
+    records_files = models.ManyToManyField(AudioRecord, blank=True, null=True)
 
     username = None
 
