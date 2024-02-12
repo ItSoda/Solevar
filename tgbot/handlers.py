@@ -189,7 +189,8 @@ def process_photo(message, text, title):
                 print(f"Произошла ошибка {e}")
         else:
             bot.send_message(message.chat.id, "Рассылка завершена")
-        News.objects.create(text=text, photo=photo, title=title)
+        print(photo.file_id)
+        News.objects.create(text=text, photo=photo.file_id, title=title)
     else:
         users = UserBot.objects.all()
 
@@ -251,7 +252,7 @@ def info(message):
         if admin_id:
             bot.send_message(
                 message.chat.id,
-                f"Вы администратор! Вам доступны особенные команды. \n\nsend_message - Добавление новости",
+                f"Вы администратор! Вам доступны особенные команды",
                 reply_markup=markup
             )
     bot.reply_to(message, f"Лучше закажите у нас!")

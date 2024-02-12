@@ -39,7 +39,7 @@ class UserBot(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=100)
     text = models.TextField()
-    photo = models.ImageField(blank=True)
+    photo = models.ImageField(blank=True, null=True)
 
     class Meta:
         verbose_name = "новость"
