@@ -24,4 +24,3 @@ urlpatterns = [
 ]
 
 urlpatterns += doc_url
-urlpatterns += static(settings.MEDIA_URL)

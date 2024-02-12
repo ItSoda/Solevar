@@ -43,8 +43,8 @@ services:
       - mysql
       - redis
     volumes:
-      - .:/
-      - static_volume:/static
+      - .:/itsoda
+      - static_volume:/itsoda/static
     container_name: django-api
 
   startbot:
@@ -54,7 +54,7 @@ services:
     depends_on:    
       - api
     volumes:
-      - .:/
+      - .:/itsoda
     env_file:
       - docker-compose.env
     environment:
@@ -68,7 +68,7 @@ services:
     container_name: nginx_cityheroes
     image: nginx_cityheroes
     volumes:
-      - static_volume:/static
+      - static_volume:/itsoda/static
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html

@@ -14,13 +14,13 @@ RUN pip install --upgrade pip
 
 RUN adduser -D itsoda && chmod 777 /opt /run
 
-WORKDIR /
+WORKDIR /itsoda
 
-RUN mkdir /static && chown -R itsoda:itsoda / && chmod 777 /
+RUN mkdir /itsoda/static && mkdir /itsoda/media && chown -R itsoda:itsoda /itsoda && chmod 777 /itsoda
 
 COPY --chown=itsoda:itsoda . .
 
-COPY pyproject.toml poetry.lock /
+COPY pyproject.toml poetry.lock /itsoda/
 
 RUN curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz \
     | tar -C /usr/local/bin -xzvf - \
