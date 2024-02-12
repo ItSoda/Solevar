@@ -51,7 +51,7 @@ class User(AbstractUser):
     photo = models.ImageField(blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
-    trainer_type = models.CharField(max_length=100, default="")
+    trainer_type = models.CharField(max_length=100, default="Пользователь")
     balance = models.BigIntegerField(default=0)
     passport_series = models.CharField(
         max_length=4, validators=[validate_passport_series], default=""
