@@ -45,7 +45,6 @@ services:
     volumes:
       - .:/itsoda
       - static_volume:/itsoda/static
-      - media_volume:/itsoda/media
     container_name: django-api
 
   startbot:
@@ -70,7 +69,6 @@ services:
     image: nginx_cityheroes
     volumes:
       - static_volume:/itsoda/static
-      - media_volume:/itsoda/media
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
@@ -94,7 +92,6 @@ services:
 volumes:
   mysql_data: null
   static_volume:
-  media_volume:
   certs:
   vhost:
   html:
