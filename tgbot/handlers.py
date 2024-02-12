@@ -241,13 +241,13 @@ def process_text_admin(message):
 @bot.message_handler()
 def info(message):
     markup = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text="Создать новость", callback_query="/send_message")
-    button2 = types.InlineKeyboardButton(text="Просмотреть новости", callback_query="/news")
+    button1 = types.InlineKeyboardButton(text="Создать новость", callback_data="/send_message")
+    button2 = types.InlineKeyboardButton(text="Просмотреть новости", callback_data="/news")
     markup.add(button1)
     markup.add(button2)
     if message.text.lower() == "id":
         bot.reply_to(message, f"ID: {message.from_user.id}")
-        admin_id = Admin.objects.filter(UUID=message.from_user.id)
+        admin_id = Admin.objects.filter(UUID=message.from_user.id).first()
         if admin_id:
             bot.send_message(
                 message,
