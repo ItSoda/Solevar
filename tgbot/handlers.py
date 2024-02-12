@@ -1,4 +1,5 @@
 import logging
+import requests
 
 import telebot
 from django.conf import settings
@@ -122,8 +123,9 @@ def news(message):
 
 
 def send_photo_with_caption(bot, chat_id, photo_path, caption):
-    with open(photo_path, "rb") as photo:
-        bot.send_photo(chat_id, photo, caption=caption)
+    response = requests.get(photo_path)
+    if response.status_code == 200:
+        bot.send_photo(chat_id, response.content, caption=caption)
 
 
 @bot.message_handler(commands=["apps"])
