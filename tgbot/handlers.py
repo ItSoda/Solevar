@@ -21,8 +21,8 @@ def handle_start(message):
     last_name = message.from_user.last_name
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text='Новости', callback_data='/news'))
-    markup.add(types.InlineKeyboardButton(text='Скачать приложение', callback_data='/apps'))
-    markup.add(types.InlineKeyboardButton(text='FAQ', callback_data='/faq'))
+    markup.add(types.InlineKeyboardButton(text='Скачать наше приложение', callback_data='/apps'))
+    markup.add(types.InlineKeyboardButton(text="О нас", callback_data='/about_us'))
     markup.add(types.InlineKeyboardButton(text='Перезапустить бота', callback_data='/start'))
 
     try:
@@ -48,8 +48,8 @@ def handle_start(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-    if call.data == '/faq':
-        faq(call.message)
+    if call.data == '/about_us':
+        about_us(call.message)
     if call.data == '/apps':
         apps(call.message)
     if call.data == '/news':
@@ -58,13 +58,49 @@ def callback_query(call):
         handle_start(call.message)
     
 
-@bot.message_handler(commands=["faq"])
-def faq(message):
-    text = "Команды:\n/start - перезапуск бота \n/help - Помощь \n/app - ссылка на наше приложение \n/news - новости нашего проекта"
+@bot.message_handler(commands=["about_us"])
+def about_us(message):
+    text = """RECORD FITNESS – фитнес клуб премиум класса, расположенный в самом центре Великого Новгорода в ТД "РУСЬ"
+
+Мы рады предложить вам достижения мировой фитнес-индустрии, современное оборудование и тренажеры, SPA процедуры с первоклассным сервисом и комфортом.
+
+Наш фитнес – клуб расположен на 4ом и 5ом этажах, откуда из панорамных окон открывается невероятный вид на город!
+
+Тренировочное пространство представлено несколькими залами, которые оборудованы самыми современными спортивными тренажерами, а также фитнес – инвентарем для групповых аэробных тренировок.
+
+Наши профессиональные тренеры разработали для вас специальные высокоэффективные программы групповых и персональных тренировок в различных фитнес – направлениях, чтобы вы могли выбрать какую-либо программу в соответствии с вашими предпочтениями и уровнем физической подготовки. Это — силовые тренировки и аэробные программы, танцы и йога, а также специальные направления.
+
+И МНОГО КИСЛОРОДА!
+На всей территории RECORD Fitness  О2=21%
+
+Посещение фитнес центра RECORD, равнозначно поездке за город, так как воздух на всех территории клуба постоянно обогащается кислородом до уровня 21%. 
+
+Высокое содержание кислорода в воздухе способствует повышению эффективности тренировок и улучшению состояния здоровья.
+
+RECORD FITNESS – все для вашего отдыха, здоровья и красоты!
+
+ДОБРО ПОЖАЛОВАТЬ!
+
+Официальные данные:
+
+Общество с ограниченной ответственностью
+«РЕКОРД»
+ИНН 5321196481
+КПП 532101001
+ОГРН 1185321005000
+__
+
+Юридический адрес:
+173015, Россия, Новгородская область, 
+г. Великий Новгород, пер. Исаакиевский, 23-11"""
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text='Узнать все о жизни зала', callback_data='/news'))
+    markup.add(types.InlineKeyboardButton(text='Скачать наше приложение', callback_data='/apps'))
     bot.send_message(
         message.chat.id,
         f"Приветствую {message.from_user.first_name}\n \n{text}",
         parse_mode="html",
+        reply_markup=markup
     )
 
 
@@ -90,8 +126,13 @@ def send_photo_with_caption(bot, chat_id, photo_path, caption):
 
 @bot.message_handler(commands=["apps"])
 def apps(message):
+    markup = types.InlineKeyboardMarkup()
+    button1 = types.InlineKeyboardButton(text="IOS", url="https://fohowomsk.ru/swagger/")
+    button2 = types.InlineKeyboardButton(text="ANDROID", url="https://fohowomsk.ru/swagger/")
+    markup.add(button1)
+    markup.add(button2)
     bot.send_message(
-        message.chat.id, "Скачайте наше бесплатное приложение по ссылке: https.."
+        message.chat.id, "Скачайте наше бесплатное приложение на свое устройство!", reply_markup=markup
     )
 
 

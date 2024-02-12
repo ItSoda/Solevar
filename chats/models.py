@@ -17,6 +17,10 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.sent_by}"
 
+    class Meta:
+        verbose_name = "сообщение"
+        verbose_name_plural = "Сообщения"
+
 
 class Room(models.Model):
     """Model for room"""
