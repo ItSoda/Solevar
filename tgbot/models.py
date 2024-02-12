@@ -50,4 +50,4 @@ class News(models.Model):
 
     def save(self, *args, **kwargs):
         upload_media_tgbot_to_yandex_cloud(self)
-        super().save(args, **kwargs)
+        super().save(*args, **kwargs)
