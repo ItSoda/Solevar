@@ -43,7 +43,7 @@ services:
       - mysql
       - redis
     volumes:
-      - .:/itsoda
+      - .:.
       - static_volume:/itsoda/static
     container_name: django-api
 
