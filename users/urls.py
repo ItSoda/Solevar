@@ -13,7 +13,7 @@ router.register(r"schedule", ScheduleModelViewSet, basename="schedule")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("user-update/<int:id>/", UserInfoUpdateAPIView.as_view(), name="user-update"),
+    path("user-update/<int:pk>/", UserInfoUpdateAPIView.as_view(), name="user-update"),
     path("coaches/", CoachListAPIView.as_view(), name="coaches-list"),
     path("coaches/<str:time>/", CoachListAPIView.as_view(), name="coaches-list"),
     path("schedules/", ScheduleListAPIView.as_view(), name="schedules-list"),
