@@ -129,7 +129,7 @@ def validate_passport_number(value):
 
 
 def upload_media_to_yandex_cloud(self):
-    if self.photo:
+    if self.photo_file:
         # Получаем ключи доступа к Yandex.Cloud из переменных окружения
         access_key = settings.YANDEX_CLOUD_ACCESS_KEY
         secret_key = settings.YANDEX_CLOUD_SECRET_KEY
@@ -146,14 +146,14 @@ def upload_media_to_yandex_cloud(self):
         # Загружаем изображение в Yandex.Cloud
         bucket_name = "solevar-bucket"
         file_path = (
-            f"user_images/{self.photo.name}"  # Путь к изображению в Yandex.Cloud
+            f"user_images/{self.photo_file.name}"  # Путь к изображению в Yandex.Cloud
         )
-        file_data = self.photo.read()
+        file_data = self.photo_file.read()
         client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
-        self.photo = file_path
+        self.photo = "https://storage.yandexcloud.net/solevar-bucket/{file_path}/"
     else:
-        self.photo = "user_images/no-profile.png"
+        self.photo = "https://storage.yandexcloud.net/solevar-bucket/user_images/no-profile.png"
 
 
 def upload_audio_to_yandex_cloud(self):
