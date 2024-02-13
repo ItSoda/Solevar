@@ -49,7 +49,7 @@ class User(AbstractUser):
     is_verified_email = models.BooleanField(default=False)
     description = models.TextField(default="Мое описание")
     photo_file = models.ImageField(blank=True, null=True)
-    photo = models.CharField(max_length=500, null=True, blank=True)
+    photo = models.CharField(max_length=500, default="https://storage.yandexcloud.net/solevar-bucket/user_images/no-profile.png", null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=CLIENT)
     rating = models.SmallIntegerField(default=5)
     trainer_type = models.CharField(max_length=100, default="Пользователь")
