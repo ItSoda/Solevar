@@ -47,6 +47,8 @@ class UserShortSerializer(UserSerializer):
 
 
 class UserProfile(UserSerializer):
+    date_of_issue = serializers.DateField(format="%Y-%m-%d")
+    date_of_birth = serializers.DateField(format="%Y-%m-%d")
     photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
@@ -66,9 +68,35 @@ class UserProfile(UserSerializer):
             "phone_number",
             "role",
             "balance",
-            "is_staff",
+            "is_staff", 
+            "passport_series",
+            "passport_number",
+            "date_of_issue",
+            "place_of_issue",
+            "registration_address",
         )
         read_only_fields = ("password",)
+
+
+class UserInfoUpdateSerializer(serializers.ModelSerializer):
+    date_of_issue = serializers.DateField(format="%Y-%m-%d")
+    date_of_birth = serializers.DateField(format="%Y-%m-%d")
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "date_of_birth",
+            "first_name",
+            "last_name",
+            "patronymic",
+            "passport_series",
+            "passport_number",
+            "date_of_issue",
+            "place_of_issue",
+            "registration_address",
+        )
 
 
 class EmailContactSerializer(serializers.Serializer):

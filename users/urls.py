@@ -4,7 +4,7 @@ from rest_framework import routers
 from .views import (CoachListAPIView, ContactEmailView, PhoneNumberSendSMSView,
                     PhoneNumberVerificationView, ScheduleListAPIView,
                     ScheduleModelViewSet, YookassaPaymentView,
-                    YookassaWebhookView)
+                    YookassaWebhookView, UserInfoUpdateAPIView)
 
 app_name = "users"
 
@@ -13,6 +13,7 @@ router.register(r"schedule", ScheduleModelViewSet, basename="schedule")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("user-update/<int:id>/", UserInfoUpdateAPIView.as_view(), name="user-update"),
     path("coaches/", CoachListAPIView.as_view(), name="coaches-list"),
     path("coaches/<str:time>/", CoachListAPIView.as_view(), name="coaches-list"),
     path("schedules/", ScheduleListAPIView.as_view(), name="schedules-list"),
