@@ -13,13 +13,13 @@ from gym_management.services import (add_user_to_event, change_time_selected,
                                      down_user_balance, remove_user_from_event)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
 
-from .models import Event, IndividualEvent, Subscription
+from .models import Event, IndividualEvent, Subscription, Tag
 from .permissions import IsTrainerUser
 from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventCreateSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
                           TrainerEventCreateSerializer,
-                          TrainerEventUpdateSerializer)
+                          TrainerEventUpdateSerializer, TagSerializer)
 
 
 class MainEventListAPIView(ListAPIView):
@@ -263,3 +263,10 @@ class TrainerIndividualEventAPIView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(coach=self.request.user)
+
+
+class TrainerTagAPIView(ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+    

@@ -152,6 +152,8 @@ def upload_media_to_yandex_cloud(self):
         client.put_object(Bucket=bucket_name, Key=file_path, Body=file_data)
 
         self.photo = file_path
+    else:
+        self.photo = "user_images/no-profile.png"
 
 
 def upload_audio_to_yandex_cloud(self):

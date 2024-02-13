@@ -6,12 +6,13 @@ from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
                     MyEventListView, MyHistoryEventListView,
                     MyIndividualEventListAPIView, MySubscriptionView,
                     SubscriptionViewSet, TrainerEventModelViewSet,
-                    TrainerIndividualEventAPIView)
+                    TrainerIndividualEventAPIView, TrainerTagAPIView)
 
 app_name = "gym_management"
 
 router = routers.DefaultRouter()
 router.register(r"trainer_events", TrainerEventModelViewSet, basename="trainer_events")
+router.register(r"tags", TrainerTagAPIView, basename="tags")
 
 urlpatterns = [
     path("", include(router.urls)),
