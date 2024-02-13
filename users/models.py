@@ -6,9 +6,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
-                       upload_audio_to_yandex_cloud,
-                       upload_media_to_yandex_cloud, validate_passport_number,
-                       validate_passport_series)
+                        upload_audio_to_yandex_cloud,
+                        upload_media_to_yandex_cloud, validate_passport_number,
+                        validate_passport_series)
 
 
 class AudioRecord(models.Model):
@@ -59,6 +59,9 @@ class User(AbstractUser):
     passport_number = models.CharField(
         max_length=6, validators=[validate_passport_number], default=""
     )
+    date_of_issue = models.DateField(blank=True, null=True)
+    place_of_issue = models.CharField(max_length=70)
+    registration_address = models.CharField(max_length=120)
     date_of_birth = models.DateField(blank=True, null=True)
     records_files = models.ManyToManyField(AudioRecord, blank=True, null=True)
 
@@ -72,12 +75,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "пользователя"
         verbose_name_plural = "Клиенты | Тренеры"
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=["passport_series", "passport_number"],
-        #         name="unique_series_number",
-        #     )
-        # ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["passport_series", "passport_number", "place_of_issue", "registration_address", "date_of_issue"],
+                name="unique_passport",
+            )
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"

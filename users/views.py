@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+                                     UpdateAPIView)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -17,12 +17,17 @@ from gym_management.permissions import IsTrainerUser
 from .models import Schedule, User
 from .serializers import (EmailContactSerializer,
                           ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
-                          UserShortSerializer)
+                          UserShortSerializer, UserInfoUpdateSerializer)
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
 
 logger = logging.getLogger("main")
+
+
+class UserInfoUpdateAPIView(UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserInfoUpdateSerializer
 
 
 class ScheduleModelViewSet(ModelViewSet):
