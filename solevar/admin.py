@@ -26,6 +26,7 @@ class UserCustomAdmin(admin.ModelAdmin):
         "email",
         "description",
         "photo",
+        "photo_file",
         "role",
         "rating",
         "trainer_type",
