@@ -43,6 +43,7 @@ class UserShortSerializer(UserSerializer):
             "patronymic",
             "description",
             "rating",
+            "trainer_type"
         )
 
 
