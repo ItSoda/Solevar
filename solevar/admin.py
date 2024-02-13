@@ -36,6 +36,9 @@ class UserCustomAdmin(admin.ModelAdmin):
         "is_superuser",
         "passport_series",
         "passport_number",
+        "date_of_issue",
+        "place_of_issue",
+        "registration_address",
         "records_files",
     )
     list_display = (

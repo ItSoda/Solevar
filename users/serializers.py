@@ -68,7 +68,7 @@ class UserProfile(UserSerializer):
             "phone_number",
             "role",
             "balance",
-            "is_staff", 
+            "is_staff",
             "passport_series",
             "passport_number",
             "date_of_issue",

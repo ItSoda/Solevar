@@ -24,11 +24,17 @@ class CreateOrGetRoomAPIView(CreateAPIView):
                 user = self.request.user
                 username = f"{user.first_name} {user.last_name} {user.id}"
                 room_uuid = uuid.uuid4()
-                
+
                 Room.objects.create(uuid=room_uuid, client=username)
-                return Response({"uuid": room_uuid, "name": first_name}, status=status.HTTP_201_CREATED)
+                return Response(
+                    {"uuid": room_uuid, "name": first_name},
+                    status=status.HTTP_201_CREATED,
+                )
             else:
-                return Response({"uuid": room.uuid, "name": first_name}, status=status.HTTP_201_CREATED)
+                return Response(
+                    {"uuid": room.uuid, "name": first_name},
+                    status=status.HTTP_201_CREATED,
+                )
         except Exception as e:
             return Response({"error": f"Error: {str(e)}"})
 
