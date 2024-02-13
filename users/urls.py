@@ -3,8 +3,8 @@ from rest_framework import routers
 
 from .views import (CoachListAPIView, ContactEmailView, PhoneNumberSendSMSView,
                     PhoneNumberVerificationView, ScheduleListAPIView,
-                    ScheduleModelViewSet, YookassaPaymentView,
-                    YookassaWebhookView, UserInfoUpdateAPIView)
+                    ScheduleModelViewSet, UserInfoUpdateAPIView,
+                    YookassaPaymentView, YookassaWebhookView)
 
 app_name = "users"
 

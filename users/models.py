@@ -6,9 +6,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
 from .services import (is_expired, send_verification_phone,
-                        upload_audio_to_yandex_cloud,
-                        upload_media_to_yandex_cloud, validate_passport_number,
-                        validate_passport_series)
+                       upload_audio_to_yandex_cloud,
+                       upload_media_to_yandex_cloud, validate_passport_number,
+                       validate_passport_series)
 
 
 class AudioRecord(models.Model):
@@ -77,7 +77,13 @@ class User(AbstractUser):
         verbose_name_plural = "Клиенты | Тренеры"
         constraints = [
             models.UniqueConstraint(
-                fields=["passport_series", "passport_number", "place_of_issue", "registration_address", "date_of_issue"],
+                fields=[
+                    "passport_series",
+                    "passport_number",
+                    "place_of_issue",
+                    "registration_address",
+                    "date_of_issue",
+                ],
                 name="unique_passport",
             )
         ]

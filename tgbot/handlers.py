@@ -1,6 +1,6 @@
 import logging
-import requests
 
+import requests
 import telebot
 from django.conf import settings
 from telebot import types
@@ -21,10 +21,16 @@ def handle_start(message):
     first_name = message.from_user.first_name
     last_name = message.from_user.last_name
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(text='Новости', callback_data='/news'))
-    markup.add(types.InlineKeyboardButton(text='Скачать наше приложение', callback_data='/apps'))
-    markup.add(types.InlineKeyboardButton(text="О нас", callback_data='/about_us'))
-    markup.add(types.InlineKeyboardButton(text='Перезапустить бота', callback_data='/start'))
+    markup.add(types.InlineKeyboardButton(text="Новости", callback_data="/news"))
+    markup.add(
+        types.InlineKeyboardButton(
+            text="Скачать наше приложение", callback_data="/apps"
+        )
+    )
+    markup.add(types.InlineKeyboardButton(text="О нас", callback_data="/about_us"))
+    markup.add(
+        types.InlineKeyboardButton(text="Перезапустить бота", callback_data="/start")
+    )
 
     try:
         if UserBot.objects.get(user_id=user_id):
@@ -47,19 +53,20 @@ def handle_start(message):
             reply_markup=markup,
         )
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-    if call.data == '/about_us':
+    if call.data == "/about_us":
         about_us(call.message)
-    if call.data == '/apps':
+    if call.data == "/apps":
         apps(call.message)
-    if call.data == '/news':
+    if call.data == "/news":
         news(call.message)
-    if call.data == '/start':
+    if call.data == "/start":
         handle_start(call.message)
-    if call.data == '/send_message':
+    if call.data == "/send_message":
         send_message(call.message)
-    
+
 
 @bot.message_handler(commands=["about_us"])
 def about_us(message):
@@ -97,13 +104,21 @@ __
 173015, Россия, Новгородская область, 
 г. Великий Новгород, пер. Исаакиевский, 23-11"""
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(text='Узнать все о жизни зала', callback_data='/news'))
-    markup.add(types.InlineKeyboardButton(text='Скачать наше приложение', callback_data='/apps'))
+    markup.add(
+        types.InlineKeyboardButton(
+            text="Узнать все о жизни зала", callback_data="/news"
+        )
+    )
+    markup.add(
+        types.InlineKeyboardButton(
+            text="Скачать наше приложение", callback_data="/apps"
+        )
+    )
     bot.send_message(
         message.chat.id,
         f"Приветствую {message.from_user.first_name}\n \n{text}",
         parse_mode="html",
-        reply_markup=markup
+        reply_markup=markup,
     )
 
 
@@ -131,12 +146,18 @@ def send_photo_with_caption(bot, chat_id, photo_path, caption):
 @bot.message_handler(commands=["apps"])
 def apps(message):
     markup = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text="IOS", url="https://fohowomsk.ru/swagger/")
-    button2 = types.InlineKeyboardButton(text="ANDROID", url="https://fohowomsk.ru/swagger/")
+    button1 = types.InlineKeyboardButton(
+        text="IOS", url="https://fohowomsk.ru/swagger/"
+    )
+    button2 = types.InlineKeyboardButton(
+        text="ANDROID", url="https://fohowomsk.ru/swagger/"
+    )
     markup.add(button1)
     markup.add(button2)
     bot.send_message(
-        message.chat.id, "Скачайте наше бесплатное приложение на свое устройство!", reply_markup=markup
+        message.chat.id,
+        "Скачайте наше бесплатное приложение на свое устройство!",
+        reply_markup=markup,
     )
 
 
@@ -243,8 +264,12 @@ def process_text_admin(message):
 @bot.message_handler()
 def info(message):
     markup = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text="Создать новость", callback_data="/send_message")
-    button2 = types.InlineKeyboardButton(text="Просмотреть новости", callback_data="/news")
+    button1 = types.InlineKeyboardButton(
+        text="Создать новость", callback_data="/send_message"
+    )
+    button2 = types.InlineKeyboardButton(
+        text="Просмотреть новости", callback_data="/news"
+    )
     markup.add(button1)
     markup.add(button2)
     if message.text.lower() == "id":
@@ -254,7 +279,7 @@ def info(message):
             bot.send_message(
                 message.chat.id,
                 f"Вы администратор! Вам доступны особенные команды",
-                reply_markup=markup
+                reply_markup=markup,
             )
     bot.reply_to(message, f"Лучше закажите у нас!")
 

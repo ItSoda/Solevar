@@ -1,6 +1,6 @@
 import boto3
-from django.conf import settings
 import requests
+from django.conf import settings
 
 
 def upload_media_tgbot_to_yandex_cloud(self):
@@ -22,7 +22,9 @@ def upload_media_tgbot_to_yandex_cloud(self):
         # Загружаем изображение в Yandex.Cloud
         bucket_name = "solevar-bucket"
 
-        response = requests.get(f"https://api.telegram.org/bot{tgbot_token}/getFile?file_id={self.photo}")
+        response = requests.get(
+            f"https://api.telegram.org/bot{tgbot_token}/getFile?file_id={self.photo}"
+        )
         file_path = response.json()["result"]["file_path"]
         file_url = f"https://api.telegram.org/file/bot{tgbot_token}/{file_path}"
         # Загружаем изображение из URL
