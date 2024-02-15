@@ -23,7 +23,7 @@ from .serializers import (EventCreateSerializer, EventSerializer,
 
 
 class MainEventListAPIView(ListAPIView):
-    queryset = Event.objects.exclude(status="PASSED")
+    queryset = Event.objects.exclude(status=Event.PASSED)
     serializer_class = EventSerializer
 
     @method_decorator(cache_page(10))
