@@ -56,7 +56,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class TrainerEventCreateSerializer(serializers.ModelSerializer):
-    start_date = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Event
