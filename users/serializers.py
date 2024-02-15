@@ -48,8 +48,8 @@ class UserShortSerializer(UserSerializer):
 
 
 class UserProfile(UserSerializer):
-    date_of_issue = serializers.DateField(format="%d-%m-%Y")
-    date_of_birth = serializers.DateField(format="%d-%m-%Y")
+    date_of_issue = serializers.DateField(format="%Y-%m-%d")
+    date_of_birth = serializers.DateField(format="%Y-%m-%d")
     photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
@@ -80,8 +80,8 @@ class UserProfile(UserSerializer):
 
 
 class UserInfoUpdateSerializer(serializers.ModelSerializer):
-    date_of_issue = serializers.DateField(format="%d-%m-%Y")
-    date_of_birth = serializers.DateField(format="%d-%m-%Y")
+    date_of_issue = serializers.DateField(format="%Y-%m-%d")
+    date_of_birth = serializers.DateField(format="%Y-%m-%d")
 
     class Meta:
         model = User
@@ -108,7 +108,7 @@ class EmailContactSerializer(serializers.Serializer):
 
 class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
     coach = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    time = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Schedule
@@ -137,7 +137,7 @@ class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
-    time = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
     coach = UserShortSerializer(many=True)
 
     class Meta:
