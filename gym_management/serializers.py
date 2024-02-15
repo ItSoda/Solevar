@@ -84,7 +84,8 @@ class TrainerEventUpdateSerializer(serializers.ModelSerializer):
         child=serializers.IntegerField(), write_only=True
     )
     tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
-    start_date = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+
 
     class Meta:
         model = Event
