@@ -44,7 +44,7 @@ def notify_users_one_day_before_expiry_subscription():
 # Уведомления о количестве тренировок
 @shared_task
 def notify_users_one_trainy_before_expiry_individual_event():
-    one_trainy_before_end = 1
+    one_trainy_before_end = 2
 
     individual_event_to_notify = IndividualEvent.objects.filter(
         quantity=one_trainy_before_end
@@ -103,7 +103,7 @@ def send_email_leave_success_task(email, first_name, event_id):
 def send_email_succes_buy_personal_trainer(email, first_name, coach_id, training_date):
     # Получение данных
     coach = User.objects.get(id=coach_id)
-    formatted_date = datetime.strptime(training_date, "%Y-%m-%d %H:%M")
+    formatted_date = datetime.strptime(training_date, "%d-%m-%Y %H:%M")
 
     subjects = f"Успешная оплата персональной тренировки!"
     message = f"Уважаемый {first_name}! Вы успешно оплатили и записались на персональную тренировку к {coach.full_name()} на {formatted_date.strftime('%H:%M')}"
