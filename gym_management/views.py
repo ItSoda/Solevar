@@ -20,10 +20,11 @@ from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
                           TrainerEventCreateSerializer,
                           TrainerEventUpdateSerializer, TagSerializer)
+from django.db.models import Q
 
 
 class MainEventListAPIView(ListAPIView):
-    queryset = Event.objects.exclude(status=Event.PASSED)
+    queryset = Event.objects.filter(status="WAITING")
     serializer_class = EventSerializer
 
     @method_decorator(cache_page(10))
