@@ -22,6 +22,11 @@ urlpatterns = [
         IndividualEventScheduleListAPIView.as_view(),
         name="individual-event-schedules-list",
     ),
+    path(
+        "individual_event_schedules/",
+        IndividualEventScheduleListAPIView.as_view(),
+        name="individual-event-schedules-list",
+    ),
     path("schedules/", TrainerScheduleListAPIView.as_view(), name="schedules-list"),
     path("payment/create/", YookassaPaymentView.as_view(), name="payment-create"),
     path("yookassa/webhook/", YookassaWebhookView.as_view(), name="yookassa-webhook"),
