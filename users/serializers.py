@@ -43,10 +43,11 @@ class UserShortSerializer(UserSerializer):
             "patronymic",
             "description",
             "rating",
-            "trainer_type"
+            "trainer_type",
         )
 
-class  UserMinSerializer(UserSerializer):
+
+class UserMinSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = (
@@ -54,6 +55,7 @@ class  UserMinSerializer(UserSerializer):
             "first_name",
             "last_name",
         )
+
 
 class UserProfile(UserSerializer):
     date_of_issue = serializers.DateField(format="%Y-%m-%d")

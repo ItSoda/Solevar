@@ -6,7 +6,8 @@ from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
                     MyEventListView, MyHistoryEventListView,
                     MyIndividualEventListAPIView, MySubscriptionView,
                     SubscriptionViewSet, TrainerEventModelViewSet,
-                    TrainerIndividualEventAPIView, TrainerTagAPIView, TrainerUpdateQuantityIndividualEventAPIView)
+                    TrainerIndividualEventAPIView, TrainerTagAPIView,
+                    TrainerUpdateQuantityIndividualEventAPIView)
 
 app_name = "gym_management"
 
@@ -41,7 +42,11 @@ urlpatterns = [
         TrainerIndividualEventAPIView.as_view(),
         name="trainer-list-individual-event",
     ),
-    path("trainer_update_individual_event/<int:pk>/", TrainerUpdateQuantityIndividualEventAPIView.as_view(), name="trainer_update_individual_event"),
+    path(
+        "trainer_update_individual_event/<int:pk>/",
+        TrainerUpdateQuantityIndividualEventAPIView.as_view(),
+        name="trainer_update_individual_event",
+    ),
     path(
         "my_history_events/", MyHistoryEventListView.as_view(), name="my_history_events"
     ),
