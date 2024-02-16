@@ -78,11 +78,6 @@ class IndividualEvent(models.Model):
     class Meta:
         verbose_name = "персональную тренировку"
         verbose_name_plural = "Персональные тренировки"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["coach", "participant"], name="unique_coach_participant"
-            )
-        ]
 
     def __str__(self) -> str:
         return f"Individual event with {self.participant.first_name} on {self.training_date} at {self.duration}"
