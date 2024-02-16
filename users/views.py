@@ -10,13 +10,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from yookassa.domain.notification import WebhookNotificationFactory
-
+from rest_framework_simplejwt.views import TokenObtainPairView
 from gym_management.permissions import IsTrainerUser
 
 from .models import Schedule, User
 from .serializers import (EmailContactSerializer,
                           ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
-                          UserInfoUpdateSerializer, UserShortSerializer)
+                          UserInfoUpdateSerializer, UserShortSerializer, CustomTokenObtainPairSerializer)
 from .services import (create_payment, proccess_phone_verification,
                        send_email_from_user, send_phone_verify_task,
                        user_change_balance)
@@ -34,8 +34,9 @@ class ScheduleModelViewSet(ModelViewSet):
     serializer_class = ScheduleSerializer
 
     def create(self, request, *args, **kwargs):
-        self.serializer_class = ScheduleCreateOrUpdateSerializer
-        return super().create(request, *args, **kwargs)
+        scheduleSerializer = ScheduleCreateOrUpdateSerializer(data=request.data, context={"request": request})
+        scheduleSerializer.validate()
+        scheduleSerializer.save()
 
     def partial_update(self, request, *args, **kwargs):
         self.serializer_class = ScheduleCreateOrUpdateSerializer
@@ -233,3 +234,7 @@ class ContactEmailView(APIView):
                 {"error": f"Произошла ошибка {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
