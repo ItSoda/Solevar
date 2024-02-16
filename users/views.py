@@ -57,6 +57,27 @@ class ScheduleModelViewSet(ModelViewSet):
             )
 
 
+class IndividualEventScheduleListAPIView(ListAPIView):
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        try:
+            trainer_id = self.kwargs.get("trainer_id")
+            trainer = User.objects.filter(id=trainer_id).first()
+
+            if not trainer:
+                return super().get_queryset()
+
+            return Schedule.objects.filter(coach=trainer, is_selected=False)
+
+        except Exception:
+            return Response(
+                {"error": "Ошибка с тренером"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
 class TrainerScheduleListAPIView(ListAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
@@ -66,13 +87,15 @@ class TrainerScheduleListAPIView(ListAPIView):
             trainer = self.request.user
 
             if not trainer:
-                return super().get_queryset()
+                return Response(
+                    {"error": "Токен не передали."},
+                )
 
             return Schedule.objects.filter(coach=trainer)
 
         except Exception:
             return Response(
-                {"error": "Неправильный формат id тренера."},
+                {"error": "Ошибка с тренером"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

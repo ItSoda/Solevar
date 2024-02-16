@@ -6,8 +6,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from gym_management.services import (add_user_to_event, change_time_selected,
@@ -19,8 +19,8 @@ from .permissions import IsTrainerUser
 from .serializers import (EventCreateSerializer, EventSerializer,
                           IndividualEventCreateSerializer,
                           IndividualEventSerializer, SubscriptionSerializer,
-                          TrainerEventCreateSerializer,
-                          TrainerEventUpdateSerializer, TagSerializer)
+                          TagSerializer, TrainerEventCreateSerializer,
+                          TrainerEventUpdateSerializer)
 
 
 class MainEventListAPIView(ListAPIView):

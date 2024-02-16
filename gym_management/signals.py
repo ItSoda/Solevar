@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from gym_management.models import Subscription, IndividualEvent
+from gym_management.models import IndividualEvent, Subscription
 
 
 @receiver(post_save, sender=Subscription)

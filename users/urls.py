@@ -1,9 +1,10 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (CoachListAPIView, ContactEmailView, PhoneNumberSendSMSView,
-                    PhoneNumberVerificationView, TrainerScheduleListAPIView,
-                    ScheduleModelViewSet, UserInfoUpdateAPIView,
+from .views import (CoachListAPIView, ContactEmailView,
+                    IndividualEventScheduleListAPIView, PhoneNumberSendSMSView,
+                    PhoneNumberVerificationView, ScheduleModelViewSet,
+                    TrainerScheduleListAPIView, UserInfoUpdateAPIView,
                     YookassaPaymentView, YookassaWebhookView)
 
 app_name = "users"
@@ -16,6 +17,11 @@ urlpatterns = [
     path("user-update/<int:pk>/", UserInfoUpdateAPIView.as_view(), name="user-update"),
     path("coaches/", CoachListAPIView.as_view(), name="coaches-list"),
     path("coaches/<str:time>/", CoachListAPIView.as_view(), name="coaches-list"),
+    path(
+        "individual_event_schedules/<int:trainer_id>/",
+        IndividualEventScheduleListAPIView.as_view(),
+        name="individual-event-schedules-list",
+    ),
     path("schedules/", TrainerScheduleListAPIView.as_view(), name="schedules-list"),
     path("payment/create/", YookassaPaymentView.as_view(), name="payment-create"),
     path("yookassa/webhook/", YookassaWebhookView.as_view(), name="yookassa-webhook"),
