@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -263,6 +264,11 @@ class TrainerIndividualEventAPIView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(coach=self.request.user)
+
+
+class TrainerUpdateQuantityIndividualEventAPIView(UpdateAPIView):
+    queryset = IndividualEvent.objects.all()
+    serializer_class = IndividualEventSerializer
 
 
 class TrainerTagAPIView(ModelViewSet):

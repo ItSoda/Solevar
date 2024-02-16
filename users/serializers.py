@@ -46,7 +46,7 @@ class UserShortSerializer(UserSerializer):
             "trainer_type"
         )
 
-class UserMinSerializer(UserSerializer):
+class  UserMinSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = (
