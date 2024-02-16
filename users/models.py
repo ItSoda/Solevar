@@ -5,10 +5,14 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
-from .services import (is_expired, send_verification_phone,
-                       upload_audio_to_yandex_cloud,
-                       upload_media_to_yandex_cloud, validate_passport_number,
-                       validate_passport_series)
+from .services import (
+    is_expired,
+    send_verification_phone,
+    upload_audio_to_yandex_cloud,
+    upload_media_to_yandex_cloud,
+    validate_passport_number,
+    validate_passport_series,
+)
 
 
 class AudioRecord(models.Model):

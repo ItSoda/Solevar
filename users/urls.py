@@ -1,11 +1,18 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (CoachListAPIView, ContactEmailView,
-                    IndividualEventScheduleListAPIView, PhoneNumberSendSMSView,
-                    PhoneNumberVerificationView, ScheduleModelViewSet,
-                    TrainerScheduleListAPIView, UserInfoUpdateAPIView,
-                    YookassaPaymentView, YookassaWebhookView)
+from .views import (
+    CoachListAPIView,
+    ContactEmailView,
+    IndividualEventScheduleListAPIView,
+    PhoneNumberSendSMSView,
+    PhoneNumberVerificationView,
+    ScheduleModelViewSet,
+    TrainerScheduleListAPIView,
+    UserInfoUpdateAPIView,
+    YookassaPaymentView,
+    YookassaWebhookView,
+)
 
 app_name = "users"
 
