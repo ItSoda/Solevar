@@ -148,7 +148,7 @@ class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
 
 class ScheduleSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-    coach = UserShortSerializer(many=True)
+    coach = UserMinSerializer(many=True)
 
     class Meta:
         model = Schedule

@@ -92,9 +92,15 @@ class ScheduleAndCoachAPITestCase(APITestCase):
 
         self.schedule_1 = Schedule.objects.create(
             time=timezone.now(),
-            is_selected="True",
+            is_selected="False",
         )
         self.schedule_1.coach.add(self.coach_1)
+
+        self.schedule_3 = Schedule.objects.create(
+            time=timezone.now(),
+            is_selected="False",
+        )
+        self.schedule_3.coach.add(self.coach_1)
 
         self.schedule_2 = Schedule.objects.create(
             time=timezone.now(),
@@ -105,7 +111,7 @@ class ScheduleAndCoachAPITestCase(APITestCase):
         self.access_token = str(RefreshToken.for_user(self.coach_1).access_token)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
 
-    def test_schedule_list(self):
+    def test_trainer_panel_schedule_list(self):
         """This test covers schedule list"""
 
         url = f"{settings.DOMAIN_NAME}/api/schedules/"
@@ -115,12 +121,22 @@ class ScheduleAndCoachAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), expected_data)
 
-    def test_schedule_list_with_trainer(self):
+    def test_individual_event_schedule_list_with_trainer(self):
         """This test covers schedule list with trainer"""
 
-        url = f"{settings.DOMAIN_NAME}/api/schedules/{self.coach_1.id}/"
+        url = f"{settings.DOMAIN_NAME}/api/individual_event_schedules/{self.coach_1.id}/"
         response = self.client.get(url)
-        expected_data = 1
+        expected_data = 2
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), expected_data)
+        
+    def test_individual_event_schedule_list_without_trainer(self):
+        """This test covers schedule list with trainer"""
+
+        url = f"{settings.DOMAIN_NAME}/api/individual_event_schedules/"
+        response = self.client.get(url)
+        expected_data = 3
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), expected_data)
@@ -157,7 +173,7 @@ class ScheduleAndCoachAPITestCase(APITestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Schedule.objects.count(), 2)
+        self.assertEqual(Schedule.objects.count(), 3)
 
     def test_coaches_list(self):
         """This test covers schedules list"""
