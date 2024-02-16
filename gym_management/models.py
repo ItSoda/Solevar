@@ -82,15 +82,6 @@ class IndividualEvent(models.Model):
     def __str__(self) -> str:
         return f"Individual event with {self.participant.first_name} on {self.training_date} at {self.duration}"
 
-    def clean(self):
-        # Дополнительная проверка на уровне модели
-        if IndividualEvent.objects.filter(
-            coach=self.coach, participant=self.participant
-        ).exists():
-            raise ValidationError(
-                _("This combination of coach and participant already exists.")
-            )
-
 
 class Subscription(models.Model):
     """Model for subscription"""
