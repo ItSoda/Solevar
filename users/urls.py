@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import (CoachListAPIView, ContactEmailView, PhoneNumberSendSMSView,
-                    PhoneNumberVerificationView, ScheduleListAPIView,
+                    PhoneNumberVerificationView, TrainerScheduleListAPIView,
                     ScheduleModelViewSet, UserInfoUpdateAPIView,
                     YookassaPaymentView, YookassaWebhookView)
 
@@ -16,12 +16,7 @@ urlpatterns = [
     path("user-update/<int:pk>/", UserInfoUpdateAPIView.as_view(), name="user-update"),
     path("coaches/", CoachListAPIView.as_view(), name="coaches-list"),
     path("coaches/<str:time>/", CoachListAPIView.as_view(), name="coaches-list"),
-    path("schedules/", ScheduleListAPIView.as_view(), name="schedules-list"),
-    path(
-        "schedules/<int:trainer_id>/",
-        ScheduleListAPIView.as_view(),
-        name="schedules-list-trainer",
-    ),
+    path("schedules/", TrainerScheduleListAPIView.as_view(), name="schedules-list"),
     path("payment/create/", YookassaPaymentView.as_view(), name="payment-create"),
     path("yookassa/webhook/", YookassaWebhookView.as_view(), name="yookassa-webhook"),
     path("verify/phone/", PhoneNumberVerificationView.as_view(), name="phone-verify"),

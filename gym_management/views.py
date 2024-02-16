@@ -274,5 +274,3 @@ class TrainerUpdateQuantityIndividualEventAPIView(UpdateAPIView):
 class TrainerTagAPIView(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
-    

@@ -57,18 +57,17 @@ class ScheduleModelViewSet(ModelViewSet):
             )
 
 
-class ScheduleListAPIView(ListAPIView):
+class TrainerScheduleListAPIView(ListAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
         try:
-            trainer_id = self.kwargs.get("trainer_id", None)
+            trainer = self.request.user
 
-            if not trainer_id:
+            if not trainer:
                 return super().get_queryset()
 
-            trainer = User.objects.get(id=trainer_id)
             return Schedule.objects.filter(coach=trainer)
 
         except Exception:
