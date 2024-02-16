@@ -7,26 +7,6 @@ from rest_framework import serializers
 
 from .models import Schedule, User
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        phone_number = attrs.get("phone_number", None)
-
-        if phone_number is None:
-            raise serializers.ValidationError("Phone number is required.")
-
-        user = User.objects.filter(phone_number=phone_number).first()
-
-        if user is None:
-            raise serializers.ValidationError("User not found.")
-
-        # Получите пароль пользователя и передайте его
-        attrs['password'] = user.password
-
-        return super().validate(attrs)
-
 
 class ImageFieldFromURL(serializers.ImageField):
     def to_internal_value(self, data):
