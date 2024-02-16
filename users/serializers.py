@@ -17,7 +17,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if phone_number is None:
             raise serializers.ValidationError("Phone number is required.")
 
-        return attrs
+        user = User.objects.filter(phone_number=phone_number).first()
+
+        if user is None:
+            raise serializers.ValidationError("User not found.")
+
+        # Получите пароль пользователя и передайте его
+        attrs['password'] = user.password
+
+        return super().validate(attrs)
 
 
 class ImageFieldFromURL(serializers.ImageField):
