@@ -10,17 +10,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from gym_management.services import (add_user_to_event, change_time_selected,
-                                     down_user_balance, remove_user_from_event)
+from gym_management.services import (
+    add_user_to_event,
+    change_time_selected,
+    down_user_balance,
+    remove_user_from_event,
+)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
 
 from .models import Event, IndividualEvent, Subscription, Tag
 from .permissions import IsTrainerUser
-from .serializers import (EventCreateSerializer, EventSerializer,
-                          IndividualEventCreateSerializer,
-                          IndividualEventSerializer, SubscriptionSerializer,
-                          TagSerializer, TrainerEventCreateSerializer,
-                          TrainerEventUpdateSerializer)
+from .serializers import (
+    EventCreateSerializer,
+    EventSerializer,
+    IndividualEventCreateSerializer,
+    IndividualEventSerializer,
+    SubscriptionSerializer,
+    TagSerializer,
+    TrainerEventCreateSerializer,
+    TrainerEventUpdateSerializer,
+)
 
 
 class MainEventListAPIView(ListAPIView):

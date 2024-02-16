@@ -1,13 +1,22 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (AddOrRemoveParticipantView, BuySubscriptionView,
-                    EventViewSet, IndividualEventViewSet, MainEventListAPIView,
-                    MyEventListView, MyHistoryEventListView,
-                    MyIndividualEventListAPIView, MySubscriptionView,
-                    SubscriptionViewSet, TrainerEventModelViewSet,
-                    TrainerIndividualEventAPIView, TrainerTagAPIView,
-                    TrainerUpdateQuantityIndividualEventAPIView)
+from .views import (
+    AddOrRemoveParticipantView,
+    BuySubscriptionView,
+    EventViewSet,
+    IndividualEventViewSet,
+    MainEventListAPIView,
+    MyEventListView,
+    MyHistoryEventListView,
+    MyIndividualEventListAPIView,
+    MySubscriptionView,
+    SubscriptionViewSet,
+    TrainerEventModelViewSet,
+    TrainerIndividualEventAPIView,
+    TrainerTagAPIView,
+    TrainerUpdateQuantityIndividualEventAPIView,
+)
 
 app_name = "gym_management"
 

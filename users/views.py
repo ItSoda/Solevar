@@ -1,12 +1,6 @@
 import json
 import logging
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
-
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -15,17 +9,27 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from yookassa.domain.notification import WebhookNotificationFactory
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from yookassa.domain.notification import WebhookNotificationFactory
+
 from gym_management.permissions import IsTrainerUser
 
 from .models import Schedule, User
-from .serializers import (EmailContactSerializer,
-                          ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
-                          UserInfoUpdateSerializer, UserShortSerializer)
-from .services import (create_payment, proccess_phone_verification,
-                       send_email_from_user, send_phone_verify_task,
-                       user_change_balance)
+from .serializers import (
+    EmailContactSerializer,
+    ScheduleCreateOrUpdateSerializer,
+    ScheduleSerializer,
+    UserInfoUpdateSerializer,
+    UserShortSerializer,
+)
+from .services import (
+    create_payment,
+    proccess_phone_verification,
+    send_email_from_user,
+    send_phone_verify_task,
+    user_change_balance,
+)
 
 logger = logging.getLogger("main")
 
@@ -40,7 +44,9 @@ class ScheduleModelViewSet(ModelViewSet):
     serializer_class = ScheduleSerializer
 
     def create(self, request, *args, **kwargs):
-        scheduleSerializer = ScheduleCreateOrUpdateSerializer(data=request.data, context={"request": request})
+        scheduleSerializer = ScheduleCreateOrUpdateSerializer(
+            data=request.data, context={"request": request}
+        )
         scheduleSerializer.validate()
         scheduleSerializer.save()
 
@@ -244,16 +250,23 @@ class ContactEmailView(APIView):
 
 class CustomTokenObtainView(APIView):
     def post(self, request):
-        phone_number = request.data.get('phone_number')
+        phone_number = request.data.get("phone_number")
         if not phone_number:
-            return Response({'error': 'Phone number is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Phone number is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         user = User.objects.filter(phone_number=phone_number).first()
         if not user:
-            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "User not found."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         refresh = RefreshToken.for_user(user)
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        })
+        return Response(
+            {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
+        )

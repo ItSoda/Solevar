@@ -124,13 +124,15 @@ class ScheduleAndCoachAPITestCase(APITestCase):
     def test_individual_event_schedule_list_with_trainer(self):
         """This test covers schedule list with trainer"""
 
-        url = f"{settings.DOMAIN_NAME}/api/individual_event_schedules/{self.coach_1.id}/"
+        url = (
+            f"{settings.DOMAIN_NAME}/api/individual_event_schedules/{self.coach_1.id}/"
+        )
         response = self.client.get(url)
         expected_data = 2
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), expected_data)
-        
+
     def test_individual_event_schedule_list_without_trainer(self):
         """This test covers schedule list with trainer"""
 
