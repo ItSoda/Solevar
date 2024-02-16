@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (TokenBlacklistView,
                                             TokenRefreshView, TokenVerifyView)
 
 from solevar.admin import custom_admin_site
-
+from users.views import CustomTokenObtainPairView
 from .yasg import urlpatterns as doc_url
 
 urlpatterns = [
@@ -17,7 +17,7 @@ urlpatterns = [
     path("api/", include("chats.urls")),
     # Регистрация, авторизация
     path("auth/", include("djoser.urls")),
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="custom-token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("api/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
