@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserShortSerializer
 
 from .models import Event, IndividualEvent, Subscription, Tag
 
@@ -42,8 +42,8 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     seats_left = serializers.SerializerMethodField()
-    created_by = UserSerializer()
-    participants = UserSerializer(many=True)
+    created_by = UserShortSerializer()
+    participants = UserShortSerializer(many=True)
     tags = TagSerializer(many=True)
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
@@ -152,8 +152,8 @@ class IndividualEventCreateSerializer(serializers.ModelSerializer):
 
 
 class IndividualEventSerializer(serializers.ModelSerializer):
-    coach = UserSerializer()
-    participant = UserSerializer()
+    coach = UserShortSerializer()
+    participant = UserShortSerializer()
     training_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
@@ -178,7 +178,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserShortSerializer()
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
