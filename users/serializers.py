@@ -17,8 +17,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if phone_number is None:
             raise serializers.ValidationError("Phone number is required.")
 
-        return super().validate(attrs)
-        
+        return attrs
+
 
 class ImageFieldFromURL(serializers.ImageField):
     def to_internal_value(self, data):
