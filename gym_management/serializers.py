@@ -17,7 +17,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
-    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
@@ -67,9 +67,11 @@ class TrainerEventCreateSerializer(serializers.ModelSerializer):
             "duration",
             "price",
             "limit_of_participants",
+            "tags"
         )
 
     def create(self, validated_data):
+
         created_by_instance = self.context["request"].user
 
         instance = Event.objects.create(
@@ -83,7 +85,7 @@ class TrainerEventUpdateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
-    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
