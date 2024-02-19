@@ -13,7 +13,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
-    created_by = serializers.IntegerField(write_only=True)
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
@@ -25,9 +24,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        created_by_id = validated_data.pop("created_by")
-        created_by_instance = User.objects.get(id=created_by_id)
-
+        created_by_instance = self.context["request"].user
         participants_ids = validated_data.pop("participants")
         tags_ids = validated_data.pop("tags")
 
@@ -53,32 +50,6 @@ class EventSerializer(serializers.ModelSerializer):
 
     def get_seats_left(self, obj):
         return obj.seats_left()
-
-
-class TrainerEventCreateSerializer(serializers.ModelSerializer):
-    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-
-    class Meta:
-        model = Event
-        fields = (
-            "title",
-            "content",
-            "start_date",
-            "duration",
-            "price",
-            "limit_of_participants",
-            "tags"
-        )
-
-    def create(self, validated_data):
-
-        created_by_instance = self.context["request"].user
-
-        instance = Event.objects.create(
-            created_by=created_by_instance, **validated_data
-        )
-
-        return instance
 
 
 class TrainerEventUpdateSerializer(serializers.ModelSerializer):

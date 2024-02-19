@@ -28,11 +28,13 @@ class Event(models.Model):
     WAITING = "waiting"
     CANCELED = "canceled"
     PASSED = "passed"
+    EDIT = "edit"
 
     STATUS_CHOICES = (
         (WAITING, "Waiting"),
         (CANCELED, "Canceled"),
         (PASSED, "Passed"),
+        (EDIT, "Edit"),
     )
 
     title = models.CharField(max_length=128)
