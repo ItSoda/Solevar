@@ -29,6 +29,7 @@ from .serializers import (
     TagSerializer,
     TrainerEventCreateSerializer,
     TrainerEventUpdateSerializer,
+    EventCreateSerializer,
 )
 
 
@@ -248,7 +249,7 @@ class TrainerEventModelViewSet(ModelViewSet):
         return queryset.filter(created_by=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        trainer_event_serializer = TrainerEventCreateSerializer(
+        trainer_event_serializer = EventCreateSerializer(
             data=request.data, context={"request": request}
         )
         trainer_event_serializer.is_valid(raise_exception=True)
