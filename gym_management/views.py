@@ -27,7 +27,6 @@ from .serializers import (
     IndividualEventSerializer,
     SubscriptionSerializer,
     TagSerializer,
-    TrainerEventCreateSerializer,
     TrainerEventUpdateSerializer,
     EventCreateSerializer,
 )
