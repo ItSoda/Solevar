@@ -114,3 +114,17 @@ def send_email_succes_buy_personal_trainer(email, first_name, coach_id, training
         recipient_list=[email],
         fail_silently=False,
     )
+
+
+@shared_task
+def send_email_canceled_event(participants, title):
+    subjects = f"Отмена записи на групповое занятие {title}"
+    for participant in participants:
+        message = f"Уважаемый {participant.first_name}! Вы отменили запись на групповое занятие {title}"
+        send_mail(
+            subject=subjects,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[participant.email],
+            fail_silently=False,
+        )
