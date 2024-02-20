@@ -117,12 +117,11 @@ class EmailContactSerializer(serializers.Serializer):
 
 
 class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
-    coach = serializers.ListField(child=serializers.IntegerField(), write_only=True)
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = Schedule
-        fields = "__all__"
+        fields = ("time",)
 
     def create(self, validated_data):
         coach_id = self.context["request"].user.id
