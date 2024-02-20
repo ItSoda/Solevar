@@ -127,7 +127,7 @@ class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
         coach = self.context["request"].user
 
         instance = Schedule.objects.create(**validated_data)
-        instance.coach.set(coach)
+        instance.coach.set([coach])
 
         return instance
 
