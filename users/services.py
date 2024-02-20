@@ -101,6 +101,7 @@ def proccess_phone_verification(code, phone_number):
     )
     try:
         if phone_numbers.exists() and not phone_numbers.last().is_expired():
+            phone_number.delete()
             return True
         return False
     except Exception as e:
