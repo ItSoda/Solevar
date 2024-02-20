@@ -47,7 +47,7 @@ class ScheduleModelViewSet(ModelViewSet):
         scheduleSerializer = ScheduleCreateOrUpdateSerializer(
             data=request.data, context={"request": request}
         )
-        scheduleSerializer.validate()
+        scheduleSerializer.is_valid(raise_exception=True)
         scheduleSerializer.save()
 
     def partial_update(self, request, *args, **kwargs):
