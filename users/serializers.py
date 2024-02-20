@@ -124,10 +124,10 @@ class ScheduleCreateOrUpdateSerializer(serializers.ModelSerializer):
         fields = ("time",)
 
     def create(self, validated_data):
-        coach_id = self.context["request"].user.id
+        coach = self.context["request"].user
 
         instance = Schedule.objects.create(**validated_data)
-        instance.coach.set(coach_id)
+        instance.coach.set(coach)
 
         return instance
 
