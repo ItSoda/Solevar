@@ -44,11 +44,19 @@ class ScheduleModelViewSet(ModelViewSet):
     serializer_class = ScheduleSerializer
 
     def create(self, request, *args, **kwargs):
-        scheduleSerializer = ScheduleCreateOrUpdateSerializer(
-            data=request.data, context={"request": request}
-        )
-        scheduleSerializer.is_valid(raise_exception=True)
-        scheduleSerializer.save()
+        try:
+            scheduleSerializer = ScheduleCreateOrUpdateSerializer(
+                data=request.data, context={"request": request}
+            )
+            scheduleSerializer.is_valid(raise_exception=True)
+            scheduleSerializer.save()
+            return Response(
+                {"message": "create success"}, status=status.HTTP_201_CREATED
+            )
+        except Exception:
+            return Response(
+                {"error": "create unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     def partial_update(self, request, *args, **kwargs):
         self.serializer_class = ScheduleCreateOrUpdateSerializer
