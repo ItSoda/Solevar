@@ -9,7 +9,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
+from django.db.models import Q
 from gym_management.services import (
     add_user_to_event,
     change_time_selected,
@@ -33,7 +33,7 @@ from .serializers import (
 
 
 class MainEventListAPIView(ListAPIView):
-    queryset = Event.objects.filter(status="WAITING")
+    queryset = Event.objects.filter(Q(status="WAITING") | Q(status="EDIT"))
     serializer_class = EventSerializer
 
     @method_decorator(cache_page(10))
