@@ -16,7 +16,9 @@ class EventCreateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
-    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    tags = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True, required=False
+    )
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
@@ -56,7 +58,9 @@ class TrainerEventUpdateSerializer(serializers.ModelSerializer):
     participants = serializers.ListField(
         child=serializers.IntegerField(), write_only=True
     )
-    tags = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    tags = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True, required=False
+    )
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:

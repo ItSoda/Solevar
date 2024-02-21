@@ -1,6 +1,7 @@
 from decimal import Decimal
 from random import randint
 
+from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -9,27 +10,17 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from django.db.models import Q
-from gym_management.services import (
-    add_user_to_event,
-    change_time_selected,
-    down_user_balance,
-    remove_user_from_event,
-)
+
+from gym_management.services import (add_user_to_event, change_time_selected,
+                                     down_user_balance, remove_user_from_event)
 from gym_management.tasks import send_email_succes_buy_personal_trainer
 
 from .models import Event, IndividualEvent, Subscription, Tag
 from .permissions import IsTrainerUser
-from .serializers import (
-    EventCreateSerializer,
-    EventSerializer,
-    IndividualEventCreateSerializer,
-    IndividualEventSerializer,
-    SubscriptionSerializer,
-    TagSerializer,
-    TrainerEventUpdateSerializer,
-    EventCreateSerializer,
-)
+from .serializers import (EventCreateSerializer, EventSerializer,
+                          IndividualEventCreateSerializer,
+                          IndividualEventSerializer, SubscriptionSerializer,
+                          TagSerializer, TrainerEventUpdateSerializer)
 
 
 class MainEventListAPIView(ListAPIView):
@@ -192,6 +183,7 @@ class SubscriptionViewSet(ListAPIView):
 
 class BuySubscriptionView(CreateAPIView):
     serializer_class = SubscriptionSerializer
+
     def post(self, request, *args, **kwargs):
         try:
             number = self.generate_unique_subscription_number()

@@ -1,9 +1,7 @@
 from decimal import Decimal
 
-from gym_management.tasks import (
-    send_email_join_success_task,
-    send_email_leave_success_task,
-)
+from gym_management.tasks import (send_email_join_success_task,
+                                  send_email_leave_success_task)
 from users.models import Schedule
 
 
