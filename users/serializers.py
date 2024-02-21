@@ -31,8 +31,6 @@ class UserRegistSerializer(UserCreateSerializer):
 
 
 class UserShortSerializer(UserSerializer):
-    photo = ImageFieldFromURL()
-
     class Meta(UserSerializer.Meta):
         model = User
         fields = (
