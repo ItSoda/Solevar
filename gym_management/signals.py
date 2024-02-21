@@ -19,6 +19,6 @@ def check_quantity_individual_events(sender, instance, **kwargs):
 @receiver(post_save, sender=Event)
 def check_quantity_individual_events(sender, instance, **kwargs):
     if instance.status == Event.CANCELED:
-        participants = instance.participants.all()
+        participants_ids = instance.participants.all().values_list("id", flat=True)
         title = instance.title
-        send_email_canceled_event.delay(participants, title)
+        send_email_canceled_event.delay(list(participants_ids), title)
