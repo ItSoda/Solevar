@@ -4,15 +4,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
+from users.services import is_expired, send_verification_email
+
 from .managers import CustomUserManager
-from .services import (
-    is_expired,
-    send_verification_phone,
-    upload_audio_to_yandex_cloud,
-    upload_media_to_yandex_cloud,
-    validate_passport_number,
-    validate_passport_series,
-)
+from .services import (is_expired, send_verification_phone,
+                       upload_audio_to_yandex_cloud,
+                       upload_media_to_yandex_cloud, validate_passport_number,
+                       validate_passport_series)
 
 
 class AudioRecord(models.Model):
@@ -145,3 +143,21 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f"Time: {self.time}"
+
+
+class EmailVerifications(models.Model):
+    """Model for one EmailVerifications"""
+
+    code = models.UUIDField(unique=True, null=True, blank=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"EmailVerification object for {self.user.email}"
+
+    def send_verification_email(self):
+        send_verification_email(self.user.email, self.code)
+
+    def is_expired(self):
+        is_expired(self)

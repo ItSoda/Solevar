@@ -15,6 +15,7 @@ from .serializers import RoomSerializer
 
 class CreateOrGetRoomAPIView(CreateAPIView):
     serializer_class = RoomSerializer
+
     def post(self, request, *args, **kwargs):
         try:
             room = Room.objects.filter(

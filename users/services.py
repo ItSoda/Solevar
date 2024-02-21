@@ -6,13 +6,11 @@ from decimal import Decimal
 
 import boto3
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.timezone import now
-from rest_framework import status
-from rest_framework.response import Response
 from twilio.rest import Client
 
 logger = logging.getLogger("main")
@@ -182,3 +180,47 @@ def upload_audio_to_yandex_cloud(self):
         self.record_file = file_path
     else:
         self.record_file = None
+
+
+# EMAIL VERIFICATION
+def send_verification_email(user_email, code):
+    link = reverse("users:email_verify", kwargs={"email": user_email, "code": code})
+    full_link = f"{settings.DOMAIN_NAME}{link}"
+    subjects = f"Подтверждение учетной записи для {user_email}"
+    message = "Для подтверждения электронной почты {} перейдите по ссылке: {}.".format(
+        user_email,
+        full_link,
+    )
+    send_mail(
+        subject=subjects,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user_email],
+        fail_silently=False,
+    )
+
+
+# VIEWS
+class EmailVerificationHandler:
+    def __init__(self, code, email):
+        self.code = code
+        self.email = email
+
+    def proccess_email_verification(self):
+        from users.models import EmailVerifications, User
+
+        user = get_object_or_404(User, email=self.email)
+        email_verifications = EmailVerifications.objects.filter(
+            code=self.code, user=user
+        )
+        try:
+            if (
+                email_verifications.exists()
+                and not email_verifications.last().is_expired()
+            ):
+                user.is_verified_email = True
+                user.save()
+                return True, user
+            return False
+        except Exception as e:
+            return False

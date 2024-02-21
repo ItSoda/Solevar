@@ -16,20 +16,12 @@ from yookassa.domain.notification import WebhookNotificationFactory
 from gym_management.permissions import IsTrainerUser
 
 from .models import Schedule, User
-from .serializers import (
-    EmailContactSerializer,
-    ScheduleCreateOrUpdateSerializer,
-    ScheduleSerializer,
-    UserInfoUpdateSerializer,
-    UserShortSerializer,
-)
-from .services import (
-    create_payment,
-    proccess_phone_verification,
-    send_email_from_user,
-    send_phone_verify_task,
-    user_change_balance,
-)
+from .serializers import (EmailContactSerializer,
+                          ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
+                          UserInfoUpdateSerializer, UserShortSerializer)
+from .services import (EmailVerificationHandler, create_payment,
+                       proccess_phone_verification, send_email_from_user,
+                       send_phone_verify_task, user_change_balance)
 
 logger = logging.getLogger("main")
 
@@ -278,3 +270,47 @@ class CustomTokenObtainView(APIView):
                 "access": str(refresh.access_token),
             }
         )
+
+
+class EmailVerificationUserUpdateView(APIView):
+    serializer_class = UserShortSerializer
+
+    def get(self, request, *args, **kwargs):
+        email_verification_handler = EmailVerificationHandler(
+            code=kwargs.get("code"), email=kwargs.get("email")
+        )
+        email_result, user = email_verification_handler.proccess_email_verification()
+        try:
+            if email_result:
+                return Response(
+                    {"message": user.is_verified_email}, status=status.HTTP_200_OK
+                )
+            return Response(
+                {"message": "EmailVerification is expired or not exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception:
+            return Response(
+                {"error": "Произошла ошибка"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class CheckEmailVerifyAPIView(APIView):
+    serializer_class = UserShortSerializer
+
+    def get(self, request, *args, **kwargs):
+        user_id = self.kwargs.get("user_id")
+        user = User.objects.get(id=user_id)
+        try:
+            if user.is_verified_email:
+                return Response(
+                    {"message": user.is_verified_email}, status=status.HTTP_200_OK
+                )
+            return Response(
+                {"message": "email is expired or not exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception:
+            return Response(
+                {"error": "Произошла ошибка"}, status=status.HTTP_400_BAD_REQUEST
+            )

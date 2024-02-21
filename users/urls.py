@@ -1,18 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (
-    CoachListAPIView,
-    ContactEmailView,
-    IndividualEventScheduleListAPIView,
-    PhoneNumberSendSMSView,
-    PhoneNumberVerificationView,
-    ScheduleModelViewSet,
-    TrainerScheduleListAPIView,
-    UserInfoUpdateAPIView,
-    YookassaPaymentView,
-    YookassaWebhookView,
-)
+from .views import (CheckEmailVerifyAPIView, CoachListAPIView,
+                    ContactEmailView, EmailVerificationUserUpdateView,
+                    IndividualEventScheduleListAPIView, PhoneNumberSendSMSView,
+                    PhoneNumberVerificationView, ScheduleModelViewSet,
+                    TrainerScheduleListAPIView, UserInfoUpdateAPIView,
+                    YookassaPaymentView, YookassaWebhookView)
 
 app_name = "users"
 
@@ -40,4 +34,14 @@ urlpatterns = [
     path("verify/phone/", PhoneNumberVerificationView.as_view(), name="phone-verify"),
     path("send/phone/", PhoneNumberSendSMSView.as_view(), name="phone-send"),
     path("contact/", ContactEmailView.as_view(), name="send-email"),
+    path(
+        "verify/<str:email>/<uuid:code>/",
+        EmailVerificationUserUpdateView.as_view(),
+        name="email_verify",
+    ),
+    path(
+        "check-email-verify/<int:user_id>/",
+        CheckEmailVerifyAPIView.as_view(),
+        name="check-email-verify",
+    ),
 ]

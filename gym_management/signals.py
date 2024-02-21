@@ -1,8 +1,10 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from gym_management.models import IndividualEvent, Subscription, Event
+from gym_management.models import Event, IndividualEvent, Subscription
+
 from .tasks import send_email_canceled_event
+
 
 @receiver(post_save, sender=Subscription)
 def add_end_date(sender, instance, **kwargs):
