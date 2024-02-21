@@ -191,6 +191,7 @@ class SubscriptionViewSet(ListAPIView):
 
 
 class BuySubscriptionView(CreateAPIView):
+    serializer_class = SubscriptionSerializer
     def post(self, request, *args, **kwargs):
         try:
             number = self.generate_unique_subscription_number()
