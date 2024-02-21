@@ -44,7 +44,7 @@ class User(AbstractUser):
     )
 
     phone_number = PhoneNumberField(unique=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(blank=True)
     first_name = models.CharField(max_length=50, default="Имя")
     last_name = models.CharField(max_length=50, default="Фамилия")
     patronymic = models.CharField(max_length=50, default="Отчество")
