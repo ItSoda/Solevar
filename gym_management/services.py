@@ -28,7 +28,9 @@ def down_user_balance(user, price):
     user.save()
 
 
-def change_time_selected(time, coach):
+def change_time_selected(time, coach_id):
+    from users.models import User
+    coach = User.objects.get(id=coach_id)
     schedule = Schedule.objects.get(time=time, coach=coach)
     schedule.is_selected = True
     schedule.save()
