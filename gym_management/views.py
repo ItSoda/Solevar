@@ -133,7 +133,7 @@ class IndividualEventViewSet(CreateAPIView):
 
             if user.balance >= Decimal(price):
                 event_serializer.save()
-                # Уменьшение баланса
+                # Уменьшение баланса  
                 change_time_selected(training_date, coach)
                 down_user_balance(user, price)
                 send_email_succes_buy_personal_trainer.delay(

@@ -58,7 +58,6 @@ class UserMinSerializer(UserSerializer):
 class UserProfile(UserSerializer):
     date_of_issue = serializers.DateField(format="%Y-%m-%d")
     date_of_birth = serializers.DateField(format="%Y-%m-%d")
-    photo = ImageFieldFromURL()
 
     class Meta(UserSerializer.Meta):
         model = User
