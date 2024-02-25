@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -18,7 +18,7 @@ from gym_management.permissions import IsTrainerUser
 from .models import Schedule, User
 from .serializers import (EmailContactSerializer,
                           ScheduleCreateOrUpdateSerializer, ScheduleSerializer,
-                          UserInfoUpdateSerializer, UserShortSerializer)
+                          UserInfoUpdateSerializer, UserShortSerializer, UserProfile)
 from .services import (EmailVerificationHandler, create_payment,
                        proccess_phone_verification, send_email_from_user,
                        send_phone_verify_task, user_change_balance)
@@ -314,3 +314,10 @@ class CheckEmailVerifyAPIView(APIView):
             return Response(
                 {"error": "Произошла ошибка"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class UserProfileRetrieveAPI(RetrieveAPIView):
+    serializer_class = UserProfile
+
+    def get_object(self):
+        return self.request.user
