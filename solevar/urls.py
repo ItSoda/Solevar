@@ -8,8 +8,10 @@ from rest_framework_simplejwt.views import (TokenBlacklistView,
 
 from solevar.admin import custom_admin_site
 from users.views import CustomTokenObtainView
-
+from djoser.views import UserViewSet
 from .yasg import urlpatterns as doc_url
+from users.views import UserProfileRetrieveAPI
+
 
 urlpatterns = [
     path("admin_panel/", custom_admin_site.urls),
@@ -17,7 +19,8 @@ urlpatterns = [
     path("api/", include("gym_management.urls")),
     path("api/", include("chats.urls")),
     # Регистрация, авторизация
-    path("auth/", include("djoser.urls")),
+    path("auth/users/", UserViewSet.as_view({"post": "create"}), name="create-user"),
+    path("auth/users/me/", UserProfileRetrieveAPI.as_view(), name="user-me"),
     path(
         "api/token/", CustomTokenObtainView.as_view(), name="custom-token_obtain_pair"
     ),
