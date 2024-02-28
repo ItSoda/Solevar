@@ -82,7 +82,7 @@ class IndividualEventScheduleListAPIView(ListAPIView):
             if not trainer:
                 return super().get_queryset()
 
-            return Schedule.objects.filter(coach=trainer, is_selected=False).order_by("-time")
+            return Schedule.objects.filter(coach=trainer, is_selected=False).order_by("time")
 
         except Exception:
             return Response(
@@ -104,7 +104,7 @@ class TrainerScheduleListAPIView(ListAPIView):
                     {"error": "Токен не передали."},
                 )
 
-            return Schedule.objects.filter(coach=trainer).order_by("-time")
+            return Schedule.objects.filter(coach=trainer).order_by("time")
 
         except Exception:
             return Response(
