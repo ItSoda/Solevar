@@ -13,9 +13,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
-    participants = serializers.ListField(
-        child=serializers.IntegerField(), write_only=True
-    )
     tags = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False
     )
@@ -23,18 +20,18 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = ("title", "content", "limit_of_participants", "duration", "tags", "start_date", "price")
 
     def create(self, validated_data):
         created_by_instance = self.context["request"].user
-        participants_ids = validated_data.pop("participants")
-        tags_ids = validated_data.pop("tags")
+        tags_ids = validated_data.pop("tags", None)
 
         instance = Event.objects.create(
             created_by=created_by_instance, **validated_data
         )
-        instance.participants.set(participants_ids)
-        instance.tags.set(tags_ids)
+        instance.participants.add(created_by_instance)
+        if tags_ids is not None:
+            instance.tags.add(*tags_ids)
 
         return instance
 

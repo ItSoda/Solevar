@@ -18,6 +18,7 @@ custom_admin_site = CustomAdminSite(name="admin_panel")
 
 class UserCustomAdmin(admin.ModelAdmin):
     fields = (
+        "id",
         "first_name",
         "last_name",
         "patronymic",
@@ -56,7 +57,7 @@ class UserCustomAdmin(admin.ModelAdmin):
 
 
 class ScheduleCustomAdmin(admin.ModelAdmin):
-    list_display = ("time", "is_selected")
+    list_display = ("id", "time", "is_selected")
     ordering = ("time", "coach")
     filter_horizontal = ("coach",)
 
@@ -85,7 +86,7 @@ class SubscriptionCustomAdmin(admin.ModelAdmin):
 
 
 class EventCustomAdmin(admin.ModelAdmin):
-    list_display = ("title", "created_by", "duration", "status", "start_date")
+    list_display = ("id", "title", "created_by", "duration", "status", "start_date")
     filter_horizontal = ["participants", "tags"]
     ordering = ("start_date",)
 
@@ -102,8 +103,8 @@ class IndividualEventCustomAdmin(admin.ModelAdmin):
 
 
 class TagCustomAdmin(admin.ModelAdmin):
-    fields = ("name",)
-    list_display = ("name",)
+    fields = ("id", "name",)
+    list_display = ("id", "name",)
 
 
 custom_admin_site.register(AudioRecord)
