@@ -18,7 +18,6 @@ custom_admin_site = CustomAdminSite(name="admin_panel")
 
 class UserCustomAdmin(admin.ModelAdmin):
     fields = (
-        "id",
         "first_name",
         "last_name",
         "patronymic",
@@ -103,7 +102,7 @@ class IndividualEventCustomAdmin(admin.ModelAdmin):
 
 
 class TagCustomAdmin(admin.ModelAdmin):
-    fields = ("id", "name",)
+    fields = ("name",)
     list_display = ("id", "name",)
 
 
